@@ -1,14 +1,14 @@
 # Final_Project
 
 ## GETTING STARTED WITH LOCAL DEVELOPMENT IMAGE:
-### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
+##### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
 Follow the steps in 'Deployment' to pull a Docker image of the development branch
 Navigate to http://127.0.0.1:8080/admin for Django admin, or http://127.0.0.1:8080 for the system frontend
 Log in with username admin, password pass
 
 ## MANAGEMENT:
 ### Django Management
-### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
+##### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
 http://<project_url>/admin
 http://127.0.0.1:8080/admin
 
@@ -20,7 +20,7 @@ Django uses Sqlite3 as a database backend.  Sqlite 3 is a light-weight, file-bas
 
 
 ## DEPLOYMENT:
-### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
+##### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
 ### Automated Docker Build
 There are two docker images maintained for this project, `cs673f17/latest` and `cs673f17/development`.
 Docker builds will run 
