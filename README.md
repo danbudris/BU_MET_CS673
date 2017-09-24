@@ -22,15 +22,16 @@ Django uses Sqlite3 as a database backend.  Sqlite 3 is a light-weight, file-bas
 ## DEPLOYMENT:
 ##### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
 ### Automated Docker Build
-There are two docker images maintained for this project, `cs673f17/latest` and `cs673f17/development`.
-Docker builds will run 
+There are two docker images maintained for this project, `danbudris/bu_met_cs673:latest` and `danbudris/bu_met_cs673:development`.
+Docker builds are hosted on Docker Hub: https://hub.docker.com/r/danbudris/bu_met_cs673/builds/
+Docker builds will trigger automatically when the Master or Development branch are updated.  Builds take about 8 minutes.
 Latest will reflect the `Master` branch.  Development will reflect the `development` branch.
 
 0. Install Docker (https://docs.docker.com/engine/installation/)
 1. Pull the image from the Docker Hub
-   1. `sudo docker pull danbudris/cs673:development`
+   1. `sudo docker pull danbudris/bu_met_cs673:development`
 2. Start the docker image on your local host with the name cs673, mapping port 8080 to localhost port 8000.
-   1. `docker run -d --name='cs673' -p 8080:8000 cs673f17`
+   1. `docker run -d --name='cs673' -p 8080:8000 danbudris/bu_met_cs673:development`
 3. Connect to the running application
    1. http://127.0.0.1:8080
    2. Or, you can connect to the container with a Bash shell to view the applicaiton code; `sudo docker exec -it cs673 bash`
