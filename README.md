@@ -1,5 +1,42 @@
 # Final_Project
 
+## GETTING STARTED WITH LOCAL DEVELOPMENT IMAGE:
+### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
+Follow the steps in 'Deployment' to pull a Docker image of the development branch
+Navigate to http://127.0.0.1:8080/admin for Django admin, or http://127.0.0.1:8080 for the system frontend
+Log in with username admin, password pass
+
+## MANAGEMENT:
+### Django Management
+### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
+http://<project_url>/admin
+http://127.0.0.1:8080/admin
+
+The backend of the Project Management Tool is built in the Python framework Django.  Django provides a robust management interface for dealing with the backend of the project, including managing user accounts.  
+
+#### Database
+Django uses Sqlite3 as a database backend.  Sqlite 3 is a light-weight, file-based database which does not require a client application or any middleware.  Django writes directly to the database.  Currently, the master database is located at:
+`/g1/database/db.sqlite3`
+
+
+## DEPLOYMENT:
+### updated 9/24/2017 Dan Budris <dbudris@bu.edu>
+### Automated Docker Build
+There are two docker images maintained for this project, `cs673f17/latest` and `cs673f17/development`.
+Docker builds will run 
+Latest will reflect the `Master` branch.  Development will reflect the `development` branch.
+
+0. Install Docker (https://docs.docker.com/engine/installation/)
+1. Pull the image from the Docker Hub
+   1. `sudo docker pull danbudris/cs673:development`
+2. Start the docker image on your local host with the name cs673, mapping port 8080 to localhost port 8000.
+   1. `docker run -d --name='cs673' -p 8080:8000 cs673f17`
+3. Connect to the running application
+   1. http://127.0.0.1:8080
+   2. Or, you can connect to the container with a Bash shell to view the applicaiton code; `sudo docker exec -it cs673 bash`
+
+### Manual, step by step instructions:
+#### LEGACY INSTRUCTIONS: last updated by previous project group 2015
 ###### note: locally, you must install nodejs and run main.js in /communication/node/main.js for the communication application to work; also adjust the 2 absolute paths in the main.js file to match the directory structure
 
 ### LOCAL INSTALLATION (windows systems)
