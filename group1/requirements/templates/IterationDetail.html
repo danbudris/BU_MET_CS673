@@ -1,0 +1,346 @@
+{% extends "SideBarBase.html" %}
+{% load require_tags %}
+{% block content2 %}
+
+<div id="wrapper">
+	<div id="page-wrapper">
+		<div class="row">
+			<div class="col-lg-12">
+				<ol class="breadcrumb">
+					<li><a href="/req/projects">Dashboard</a></li>
+					<li><a href="/req/projectdetail/{{ project.id }}">{{ project.title }}</a></li>
+					<li class="active" style="font-size: xx-large;">
+						{% if isIceBox %}
+						Icebox
+						{% else %}
+						{{ iteration.title }}
+						{% endif %}
+					</li>
+				</ol>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				{% if isIceBox %}
+			    <div class="panel-group" id="iter_icebox">
+	    	        {% for story in stories %}
+	    	        {% if story.iteration == None %}
+			        <div class="panel panel-primary">
+			            <div class="panel-heading">
+			                <h4 class="panel-title">
+			                	<span id="storypoint_{{ story.id }}"></span>
+			                    <a data-toggle="collapse" data-parent="" href="#story_{{ story.id }}" aria-expanded="true" class="">
+			                    	{{ story.title }} - {{ story.get_status_display }}
+			                    </a>
+
+			                    {% check_permission association project "MoveStoryToIteration" as can_move_story %}
+			                    {% if can_move_story %}
+	    	                    <div class="btn-group pull-right">
+	    	                    	<button class="btn btn-default dropdown-toggle pull-right" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+	    	                        	Move
+	    	                        	<span class="caret"></span>
+	    	                      	</button>
+	    	                      	<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+	    	                       		{% for iter_local in iterations %}
+	    	                        	<li role="presentation">
+	    	                        		<a role="menuitem" tabindex="-1" href="/req/movestorytoiter/{{project.id}}/{{story.id}}/{{iter_local.id}}">{{iter_local.title}}</a>
+	    	                        	</li>
+	    	                        	{% endfor %}
+	    	                      	</ul>
+	    	                    </div>
+	    	                    {% endif %}
+
+                                {% check_permission association project "DeleteStory" as can_delete %} 
+                                {% if can_delete %}
+	    	                    <a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/deletestory/{{ project.id }}/{{ story.id }}');">
+	    	                    	<i class="fa fa-trash-o fa-fw"></i>Delete
+	    	                    </a>
+	    	                    {% endif %}
+
+								{% check_permission association project "EditStory" as can_edit %} 
+								{% if can_edit %}
+	    	                    <a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/editstory/{{ project.id }}/{{ story.id }}');">
+	    	                    	<i class="fa fa-edit fa-fw"></i>Edit
+	    	                    </a> 
+	    	                    {% endif %}
+			                </h4>
+			            </div>
+			            <div id="story_{{ story.id }}" class="panel-collapse collapse in" aria-expanded="true">
+			                <div class="panel-body">
+			                	<div class="row">
+			                		<div class="col-xs-12 col-md-6">
+			                			<div class="row">
+			                			<div class="col-xs-12 col-sm-3">
+			                				<h4><strong>Description</strong></h4>
+			                			</div>
+			                			<div class="col-xs-12 col-sm-9">
+			                				{% for line_desc in story.description_as_list %}
+												<h5>{{ line_desc }}</h5>
+			                				{% endfor %}
+			                			</div>
+			                			</div>
+			                		</div>
+                                	<div class="col-xs-12 col-md-6">
+                                		<div class="row">
+			                			<div class="col-xs-12 col-sm-3">
+			                				<h4><strong>Reason</strong></h4>
+			                			</div>
+			                			<div class="col-xs-12 col-sm-9">
+			                				{% for line_reason in story.reason_as_list %}
+												<h5>{{ line_reason }}</h5>
+			                				{% endfor %}
+			                			</div>
+			                			</div>
+                                	</div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-12 col-md-6">
+                                		<div class="row">
+			                			<div class="col-xs-12 col-sm-3">
+			                				<h4><strong>Test Accept</strong></h4>
+			                			</div>
+			                			<div class="col-xs-12 col-sm-9">
+			                				{% for line_test in story.test_as_list %}
+												<h5>{{ line_test }}</h5>
+			                				{% endfor %}
+			                			</div>
+			                			</div>
+                                	</div>
+                                	<div class="col-xs-12 col-md-6">
+                                		<div class="row">
+		                				<div class="col-xs-12 col-sm-3">
+		                					<h4><strong>Estimation</strong></h4>
+		                				</div>
+		                				<div class="col-xs-12 col-sm-9">
+		                					<h5>{{ story.hours }} Hrs</h5>
+		                				</div>
+		                				</div>
+		                				<div class="row">
+		                				<div class="col-xs-12 col-sm-3">
+		                					<h4><strong>Last Updated</strong></h4>
+		                				</div>
+		                				<div class="col-xs-12 col-sm-9">
+		                					<h5>{{ story.last_updated }}</h5>
+		                				</div>
+		                				</div>
+                                	</div>
+                                </div>
+                                <div class="row">
+                                	<!-- Row for Tasks & Comments Panel -->
+                                	<div class="col-sm-12 col-md-6">
+                                		<!-- Column for Tasks Panel -->
+                                		<div class="panel-group">
+                                			<div class="panel panel-green">
+                                				<div class="panel-heading">
+                                					<h4 class="panel-title">
+														<a data-toggle="collapse" data-parent="" href="#task_{{ story.id }}" aria-expanded="true" class="">
+															<i class="fa fa-tasks fa-fw"></i> Tasks
+														</a>
+<!-- 														<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/newtask/{{ project.id }}/0/{{ story.id }}');">
+															<i class="glyphicon glyphicon-plus"></i>
+														</a> -->
+													</h4>
+                                				</div>
+                                				<div id="task_{{ story.id }}" class="panel-collapse collapse in" aria-expanded="true">
+                                					<!-- Load Tasks through ajax -->
+                                				</div>
+                                			</div>
+                                		</div>
+                                	</div>
+                                	<div class="col-sm-12 col-md-6">
+                                		<div class="panel-group">
+                                			<div class="panel panel-green">
+                                				<div class="panel-heading">
+                                					<h4 class="panel-title">
+														<a data-toggle="collapse" data-parent="" href="#comment_{{ story.id }}" aria-expanded="true" class="">
+															<i class="fa fa-comments fa-fw"></i> Comments
+														</a>
+<!-- 														<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/newcomment/{{ project.id }}/0/{{ story.id }}');">
+															<i class="glyphicon glyphicon-plus"></i>
+														</a> -->
+													</h4>
+                                				</div>
+                                				<div id="comment_{{ story.id }}" class="panel-collapse collapse in" aria-expanded="true">
+                                					<!-- Load Comments through ajax -->
+                                				</div>
+                                			</div>
+                                		</div>
+                                	</div>
+                                </div>
+			                </div>
+			            </div>
+			        </div>
+	    	        {% endif %}					        
+			        {% endfor %}
+				</div>
+				{% else %}
+			    <div class="panel-group" id="iter_{{ iteration.id }}">
+	    	        {% for story in stories %}
+	    	        {% if story.iteration == iteration %}
+			        <div class="panel panel-primary">
+			            <div class="panel-heading">
+			                <h4 class="panel-title">
+			                    <span id="storypoint_{{ story.id }}"></span>
+			                    <a data-toggle="collapse" data-parent="" href="#story_{{ story.id }}" aria-expanded="true" class="">
+			                    	{{ story.title }} - {{ story.get_status_display }}
+			                    </a>
+
+			                    {% check_permission association project "MoveStoryToIteration" as can_move_story %}
+			                    {% if can_move_story %}
+	    	                    <div class="btn-group pull-right">
+	    	                    	<button class="btn btn-default dropdown-toggle pull-right" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+	    	                    		Move
+	    	                        	<span class="caret"></span>
+	    	                      	</button>
+	    	                      	<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+	    	                       		{% for iter_local in iterations %}
+	    	                        	{% if not iter_local.title = iteration.title %}
+	    	                        	<li role="presentation">
+	    	                        		<a role="menuitem" tabindex="-1" href="/req/movestorytoiter/{{project.id}}/{{story.id}}/{{iter_local.id}}">{{iter_local.title}}</a>
+	    	                        	</li>
+										{% endif %}
+	    	                        	{% endfor %}
+	    	                        	<li role="presentation"><a role="menuitem" tabindex="-1" href="/req/movestorytoicebox/{{project.id}}/{{story.id}}">Icebox</a></li>
+	    	                      	</ul>
+	    	                    </div>
+	    	                    {% endif %}
+
+                                {% check_permission association project "DeleteStory" as can_delete %} 
+                                {% if can_delete %}
+								<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/deletestory/{{ project.id }}/{{ story.id }}');">
+	    	                    	<i class="fa fa-trash-o fa-fw"></i>Delete
+	    	                	</a>
+	    	                	{% endif %}
+
+								{% check_permission association project "EditStory" as can_edit %} 
+								{% if can_edit %}
+	    	                    <a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/editstory/{{ project.id }}/{{ story.id }}');">
+	    	                    	<i class="fa fa-edit fa-fw"></i>Edit
+	    	                	</a> 
+	    	                	{% endif %}
+			                </h4>
+			            </div>
+			            <div id="story_{{ story.id }}" class="panel-collapse collapse in" aria-expanded="true">
+			                <div class="panel-body">
+			                	<div class="row">
+			                		<div class="col-xs-12 col-md-6">
+			                			<div class="row">
+			                			<div class="col-xs-12 col-sm-3">
+			                				<h4><strong>Description</strong></h4>
+			                			</div>
+			                			<div class="col-xs-12 col-sm-9">
+			                				<h5>{{ story.description|linebreaks }}</h5>
+			                			</div>
+			                			</div>
+			                		</div>
+                                	<div class="col-xs-12 col-md-6">
+                                		<div class="row">
+			                			<div class="col-xs-12 col-sm-3">
+			                				<h4><strong>Reason</strong></h4>
+			                			</div>
+			                			<div class="col-xs-12 col-sm-9">
+			                				<h5>{{ story.reason|linebreaks }}</h5>
+			                			</div>
+			                			</div>
+                                	</div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-12 col-md-6">
+                                		<div class="row">
+			                			<div class="col-xs-12 col-sm-3">
+			                				<h4><strong>Test Accept</strong></h4>
+			                			</div>
+			                			<div class="col-xs-12 col-sm-9">
+			                				<h5>{{ story.test|linebreaks }}</h5>
+			                			</div>
+			                			</div>
+                                	</div>
+                                	<div class="col-xs-12 col-md-6">
+                                		<div class="row">
+		                				<div class="col-xs-12 col-sm-3">
+		                					<h4><strong>Estimation</strong></h4>
+		                				</div>
+		                				<div class="col-xs-12 col-sm-9">
+		                					<h5>{{ story.hours }} Hrs</h5>
+		                				</div>
+		                				</div>
+		                				<div class="row">
+		                				<div class="col-xs-12 col-sm-3">
+		                					<h4><strong>Last Updated</strong></h4>
+		                				</div>
+		                				<div class="col-xs-12 col-sm-9">
+		                					<h5>{{ story.last_updated }}</h5>
+		                				</div>
+		                				</div>
+                                	</div>
+                                </div>
+                                <div class="row">
+                                	<!-- Row for Tasks & Comments Panel -->
+                                	<div class="col-sm-12 col-md-6">
+                                		<!-- Column for Tasks Panel -->
+                                		<div class="panel-group">
+                                			<div class="panel panel-green">
+                                				<div class="panel-heading">
+                                					<h4 class="panel-title">
+														<a data-toggle="collapse" data-parent="" href="#task_{{ story.id }}" aria-expanded="true" class="">
+															<i class="fa fa-tasks fa-fw"></i> Tasks
+														</a>
+<!-- 														<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/newtask/{{ project.id }}/{{ iteration.id }}/{{ story.id }}');">
+															<i class="glyphicon glyphicon-plus"></i>
+														</a> -->
+													</h4>
+                                				</div>
+                                				<div id="task_{{ story.id }}" class="panel-collapse collapse in" aria-expanded="true">
+                                					<!-- Load Tasks through ajax -->
+                                				</div>
+                                			</div>
+                                		</div>
+                                	</div>
+                                	<div class="col-sm-12 col-md-6">
+                                		<div class="panel-group">
+                                			<div class="panel panel-green">
+                                				<div class="panel-heading">
+                                					<h4 class="panel-title">
+														<a data-toggle="collapse" data-parent="" href="#comment_{{ story.id }}" aria-expanded="true" class="">
+															<i class="fa fa-comments fa-fw"></i> Comments
+														</a>
+<!-- 														<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/newcomment/{{ project.id }}/{{ iteration.id }}/{{ story.id }}');">
+															<i class="glyphicon glyphicon-plus"></i>
+														</a> -->
+													</h4>
+                                				</div>
+                                				<div id="comment_{{ story.id }}" class="panel-collapse collapse in" aria-expanded="true">
+                                					<!-- Load Comments through ajax -->
+                                				</div>
+                                			</div>
+                                		</div>
+                                	</div>
+                                </div>
+			                </div>
+			            </div>
+			        </div>
+	    	        {% endif %}
+			        {% endfor %}
+				</div>
+				{% endif %}
+            </div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(function() {
+		var winHeight = $(window).outerHeight();
+		$("#page-wrapper").css('min-height',winHeight);
+		
+		{% for story in stories %}
+		var point_{{ story.id }} = {{ story.points }};
+		$("#storypoint_{{ story.id }}").html(getStoryPointHtml(point_{{ story.id }}));
+
+		loadTasks({{ story.id }});
+		loadComments({{ story.id }});
+
+		{% endfor %}
+	});
+</script>
+{% endblock content2 %}

@@ -1,0 +1,86 @@
+{% load staticfiles %}
+<div class="panel-body">
+	<div class="list_group">
+
+		{% if newform %}
+		<div class="list-group-item">
+			<div class="list-group-item-text">
+				<form id="newcomment_form_{{ story.id }}" class="form-horizontal">
+					{% csrf_token %}
+					<div class="row">
+						<label for="{{ newform.title.id_for_label }}" class="col-xs-12 col-md-3 col-lg-2 control-label" style="padding-top: 5px;">Title</label>
+						<div class="col-xs-12 col-md-9 col-lg-10">
+							{{ newform.title }}
+						</div>
+					</div>
+					<div class="row">
+						<!-- <div class="row"> -->
+						<label class="col-xs-12 col-md-3 col-lg-2 control-label" for="{{ newform.comment.id_for_label }}">Comment</label>
+						<div class="col-xs-12 col-md-9 col-lg-10">
+							{{ newform.comment }}
+							<a class="btn btn-link" href="javascript:void(0);" onclick="addCommentIntoList({{ story.id }});">
+								<i class="fa fa-plus fa-fw"></i>
+								Add
+							</a>
+						</div>
+						<!-- </div> -->
+					</div>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+
+		{% for acomment in comments %}
+		<div class="list-group-item">
+			{% if editform and acomment == comment %}
+				<div class="list-group-item-text">
+					<form id="editcomment_form_{{ story.id }}" class="form-horizontal">
+					{% csrf_token %}
+					<div class="row">
+						<label for="{{ editform.title.id_for_label }}" class="col-xs-12 col-md-3 col-lg-2 control-label" style="padding-top: 5px;">Title</label>
+						<div class="col-xs-12 col-md-9 col-lg-10">
+							{{ editform.title }}
+						</div>
+					</div>
+					<div class="row">
+						<label for="{{ editform.description.id_for_label }}" class="col-xs-12 col-md-3 col-lg-2 control-label" style="padding-top: 5px;">Comment</label>
+						<div class="col-xs-12 col-md-9 col-lg-10">
+							{{ editform.comment }}
+							<a class="btn btn-link" href="javascript:void(0);" onclick="saveEditCommentInList({{ story.id }},{{ acomment.id }});">
+								<i class="fa fa-save fa-fw"></i>
+								Save
+							</a>
+							<a class="btn btn-link" href="javascript:void(0);" onclick="loadComments({{ story.id }});">
+								<i class="fa fa-times fa-fw"></i>
+								Cancel
+							</a>
+						</div>
+					</div>
+					</form>
+				</div>
+			{% else %}
+				<h4 class="list-group-item-heading">
+					{{ acomment.title }}
+					<h6> {{ acomment.last_updated }}<h6>
+				</h4>
+					
+				
+				<div class="list-group-item-text">
+					{{ acomment.comment|linebreaksbr }}
+					<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="removeCommentFromList({{ story.id }},{{ acomment.id }});">
+						<i class="fa fa-trash fa-fw"></i>
+						Delete
+						<form id="removecomment_form_{{ story.id }}">
+						{% csrf_token %}
+						</form>
+					</a>
+					<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showEditCommentInList({{ story.id }},{{ acomment.id }});">
+						<i class="fa fa-edit fa-fw"></i>
+						Edit 
+					</a>
+				</div>
+			{% endif %}
+		</div>
+		{% endfor %}
+	</div>
+</div>

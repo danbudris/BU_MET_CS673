@@ -1,0 +1,145 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Issue Details{% endblock %}
+{% block header_title %}<div class="bug_name">Viewing a {{ issue.issue_type }} Priority: {{ issue.priority }}</div>{% endblock %}
+
+{% block content %}
+<script>
+    $(function() {
+        $('textarea').each(function() {
+            $(this).height($(this).prop('scrollHeight'));
+        });
+    });
+</script>
+<style>
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0;
+} 
+</style>
+<div id="page-inner">
+    <div>
+
+        <h1 style="color: #A70303"># {{ issue.pk }}: {{ issue.title }}</h1>
+
+        <div class="row">
+            <div class="col-md-12">  
+    
+                <button onClick="javascript: window.location='/issue_tracker/issue/edit/{{ issue.pk }}'" class="btn btn-primary" style="float: right; background-color: #A70303">Edit Issue</button>
+
+            </div>
+        </div>
+
+        <div class="container" style="width: 100%">
+        <!-- <div class="col-md-6" style="padding: 10px; border: solid black; width: 70%; height: 300px; float: left; font-size: 18px; "> -->
+        <div class="col-md-7 col-sm-12  col-xs-12">    
+            <div class="col-md-6">
+
+                <p style="font-size: 18px; padding: 0px ; margin: 0px"><b>Title: {{ issue.title }}</b></p>
+
+                <br>
+
+                <p style="font-size: 18px; padding: 0px ; margin: 0px"><b>Type: {{ issue.issue_type }}</b></p>
+
+                <br>
+
+                <p style="font-size: 18px; padding: 0px ; margin: 0px"><b>Status: {{ issue.status }}</b></p>
+
+                <br>
+
+                <p style="font-size: 18px; padding: 0px ; margin: 0px"><b>Priority: {{ issue.priority }}</b></p>
+
+                <br>
+
+            </div>
+
+            <div class="col-md-6" style="float: left;">
+
+                <p style="font-size: 18px; padding: 0px ; margin: 0px;"><b>Project: <a href="/req/projectdetail/{{ issue.project.id }}" style="color: #B22222;">{{ issue.project }}</a></b></p>
+
+                <br>
+
+                <p style="font-size: 18px; padding: 0px ; margin: 0px"><b>
+                        Assignee: 
+                        {% if issue.assignee %}
+                          <a href="mailto:{{ issue.assignee.email }}" style="color: #B22222;">{{ issue.assignee.first_name }} {{ issue.assignee.last_name }} ({{ issue.assignee }})</a></li><br><br>
+                        {% else %}
+                          {{ issue.assignee }}
+                        {% endif %}
+                </b></p>
+
+                <br>
+
+                <p style="font-size: 18px; padding: 0px ; margin: 0px"><b>
+                        Verifier:
+                        {% if issue.verifier %}
+                          <a href="mailto:{{ issue.verifier.email }}" style="color: #B22222;">{{ issue.verifier.first_name }} {{ issue.verifier.last_name }} ({{ issue.verifier }})</a></li><br><br>
+                        {% else %}
+                          {{ issue.verifier }}
+                        {% endif %}
+                        </b></p>
+            </div>
+        </div>
+
+        <div class="col-md-5" id="history" style="height: 300px;">
+            <br><br>
+            <Strong>History:</Strong><br><br>
+            <ul>
+                <li>Created By: <a href="mailto:{{ issue.reporter.email }}" style="color: #B22222;">{{ issue.reporter.first_name }} {{ issue.reporter.last_name }} ({{ issue.reporter }})</a></li><br><br>
+                <li>Date Created: {{ issue.submitted_date}} </li><br><br>
+                <li>Last Updated: {{ issue.modified_date }} </li><br><br>
+            </ul>
+<!--
+            These will be added to the database with each change to the issue
+-->
+            <br><br>
+        </div>
+        </div>
+
+        <div id="description" style="width: 100%; font-size: 18px;">
+            <textarea style="display:none;" cols="40" id="id_description" maxlength="2000" name="description" rows="10">{{ issue.description }}</textarea>
+            <p class="text-warning" style="color: #A70303;"><b>Description: </b></p><pre>{{ issue.description }}</pre>
+        </div>
+
+    </div>
+
+    <form action="" method="POST">{% csrf_token %}
+        <p class="text-warning" style="color: #A70303;"><b>Add Comment: </b></p>
+ 
+        {{ form.comment.errors }}
+        <label for="{{ form.comment.id_for_label }}"></label>
+        {{ form.comment }}
+
+        <br><br>
+        <input type="submit" value="Post Comment" class="btn btn-primary" style="background-color: #A70303"/><br><br>
+       
+        <div style="border: solid black;">
+
+                {% if comment_list %}
+                    <p class="text-warning" style="color: #A70303;"><b>Status Updates/Comments: </b></p>
+                    {% for comment in comment_list %}
+                        
+                            <a href="#{{ forloop.revcounter }}" style="color: #B22222;">#{{ forloop.revcounter }}</a>, 
+                            <a href="mailto:{{ comment.poster.email }}" style="color: #B22222;">{{ comment.poster.first_name }} {{ comment.poster.last_name }} ({{ comment.poster }})</a>, <i>{{comment.date}}</i><br/>
+                        {% if comment.is_comment%}
+                            <pre style=>{{ comment.comment }}</pre>
+                        {% else %}
+                        <textarea style="width: 100%;" cols="80" readonly =true> {{ comment.comment }}</textarea>
+                           <br/>
+                        {% endif %}
+                    {% endfor%}
+                {% else %}
+                <h3>There are no comments.</h3>
+                {% endif %}           
+        </div>
+
+    </form>
+
+</div>
+<!--
+<footer id="footer">Any information we would like to add to the footer will go here.</footer>
+-->
+
+{% endblock %}

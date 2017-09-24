@@ -1,0 +1,124 @@
+{% extends "TopBarBase.html" %}
+{% block content %}
+
+{% load staticfiles %}
+<link rel="stylesheet" href="{{ STATIC_URL }}sb-admin/css/sb-admin.css" />
+
+<div class="navbar-inverse">
+	<div class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
+        <ul class="nav navbar-nav side-nav">
+            {% if project %}
+            <li>
+            {% else %}
+            <li class="active">
+            {% endif %}
+                <a href="/req/projects"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+            </li>
+
+            {% for aproject in projects %}
+            <li>
+                <a  href="javascript:void(0);" 
+                    data-toggle="collapse" 
+                    data-target="#proj_{{ aproject.id }}"
+                    data-proj-sidebar="{{ aproject.title }}" >
+                    <i class="fa fa-fw fa-briefcase"></i> {{ aproject.title }} <i class="fa fa-fw fa-caret-down"></i>
+                </a>
+                {% ifequal aproject.id project.id %}
+                <ul id="proj_{{ aproject.id }}" class="collapse in" aria-expanded="true">
+                    {% if iteration == None %}
+                    {% if isIceBox %}
+                    <li>
+                    {% else %}
+                    <li class="active">
+                    {% endif %}
+                    {% else %}
+                    <li>
+                    {% endif %}
+                {% else %}
+                <ul id="proj_{{ aproject.id }}" class="collapse" aria-expanded="false">
+                    <li>
+                {% endifequal %}
+                        <a href="/req/projectdetail/{{ aproject.id }}"><i class="fa fa-fw fa-list-alt"></i> Project Detail</a>
+                    </li>
+                    <li>
+                        <a  href="javascript:void(0);" 
+                            data-toggle="collapse" 
+                            data-target="#proj_{{ aproject.id }}_iters"
+                            data-load-iter="{{ aproject.title }}">
+                            <i class="fa fa-fw fa-tasks"></i> Iterations <i class="fa fa-fw fa-caret-down"></i>
+                        </a> 
+                        {% if iteration == None %}
+                        {% if isIceBox %}
+                        <ul id="proj_{{ aproject.id }}_iters" class="collapse in" aria-expanded="true">
+                        {% else %}
+                        <ul id="proj_{{ aproject.id }}_iters" class="collapse" aria-expanded="false">
+                        {% endif %}
+                        {% else %}
+                        <ul id="proj_{{ aproject.id }}_iters" class="collapse in" aria-expanded="true">
+                        {% endif %}
+                            {% comment "No Use" %}
+                            <li><a href="/req/iterationdetail/{{ aproject.id }}/0"><i class="fa fa-fw fa-calendar"></i> Ice Box</a></li>
+                            {% for aiteration in aproject.get_iterations %}
+                            <li>
+                                <a href="/req/iterationdetail/{{ aproject.id }}/{{ aiteration.id }}">
+                                    <i class="fa fa-fw fa-calendar"></i> 
+                                        {{ aiteration.title }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                            {% if canOwnProject %}
+                            <li><a href="javascript:void(0);" onclick="showDialog('/req/newiteration/{{ aproject.id }}');"><i class="fa fa-fw fa-plus"></i>
+                                New Iteration
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% endcomment %}
+                        </ul>
+                    </li>
+                    <li><a href="javascript:void(0);" onclick="showDialog('/req/getattachments/{{ aproject.id }}');"><i class="fa fa-fw fa-folder-open-o"></i> Attachments</a></li>
+                    <li><a href="/communication"><i class="fa fa-fw fa-comments-o"></i> Communication</a></li>
+                    <li><a href="/issue_tracker"><i class="fa fa-fw fa-road"></i> Issue Tracker</a></li>
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% block content2 %}
+{% endblock content2 %}
+
+
+<style type="text/css">
+    .navbar-inverse .navbar-nav > ul {
+        margin-bottom: 20px;
+    }
+
+    .navbar-inverse .navbar-nav > ul > li > a {
+        color: #9d9d9d;
+    }
+</style>
+
+<script type="text/javascript">
+    // because the project model has not foreign relation with iteration model
+    // we only can use ajax method to retrive each project's iterations into sidebar.
+    $(function() {
+    {% for aproject in projects %}
+    {% if aproject == project %}
+        {% if iteration == None %}
+        {% if isIceBox %}
+        loadIterationList({{ aproject.id }},"0");
+        {% else %}
+        loadIterationList({{ aproject.id }}, null);
+        {% endif %}
+        {% else %}
+        loadIterationList({{ aproject.id }}, {{ iteration.id }});
+        {% endif %}
+    {% else %}
+        loadIterationList({{ aproject.id }}, null);
+    {% endif %}
+    {% endfor %}
+    });
+
+</script>
+
+{% endblock content %}

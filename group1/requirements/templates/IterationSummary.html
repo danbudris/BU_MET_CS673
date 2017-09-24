@@ -1,0 +1,170 @@
+{% load staticfiles %}
+
+    <div class="modal-dialog modal-md">
+      	<div class="modal-content">
+	        <div class="modal-header">
+	        	<a class="btn close" aria-label="Close" href="javascript:void(0)" onclick="closeDialog();">
+	        		<span aria-hidden="true">x</span>
+	        	</a>
+	        	<h4 class="modal-title" id="iterModalLabel">{{ title }}</h4>
+	        </div>
+	        <form id="iterationForm" class="form-horizontal" action="{{ action }}" method="post">
+	        	{% csrf_token %}
+	        	<div class="modal-body">
+                    {% if confirm_message %}
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3"><h2><span class="label label-danger">Warning</span></h2></div>
+                        <div class="col-xs-12 col-sm-9"><h3>{{ confirm_message }}</h3></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3"><h4>{{ form.title.label_tag }}</h4></div>
+                        <div class="col-xs-12 col-sm-9"><h4>{{ form.title.value }}</h4></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3"><h4>{{ form.description.label_tag }}</h4></div>
+                        <div class="col-xs-12 col-sm-9"><h4>{{ form.description.value|linebreaksbr }}</h4></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3"><h4>{{ form.start_date.label_tag }}</h4></div>
+                        <div class="col-xs-12 col-sm-9"><h4>{{ form.end_date.value|date:"M. d Y" }}</h4></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3"><h4>{{ form.end_date.label_tag }}</h4></div>
+                        <div class="col-xs-12 col-sm-9"><h4>{{ form.end_date.value|date:"M. d Y" }}</h4></div>
+                    </div>
+                    {% else %}
+                    {% if form.title.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.title.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Title</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.title.id_for_label }}_popover">
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if form.description.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.description.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Description</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.description.id_for_label }}_popover">
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if form.start_date.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.start_date.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Start Date</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.start_date.id_for_label }}_popover">
+                            <div class="input-group date form_datetime">
+                                {{ form.start_date }}
+                                <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    {% if form.end_date.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.end_date.id_for_label }}" class="col-xs-12 col-sm-3 control-label">End Date</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.end_date.id_for_label }}_popover">
+                            <div class="input-group date form_datetime">
+                                {{ form.end_date }}
+                                {% if form.end_date.errors %}
+                                <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="padding-right: 60px;"></span>
+                                <span id="inputError2Status" class="sr-only">(error)</span>
+                                {% endif %}
+                                <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+	        	</div>
+        		<div class="modal-footer">
+        		  	<a class="btn btn-default" href="javascript:void(0)" onclick="closeDialog();">Close</a>
+					<!-- <button type="submit" class="btn btn-primary">Save</button> -->
+                    {% if confirm_message %}
+                    <a class="btn btn-danger" href="javascript:void(0);" onclick="saveIterationChanges();">{{ button_desc }}</a>
+                    {% else %}
+                    <a class="btn btn-primary" href="javascript:void(0);" onclick="saveIterationChanges();">{{ button_desc }}</a>
+                    {% endif %}
+        		</div>
+	        </form>
+
+      	</div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+    <script type="text/javascript">
+        {% for field in form %}
+        {% if field.errors %}
+        var {{ field.id_for_label}}_errors = '';
+        {% for error in field.errors %}
+        {{ field.id_for_label }}_errors += '{{ error|escape }}';
+        {% endfor %}
+        $("#{{ field.id_for_label }}_popover").popover({
+            animation: true,
+            html: true,
+            content: {{ field.id_for_label }}_errors,
+            placement: 'right',
+            trigger: 'hover'
+        });
+        {% endif %}
+        {% endfor %}
+
+
+        // detect submit button event to use ajax method to post the form
+        // and retrive the return data back if there is error object in form object.
+        function saveIterationChanges() {
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: $("#iterationForm").attr('action'),
+                data: $("#iterationForm").serialize(),
+                success: function(data) {
+                    if (data != "") {
+                        $("#dialogModal").html(data);
+                    } else {
+                        location.reload(true);
+                    }
+                },
+                async: true
+            });
+        }
+        // detect submit button event to use ajax method to post the form
+        // and retrive the return data back if there is error object in form object.
+        // $('#iterationForm').on('submit',function(e){
+        //     $(this).ajaxForm({
+        //         type : "POST",
+        //         cache : false,
+        //         url : $(this).attr('action'),
+        //         data : $(this).serialize(),
+        //         success : function(data) {
+        //             $("#dialogModal").html(data);
+        //         },
+        //         async:false
+        //     }).submit();
+        //     e.stopPropagation();
+        // });
+
+        $(".form_datetime").datetimepicker({
+            format: "mm/dd/yyyy",
+            autoclose: true,
+            startView: 2,
+            minView: 2,
+            todayHighlight: true,
+            pickerPosition: 'bottom-right',
+        });
+    </script>

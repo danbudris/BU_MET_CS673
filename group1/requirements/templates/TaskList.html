@@ -1,0 +1,79 @@
+{% load require_tags %}
+<div class="panel-body">
+	<div class="list_group">
+
+        {% check_permission association project "AddTasks" as can_add_tasks %}
+        {% if can_add_tasks %}
+		{% if newform %}
+		<div class="list-group-item">
+			<div class="list-group-item-text">
+				<form id="newtask_form_{{ story.id }}" class="form-horizontal">
+					{% csrf_token %}
+					<div class="row">
+						<!-- <div class="row"> -->
+						<label class="col-xs-12 col-md-2 control-label" for="{{ newform.description.id_for_label }}">New Task:</label>
+						<div class="col-xs-12 col-md-10">
+							{{ newform.description }}
+							<a class="btn btn-link" href="javascript:void(0);" onclick="addTaskIntoList({{ story.id }});">
+								<i class="fa fa-plus fa-fw"></i>
+								Add
+							</a>
+						</div>
+						<!-- </div> -->
+					</div>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+		{% endif %}
+
+		{% for atask in tasks %}
+		<div class="list-group-item">
+			<!-- <h4 class="list-group-item-heading"></h4> -->
+			{% if editform and atask == task %}
+				<div class="list-group-item-text">
+					<form id="edittask_form_{{ story.id }}" class="form-horizontal">
+					{% csrf_token %}
+					<div class="row">
+						<label for="{{ editform.description.id_for_label }}" class="col-xs-12 col-md-3 col-lg-2 control-label" style="padding-top: 5px;">Edit Task:</label>
+						<div class="col-xs-12 col-md-9 col-lg-10">
+							{{ editform.description }}
+							<a class="btn btn-link" href="javascript:void(0);" onclick="saveEditTaskInList({{ story.id }},{{ atask.id }})">
+								<i class="fa fa-save fa-fw"></i>
+								Save
+							</a>
+							<a class="btn btn-link" href="javascript:void(0);" onclick="loadTasks({{ story.id }})">
+								<i class="fa fa-times fa-fw"></i>
+								Cancel
+							</a>
+						</div>
+					</div>
+					</form>
+				</div>
+			{% else %}
+				<div class="list-group-item-text">
+					{{ atask.description|linebreaksbr }}
+
+			        {% check_permission association project "EditTasks" as can_edit_tasks %}
+			        {% if can_edit_tasks %}
+					<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="removeTaskFromList({{ story.id }},{{ atask.id }})">
+						<i class="fa fa-trash fa-fw"></i>
+						Delete
+						<form id="removetask_form_{{ story.id }}">
+						{% csrf_token %}
+						</form>
+					</a>
+					<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showEditTaskInList({{ story.id }},{{ atask.id }})">
+						<i class="fa fa-edit fa-fw"></i>
+						Edit 
+					</a>
+					{% endif %}
+				</div>
+			{% endif %}
+		</div>
+		{% endfor %}
+	</div>
+</div>
+
+<script type="text/javascript">
+</script>

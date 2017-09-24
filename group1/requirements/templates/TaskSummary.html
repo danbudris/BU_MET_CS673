@@ -1,0 +1,57 @@
+{% load staticfiles %}
+
+    <div class="modal-dialog modal-sm">
+      	<div class="modal-content">
+	        <div class="modal-header">
+	        	<a class="btn close" aria-label="Close" href="javascript:void(0)" onclick="closeDialog();">
+	        		<span aria-hidden="true">x</span>
+	        	</a>
+	        	<h4 class="modal-title" id="dialogModalLabel">{{ title }}</h4>
+	        </div>
+	        <form id="taskForm" class="form-horizontal" action="{{ action }}" method="post">
+	        	{% csrf_token %}
+	        	<div class="modal-body">
+                    {% if confirm_message %}
+                        <h2><span class="label label-danger">Warning :</span></h2>
+                        <h3>{{ confirm_message }}</h3>
+                        <hr>
+
+	        			<h4>{{ form.description.label_tag }}</h4>
+	        			<p>{{ form.description.value }}</p>
+                        <hr>
+	        		{% else %}
+                        <h4>{{ form.description.label_tag }}</h4>
+                        <p>{{ form.description }}</p>
+                        <hr>
+                    {% endif %}
+	        	</div>
+        		<div class="modal-footer">
+        		  	<a class="btn btn-default" href="javascript:void(0)" onclick="closeDialog();">Close</a>
+                    {% if confirm_message %}
+                    <button type="submit" class="btn btn-danger">{{ button_desc }}</button>
+                    {% else %}
+                    <button type="submit" class="btn btn-primary">{{ button_desc }}</button>
+                    {% endif %}
+        		</div>
+	        </form>
+
+      	</div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+    <script type="text/javascript">
+        // detect submit button event to use ajax method to post the form
+        // and retrive the return data back if there is error object in form object.
+        $('#taskForm').on('submit',function(e){
+            $(this).ajaxForm({
+                type : "POST",
+                cache : false,
+                url : $(this).attr('action'),
+                data : $(this).serialize(),
+                success : function(data) {
+                    $("#dialogModal").html(data);
+                },
+                async:false
+            }).submit();
+            e.stopPropagation();
+        });
+    </script>

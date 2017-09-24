@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Issue {{ page }} {% endblock %}
+{% block header_title %}<div class="bug_name">Search Issues</div> {% endblock %}
+
+{% block content %}
+
+<!-- Show Searching Result by multi_issue display__Start -->
+{% if object_list %}
+{% include "multi.html" %}
+<!--
+          <style>
+            table {
+            	border: 1px solid black;
+            	}
+            th, td {
+            	border: 1px solid black;
+            	padding: .2em .7em;
+            	text-align: right;}
+            th, td:nth-child(2) { text-align: left; }
+          </style>
+
+
+        <table>
+          <thead>
+            <tr>
+            <th>Issue Number</th>
+            <th>Issue Title</th>
+            <th>Type</th>
+            <th>Issue Status</th>
+            <th>Priority</th>
+            <th>Last Updated</th>
+            <th>Assigned To</th>
+            </tr>
+          </thead>
+            <tbody>
+                {% if object_list %}	
+                  {% for issue in object_list %}
+                   <tr>
+                   <td>{{ issue.pk }}</td>
+                   <td><a href="/issue/view/{{issue.pk}}">{{ issue.title }}</a></td>
+                   <td>{{ issue.issue_type }}</td>
+                   <td>{{ issue.status }}</td>
+                   <td>{{ issue.priority }}</td>
+                   <td>{{ issue.modified_date }}</td>
+                   <td>{{ issue.assignee }}</td>
+                   </tr>
+                  {% endfor %}
+                {% else %}
+                    <h3>There are no issues currently entered.</h3>
+                {% endif %}
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+        </table>
+-->
+<!-- Show Searching Result by multi_issue display__End -->
+
+{% elif form%}
+ <!-- search page display_Start-->
+ <div id="page-inner">
+
+  <!--
+  <h1 class="bug_name" clear="both" style="color: #A70303;"><b>Issue Search</b></h1>
+  -->  
+           <!-- {% if NoDataError %}
+            <div class="alert alert-danger" role="alert">{{ NoDataError }}TEST</div>
+           {% endif %} -->
+
+  <!-- Left frame_Start -->
+  <!-- <div style="padding: 10px; border: solid black; width: 50%; height: 430px; float: left; font-size: 18px; "> -->
+  <div class="container" style="width: 100%">
+  <div class="row"> 
+    <div class="col-md-4 col-xs-12">
+         <form action="" method="POST">{% csrf_token %}
+         <!-- {{ form.non_field_errors }} -->
+         <!-- {{ form.non_field_errors }} -->
+     
+               <p class="text-warning" style="color: black;"><b>Title:</b></p> 
+                    <div class="fieldWrapper" style="color: #A70303">
+                    <!-- {{ form.title.errors }}  -->
+                    <label for="{{ form.title.id_for_label }}"></label>
+                    <table>{{ form.title }}</table> Substring matching in issue title.
+                    </div> 
+                     
+
+              <p class="text-warning" style="color: black;"><b>Description:</b></p> 
+                    <div class="fieldWrapper" style="color: #A70303">
+                    <!-- {{ form.title.errors }}  -->
+                    <label for="{{ form.description.id_for_label }}"></label>
+                     <table>{{ form.description }}</table>Substring matching in the long description.
+                    </div>
+                    
+
+              <p class="text-warning" style="color: black;"><b>Status:</b></p>
+                    <!--  -->
+                    {% if form.status.errors %}
+                    <div class="has-error">
+                    {% else %}
+                    <div class="fieldWrapper">
+                    {% endif %}
+                    <!--  -->
+                    <!-- {{ form.title.errors }}  -->
+                    <label for="{{ form.status.id_for_label }}"></label>
+                    {{ form.status }} 
+                    </div>
+                     
+
+               <p class="text-warning" style="color: black;"><b>Issue type:</b></p>
+                    <div class="fieldWrapper">
+                    <!-- {{ form.title.errors }}  -->
+                    <label for="{{ form.issue_type.id_for_label }}"></label>
+                    {{ form.issue_type }} 
+                    </div>
+
+         
+    </div>
+  <!-- </div>Left frame_End -->
+
+         
+
+  <!-- Right frame -->
+  <!-- <div style="padding: 10px; border: solid black; width: 43%; height: 400px; float: right; font-size: 12px; "> -->
+  <div class="col-md-8 col-xs-12">
+  <!-- <div class="container" style="width: 100%">   -->
+    <!-- <div class="row"> -->
+    <div class="col-md-6 col-xs-12"> 
+            
+               <p class="text-warning" style="color: black;"><b>Submitted date:</b></p>
+                      <div class="fieldWrapper">
+                      <!-- {{ form.project.errors }} -->
+                      <label for="{{ form.submitted_date.id_for_label }}"></label>
+                      {{ form.submitted_date }}
+                      </div>
+
+               <p class="text-warning" style="color: black;"><b>Modified date:</b></p>
+                      <div class="fieldWrapper">
+                      <!-- {{ form.project.errors }} -->
+                      <label for="{{ form.modified_date.id_for_label }}"></label>
+                      {{ form.modified_date }}
+                      </div>
+
+               <p class="text-warning" style="color: black;"><b>Closed date:</b></p>
+                      <div class="fieldWrapper">
+                      <!-- {{ form.project.errors }} -->
+                      <label for="{{ form.closed_date.id_for_label }}"></label>
+                      {{ form.closed_date }}
+                      </div>
+
+              <p class="text-warning" style="color: black;"><b>Project:</b></p>
+                      <div class="fieldWrapper">
+                      <!-- {{ form.project.errors }} -->
+                      <label for="{{ form.project.id_for_label }}"></label>
+                      {{ form.project }}
+                      </div> 
+    </div>  
+
+    <div class="col-md-6 col-xs-12"> 
+
+              <p class="text-warning" style="color: black;"><b>Reporter:</b></p>
+                      <div class="fieldWrapper">
+                      <!-- {{ form.project.errors }} -->
+                      <label for="{{ form.reporter.id_for_label }}"></label>
+                      {{ form.reporter }}
+                      </div>
+                      
+              <p class="text-warning" style="color: black;"><b>Assignee:</b></p>
+                      <div class="fieldWrapper">
+                      <!-- {{ form.project.errors }} -->
+                      <label for="{{ form.assignee.id_for_label }}"></label>
+                      {{ form.assignee }}
+                      </div>
+
+               <p class="text-warning" style="color: black;"><b>Verifier:</b></p>
+                      <div class="fieldWrapper">
+                      <!-- {{ form.project.errors }} -->
+                      <label for="{{ form.verifier.id_for_label }}"></label>
+                      {{ form.verifier }}
+                      </div>
+
+               <p class="text-warning" style="color: black;"><b>Priority</b></p>
+                      <div class="fieldWrapper">
+                      <!-- {{ form.priority.errors }} -->
+                      <label for="{{ form.priority.id_for_label }}"></label>
+                      {{ form.priority }}
+                      </div> 
+           
+
+           <p><b>
+         <div class="row">
+           <div class="col-sm-12">
+               <input type="submit" value="Submit" class="btn btn-primary" style="float: left; background-color: #A70303;" />
+           </div>
+         </div>
+         </b></p>
+           <!-- <table> {{ form }} </table>  -->
+  </form>
+
+      <!--JQurey DatePicker -->
+      <script type="text/javascript">
+        $(function() {   
+        $("#{{ form.submitted_date.id_for_label }}").datepicker({dateFormat : "mm/dd/yy"});
+        $("#{{ form.modified_date.id_for_label }}").datepicker({dateFormat : "mm/dd/yy"});
+        $("#{{ form.closed_date.id_for_label }}").datepicker({dateFormat : "mm/dd/yy"});
+        });</script>
+      <!-- DatePicker_End -->
+    <!-- </div>  -->
+
+   </div><!-- Right frame_End -->
+  <!-- </div>  -->
+  </div>
+  </div>
+</div>
+  <!-- search page display_END -->    
+{% endif %}
+
+        {% if object_list %}
+
+        {% elif form == false %}
+  
+           <div>
+             <h2> No data found !!</h2>
+           </div>
+
+        {% endif %}
+
+{% endblock %}

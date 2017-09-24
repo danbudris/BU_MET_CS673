@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% extends "TopBarBase.html" %}
+
+{% block content %}
+<div class="container">
+	<form class="form-signin" method="post" action="/signin">
+		{% if errorMsg %}
+		<div class="alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-remove-sign"> </span>{{ errorMsg }}
+		</div>
+		{%endif %}
+	    <h2 class="form-signin-heading">Please sign in</h2>
+	    {% csrf_token %}
+	    <label for="username" class="sr-only"></label>
+	    <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+	    <label for="password" class="sr-only"></label>
+	    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+	    <!-- <a class="btn btn-link" href="/forgetpasswd">Forget Password ?</a> -->
+	<!--     <div class="checkbox">
+	      	<label>
+	        	<input type="checkbox" value="remember-me"> Remember me
+	      	</label>
+	    </div> -->
+	    <input type="hidden" name="next" value="{{ next }}" />
+	    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+	    <a class="btn btn-lg btn-success btn-block" href="/signup" role = "button">I want to Register</a>
+	</form>
+</div>
+
+{% load staticfiles %}
+<link href="{{ STATIC_URL }}css/SignIn.css" rel="stylesheet" />
+
+{% endblock content %}

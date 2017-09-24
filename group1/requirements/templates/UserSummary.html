@@ -1,0 +1,100 @@
+    {% load staticfiles %}
+
+	{% if confirm_message %}
+    <div class="modal-dialog modal-md">
+    {% else %}
+    <div class="modal-dialog">
+    {% endif %}
+      	<div class="modal-content">
+	        <div class="modal-header">
+	        	<a class="btn close" aria-label="Close" href="javascript:void(0);" onclick="closeDialog();">
+                    <span aria-hidden="true">×</span>
+                </a>
+	        	<h4 class="modal-title" id="userModalLabel">{{ title }}</h4>
+	        </div>
+            <form class="form-horizontal" action ="/req/addusertoproject/{{ project.id }}/{{ activeUser.username }}" method="post">
+            {% csrf_token %}
+                <div class="modal-body">
+	        	{% if confirm_message %}
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3"><h2><span class="label label-danger">Warning</span></h2></div>
+                        <div class="col-xs-12 col-sm-9"><h3>{{ confirm_message }}</h3></div>
+                    </div>
+	        	{% endif %}
+					{% if confirm_message %}
+					    <!-- remove user from project -->
+                    <ul class="list-group">
+				    {% for auser in users %}
+                        <li class="list-group-item">
+                            <i class="glyphicon glyphicon-user fa-fw"></i> {{ auser.username }}
+                            <span>
+                            	<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="addOrRemoveUser('/req/removeuserfromproject/{{ project.id }}/{{ auser.username }}')">
+				   	      	        <i class="fa fa-trash-o fa-fw"></i>
+			                        Delete
+                                </a>
+			                </span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+					{% else %}
+					<!-- add user to project -->
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-4 control-label">Add User as Role: </label>
+                        <div class="col-xs-12 col-sm-8">
+                            {{ form.user_role }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                        <ul class="list-group">
+    				        {% for auser in users %}
+                            <li class="list-group-item">
+                            <i class="glyphicon glyphicon-user fa-fw"></i> {{ auser.username }}
+                                <span>
+                                    <!-- data-user-name below for UI TEST-->
+                            	    <a class="btn btn-link pull-right" href="javascript:void(0);" onclick="addOrRemoveUser('/req/addusertoproject/{{ project.id }}/{{ auser.username }}')
+                                    "
+                                    data-user-name ="{{ auser.username}}" >
+    	    				   		    <i class="glyphicon glyphicon-plus fa-fw"></i>
+                                        Add
+    			    		   	    </a>
+    				    	    </span>
+                            
+                            </li>
+                        {% endfor %}
+                        </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            	<div class="modal-footer">
+            	  	<a class="btn btn-default" href="javascript:void(0);" onclick="closeDialog();">Close</a>
+            	  	{% comment "No Use" %}
+            	  	{% if confirm_message %}
+    				<button type="submit" class="btn btn-danger">{{ desc }}</button>
+            	  	{% else %}
+            	  	<button type="submit" class="btn btn-primary">{{ desc }}</button>
+            	  	{% endif %}
+            	  	{% endcomment %}
+            	</div>
+            </form>
+      	</div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+    <script type="text/javascript">
+        function addOrRemoveUser(actionUrl) {
+            $.ajax({
+                type : "POST",
+                cache : false,
+                url : actionUrl,
+                data : $("form").serialize(),
+                success : function(data) {
+                    $("#dialogModal").html(data);
+                    loadUsersInProject({{ project.id }});
+                    // location.reload(true);
+                },
+                async: true
+            });
+            // e.stopPropagation();
+        }
+    </script>

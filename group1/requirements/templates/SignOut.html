@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% extends "TopBarBase.html" %}
+
+{% block content %}
+<div class="container">
+	<div class="jumbotron">
+		<h1 class="page-header">Thank you and Good bye !!</h1>
+		<p class="lead">
+			Once again ! We appreatiate that you choose our tools to manage your projects. Hope we will see you again soon !!
+		</p>
+		<p><a class="btn btn-lg btn-success" href="/" role="button">Return to Home</a></p>
+	</div>
+</div>
+
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/Jumbotron.css">
+
+{% endblock content %}

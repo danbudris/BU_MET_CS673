@@ -1,0 +1,6 @@
+# http://www.robotstxt.org/
+# Go Away!
+# And stay off my lawn!
+# And pull up your pants!
+User-agent: *
+Disallow: /

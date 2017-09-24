@@ -1,0 +1,207 @@
+/* CSS Document By Dieter Schneider 2006 | www.csstemplateheaven.com*/
+
+* {margin: 0px;
+   padding: 0px;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 62.5%;
+	background-image: url(images/shadow_left.jpg);
+	background-repeat: no-repeat;
+}
+
+#container {
+	font-size: 1.2em;
+	margin-left: 20px;
+}
+
+#header {
+	height: 155px;
+	background-image: url(images/header_bg.jpg);
+	background-repeat: repeat-x;
+}
+
+#linkbar {
+	background-image: url(images/linkbar_bg.jpg);
+	background-repeat: repeat-x;
+	height: 59px;
+}
+
+#left {
+	background-image: url(images/content_top_bg.jpg);
+	background-repeat: repeat-x;
+	height: 417px;
+	margin-right: 221px;
+	padding-left: 30px;
+	padding-right: 50px;
+	padding-top: 50px;
+}
+
+#sub_left {width: 30.3%;
+           float: left;}
+
+#sub_right {width: 30.3%;
+            float: right;}
+
+#sub_content {margin-left: 33.4%;
+               margin-right: 33.4%}
+
+#left_topBox {
+	height: 45px;
+	padding-top: 1px;
+	margin-bottom: 35px;
+	color: #FFFFFF;
+	font-size: 0.9em;
+}
+
+#right {
+	background-image: url(images/main_graphics.jpg);
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 246px;
+	padding-top: 284px;
+	background-repeat: no-repeat;
+	height: 492px;
+}
+
+#footer {
+	clear: both;
+	padding: 10px;
+	text-align: center;
+	border-top: 1px solid #CCCCCC;
+}
+
+/******************** Top Navigation ************************/
+
+#navcontainer ul
+{
+	background-color: #036;
+	float: left;
+	width: 100%;
+	font-family: arial, helvetica, sans-serif;
+	background-image: url(images/linkbar_bg.jpg);
+	background-repeat: repeat-x;
+	height: 39px;
+}
+
+#navcontainer ul li { display: inline; }
+
+#navcontainer ul li a
+{
+padding: 21px 20px 0px 20px;
+color: #fff;
+text-decoration: none;
+float: left;
+}
+
+#navcontainer ul li a:hover
+{
+	background-image: url(images/hover_link_bg.jpg);
+	background-repeat: repeat-x;
+	height: 35px;
+	color: #FFFFFF;
+}
+
+/********************* End top navigation ***************************/
+
+
+p {margin-bottom: 15px;
+    margin-top: 0px;}
+
+.ingress {margin-bottom: 15px;
+    margin-top: 10px;}
+	
+.sign_up {
+	font-weight: bold;
+	color: #66FFCC;
+}
+
+h1 {
+	font-size: 2em;
+	padding-top: 50px;
+	padding-left: 50px;
+	color: #666666;
+	font-style: italic;
+	font-weight: bold;
+}
+
+h2 {
+	font-size: 1.5em;
+	padding-left: 50px;
+	color: #FFFFFF;
+	font-style: italic;
+	font-weight: bold;
+}
+
+h3 {
+	font-size: 1.3em;
+	margin-bottom: 20px;
+	color: #666666;
+	font-style: italic;
+	font-weight: bold;
+}
+
+
+a:link {
+	color: #6E2B32;
+	text-decoration: none;
+	font-weight: bold;
+}     /* unvisited link */
+a:visited {
+	color: #6E2B32;
+	text-decoration: none;
+	font-weight: bold;
+}  /* visited link */
+a:hover {
+	color: #333333;
+	text-decoration: none;
+	font-weight: bold;
+}   /* mouse over link */
+a:active {
+	color: #006633;
+	text-decoration: none;
+	font-weight: bold;
+}   /* selected link */
+
+
+.img_left {float: left;
+            margin-right: 4px;}
+
+ /***************************** sidebar navigation ****************************/
+			
+.navcontainer {
+	width: 246px;
+	background-image: url(images/right_navbar_bg.jpg);
+	height: 250px;
+	padding-top: 74px;
+	background-repeat: no-repeat;
+}
+
+.navcontainer ul
+{
+list-style-type: none;
+margin-left: 40px;
+}
+
+.navcontainer a
+{
+display: block;
+padding: 3px;
+width: 160px;
+background-color: #FFFFFF;
+border-bottom: 1px solid #eee;
+	color: #000000;
+}
+
+.navcontainer a:link, #navlist a:visited
+{
+text-decoration: none;
+}
+
+.navcontainer a:hover
+{
+background-color: #76333A;
+color: #fff;
+}

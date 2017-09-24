@@ -1,0 +1,125 @@
+
+    <div class="modal-dialog">
+      	<div class="modal-content">
+	        <div class="modal-header">
+	        	<a class="btn close" aria-label="Close" href="javascript:void(0);" onclick="closeDialog();">
+	        		<span aria-hidden="true">×</span>
+	        	</a>
+	        	<h4 class="modal-title" id="dialogModalLabel">{{ title }}</h4>
+	        </div>
+	        <form id="changePwdForm" class="form-horizontal" action="{{ action }}" method="post">
+	        	{% csrf_token %}
+	        	<div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-sm-3 control-label"><h2><span class="label label-danger">Warning</span></h2></div>
+                        <div class="col-xs-12 col-sm-9"><h3>{{ confirm_message }}</h3></div>
+                    </div>
+                    {% if form.old_password.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.old_password.id_for_label }}" class="col-xs-12 col-sm-4 control-label">Origin Password</label>
+                        <div class="col-xs-12 col-sm-8" id="{{ form.old_password.id_for_label }}_popover">
+                            {{ form.old_password }}
+                            {% if form.old_password.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+	        		</div>
+                    {% if form.new_password1.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.new_password1.id_for_label }}" class="col-xs-12 col-sm-4 control-label">New Password</label>
+                        <div class="col-xs-12 col-sm-8" id="{{ form.new_password1.id_for_label }}_popover">
+                            {{ form.new_password1 }}
+                            {% if form.new_password1.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if form.new_password2.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.new_password2.id_for_label }}" class="col-xs-12 col-sm-4 control-label">Confirm Password</label>
+                        <div class="col-xs-12 col-sm-8" id="{{ form.new_password2.id_for_label }}_popover">
+                            {{ form.new_password2 }}
+                            {% if form.new_password2.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+	        	</div>
+        		<div class="modal-footer">
+        		  	<a class="btn btn-default" href="javascript:void(0);" onclick="closeDialog();">Close</a>
+        		  	<a class="btn btn-primary" href="javascript:void(0);" onclick="savePasswdChanges();">{{ button_desc }}</a>
+        		  	<!-- <button type="submit" class="btn btn-primary">{{ button_desc }}</button> -->
+        		</div>
+	        </form>
+
+      	</div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+	<script type="text/javascript">
+        {% for field in form %}
+        {% if field.errors %}
+        var {{ field.id_for_label}}_errors = '';
+        {% for error in field.errors %}
+        {{ field.id_for_label }}_errors += '{{ error|escape }}';
+        {% endfor %}
+        $("#{{ field.id_for_label }}_popover").popover({
+            animation: true,
+            html: true,
+            content: {{ field.id_for_label }}_errors,
+            placement: 'right',
+            trigger: 'hover'
+        });
+        {% endif %}
+        {% endfor %}
+
+
+        // detect submit button event to use ajax method to post the form
+        // and retrive the return data back if there is error object in form object.
+        function savePasswdChanges() {
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: $("#changePwdForm").attr('action'),
+                data: $("#changePwdForm").serialize(),
+                success: function(data) {
+                    if (data != "") {
+                        $("#dialogModal").html(data);    
+                    } else {
+                        // location.reload(true);
+                        location.replace('/signin?next=' + location.pathname)
+                    };
+                    
+                },
+                async: true
+            });
+        }
+
+		// detect submit button event to use ajax method to post the form
+		// and retrive the return data back if there is error object in form object.
+		// $('#projectForm').on('submit',function(e){
+		//     $(this).ajaxForm({
+		//         type : "POST",
+		//         cache : false,
+		//         url : $(this).attr('action'),
+		//         data : $(this).serialize(),
+		//         success : function(data) {
+		//             $("#dialogModal").html(data);
+		//         },
+		//         async:false
+		//     }).submit();
+		//     e.stopPropagation();
+		// });
+
+	</script>

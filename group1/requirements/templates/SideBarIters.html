@@ -1,0 +1,33 @@
+	
+	{% if iteration == None and isIceBox %}
+	<li class="active">
+	{% else %}
+	<li>
+	{% endif %}
+    	<a href="/req/iterationdetail/{{ project.id }}/0">
+    		<i class="fa fa-fw fa-calendar"></i>
+    		 Ice Box
+    	</a>
+    </li>
+    {% for aiteration in iterations %}
+    {% if iteration == aiteration %}
+    <li class="active">
+    {% else %}
+    <li>
+    {% endif %}
+    	<a href="/req/iterationdetail/{{ project.id }}/{{ aiteration.id }}">
+    		<i class="fa fa-fw fa-calendar"></i>
+    		 {{ aiteration.title }}
+    	</a>
+    </li>
+    {% endfor %}
+    {% if owns_project %}
+    <li>
+        <a  href="javascript:void(0);"
+            data-new-iter="{{ project.title }}" 
+            onclick="showDialog('/req/newiteration/{{ project.id }}');">
+            <i class="fa fa-fw fa-plus"></i>
+            New Iteration
+        </a>
+    </li>
+    {% endif %}

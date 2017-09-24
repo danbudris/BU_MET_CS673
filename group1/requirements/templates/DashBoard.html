@@ -1,0 +1,85 @@
+{% extends "SideBarBase.html" %}
+{% load require_tags %}
+{% block content2 %}
+<div id="wrapper">
+	<div id="page-wrapper">
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">
+					DashBoard
+				</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div id="panelProjectList" class="panel panel-primary">
+					<div class="panel-heading">
+						<h2 class="panel-title">
+							<i class="fa fa-list fa-fw"></i>
+							Project List
+							{% if canOwnProject %}
+							<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/newproject');">
+								<i class="glyphicon glyphicon-plus"></i>
+							</a>
+							{% endif %}
+						</h2>
+					</div>
+					<div class="panel-body">
+					    <div class="panel-group" id="accordion">
+					    	{% for aProject in projects %}
+					        <div class="panel panel-default">
+					            <div class="panel-heading">
+							        <h4 class="panel-title">
+							        	<a data-toggle="collapse" data-target="#{{ theProject.id }}" href="#{{ theProject.id }}" aria-expanded="true" class=""><i class="fa fa-briefcase fa-fw"></i>
+								             {{ aProject.title}}
+								            <!-- <div id="panelbar-{{ theProject.id }}" class="pull-right"> -->
+                                            {% for anAssociation in associationsWithUser %}
+                                                {% check_permission anAssociation aProject "DeleteProject" as can_delete %} 
+                                                {% if can_delete  %}
+                                                    <!--data-del-proj used for ui test automation --> 
+        							        		<a class="btn btn-link pull-right" 
+        							        		   href="javascript:void(0);" 
+        							        		   data-del-proj="{{ aProject.title }}" 
+        							        		   onclick="showDialog('/req/deleteproject/{{ aProject.id }}');">
+                                                    <i class="fa fa-trash-o fa-fw"></i>
+                                                     Delete
+                                                    </a>
+                                                {% endif %}
+                                                {% check_permission anAssociation aProject "EditProject" as can_edit %} 
+                                                {% if can_edit %} 
+         							           		<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/editproject/{{ aProject.id }}');">
+                                                    <i class="fa fa-edit fa-fw"></i>
+                                                    Edit
+                                                    </a>
+                                                {% endif %}
+                                            {% endfor %}
+							           		<a  class="btn btn-link pull-right" 
+							           		    href="/req/projectdetail/{{ aProject.id }}"
+							           		    data-open-proj="{{ aProject.title }}">
+							           			<i class="glyphicon glyphicon-folder-open fa-fw"></i>
+							           			 Open
+							           		</a>
+							           		<!-- </div> -->
+								        </a>
+							        </h4>
+					            </div>
+					            <div id="{{ aProject.id }}" class="panel-collapse collapse in" aria-expanded="true">
+					                <div class="panel-body">
+					                	{{ aProject.description|linebreaks }}
+					                </div>
+					            </div>
+					        </div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var winHeight = $(window).outerHeight();
+	$("#page-wrapper").css('height',winHeight);	
+</script>
+{% endblock content2 %}

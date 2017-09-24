@@ -1,0 +1,98 @@
+{% load require_tags %}
+
+{% check_permission association project "ChangePermissions" as can_change_perm %}
+<h4> Project Owner: </h4>
+<ul class="list-group">
+<!-- Display usernames. -->
+<!-- IF user has permission to edit project, give option to edit permissions. -->
+	{% for auser in pmusers %}
+	<!-- Display usernames. Click on username to edit permissions. -->
+    <li class="list-group-item">
+        <i class="glyphicon glyphicon-user fa-fw"></i> 
+		{% if can_change_perm %}
+        <a class="btn btn-link" href="javascript:void(0);" onclick="showDialog('/req/userprojectaccess/{{ project.id }}/{{ auser.id }}');">
+        	{{ auser.username }}
+        </a>
+        {% else %}
+			{{ auser.username }}
+        {% endif %}
+
+		( {{ auser.first_name }} {{ auser.last_name }} )
+        {% comment "NoUse" %}
+        {% if auser.is_authenticated %}
+            <span class="label label-success pull-right">
+	        Online-A    
+	        </span>
+	    {% else %}
+	        <span class="label label-default pull-right">
+	        Offline    
+	        </span>
+	    {% endif %}
+	    {% endcomment %}
+    </li>
+    {% endfor %}
+</ul>
+
+<h4> Developers: </h4>
+<ul class="list-group">
+<!-- Display usernames. -->
+<!-- IF user has permission to edit project, give option to edit permissions. -->
+	{% for auser in devusers %}
+	<!-- Display usernames. Click on username to edit permissions. -->
+    <li class="list-group-item">
+        <i class="glyphicon glyphicon-user fa-fw"></i> 
+		{% if can_change_perm %}
+        <a class="btn btn-link" href="javascript:void(0);" onclick="showDialog('/req/userprojectaccess/{{ project.id }}/{{ auser.id }}');">
+        	{{ auser.username }}
+        </a>
+        {% else %}
+			{{ auser.username }}
+        {% endif %}
+
+		( {{ auser.first_name }} {{ auser.last_name }} )
+        {% comment "NoUse" %}
+        {% if auser.is_authenticated %}
+            <span class="label label-success pull-right">
+	        Online-A    
+	        </span>
+	    {% else %}
+	        <span class="label label-default pull-right">
+	        Offline    
+	        </span>
+	    {% endif %}
+	    {% endcomment %}
+    </li>
+    {% endfor %}
+</ul>
+
+<h4> Clients: </h4>
+<ul class="list-group">
+<!-- Display usernames. -->
+<!-- IF user has permission to edit project, give option to edit permissions. -->
+	{% for auser in cliusers %}
+	<!-- Display usernames. Click on username to edit permissions. -->
+    <li class="list-group-item">
+        <i class="glyphicon glyphicon-user fa-fw"></i> 
+		{% if can_change_perm %}
+        <a class="btn btn-link" href="javascript:void(0);" onclick="showDialog('/req/userprojectaccess/{{ project.id }}/{{ auser.id }}');">
+        	{{ auser.username }}
+        </a>
+        {% else %}
+			{{ auser.username }}
+        {% endif %}
+
+		( {{ auser.first_name }} {{ auser.last_name }} )
+        {% comment "NoUse" %}
+        {% if auser.is_authenticated %}
+            <span class="label label-success pull-right">
+	        Online-A    
+	        </span>
+	    {% else %}
+	        <span class="label label-default pull-right">
+	        Offline    
+	        </span>
+	    {% endif %}
+	    {% endcomment %}
+    </li>
+    {% endfor %}
+</ul>

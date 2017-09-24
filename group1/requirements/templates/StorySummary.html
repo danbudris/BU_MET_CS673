@@ -1,0 +1,542 @@
+    {% load staticfiles %}
+    {% load require_tags %}
+
+    {% if confirm_message %}
+    <div class="modal-dialog modal-md">
+    {% else %}
+    <div class="modal-dialog">
+    {% endif %}
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="btn close" aria-label="Close" href="javascript:void(0);" onclick="closeDialog();">
+                    <span aria-hidden="true">×</span>
+                </a>
+                <h4 class="modal-title" id="storyModalLabel">{{ title }}</h4>
+            </div>
+            <form id="storyForm" class="form-horizontal" action="{{ action }}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {% if confirm_message %}
+                    <div class="form-group">
+                      <div class="col-xs-12 col-sm-3"><h2><span class="label label-danger">Warning</span></h2></div>
+                      <div class="col-xs-12 col-sm-9"><h3>{{ confirm_message }}</h3></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12 col-sm-3"><h4>{{ form.title.label_tag }}</h4></div>
+                      <div class="col-xs-12 col-sm-9"><h4>{{ form.title.value }}</h4></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12 col-sm-3"><h4>{{ form.description.label_tag }}</h4></div>
+                      <div class="col-xs-12 col-sm-9"><h4>{{ form.description.value|linebreaksbr }}</h4></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12 col-sm-3"><h4>{{ form.reason.label_tag }}</h4></div>
+                      <div class="col-xs-12 col-sm-9"><h4>{{ form.reason.value|linebreaksbr }}</h4></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12 col-sm-3"><h4>{{ form.test.label_tag }}</h4></div>
+                      <div class="col-xs-12 col-sm-9"><h4>{{ form.test.value|linebreaksbr }}</h4></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12 col-sm-3"><h4>{{ form.owner.label_tag }}</h4></div>
+                      <div class="col-xs-12 col-sm-9"><h4>{{ form.owner.value }}</h4></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12 col-sm-3"><h4>{{ form.hours.label_tag }}</h4></div>
+                      <div class="col-xs-12 col-sm-9"><h4>{{ form.hours.value }} Hrs</h4></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-xs-12 col-sm-3"><h4>{{ form.points.label_tag }}</h4></div>
+                      <div class="col-xs-12 col-sm-9"><h4 id="story_point">{{ form.points.value }}</h4></div>
+                    </div>
+                    {% else %}
+                    
+                    {% if form.title.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.title.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Title</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.title.id_for_label }}_popover">
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if form.description.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.description.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Description</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.description.id_for_label }}_popover">
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if form.reason.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.reason.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Reason</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.reason.id_for_label }}_popover">
+                            {{ form.reason }}
+                            {% if form.reason.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if form.test.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.test.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Test</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.test.id_for_label }}_popover">
+                            {{ form.test }}
+                            {% if form.test.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                        <!--
+                            Tasks section - Django uses these 4 hidden inputs (before the loop) to
+                            decide how to process the forms.  Nothing needs to be done here, but
+                            note that when a user clicks "Add Task", the "addForm" js function below
+                            increments the value of the task-set-TOTAL_FORMS element by one.
+                        -->                 
+                        <!-- <div> -->
+                    {% check_permission association project "EditTasks" as can_edit_tasks %}
+                    {% if can_edit_tasks %}
+                    <div class="form-group">
+                        <h5     style="font-weight:bold" class="col-xs-12 col-sm-3 control-label">Tasks:</h5>
+                        <input  id="id_task_set-TOTAL_FORMS" 
+                                name="task_set-TOTAL_FORMS" 
+                                type="hidden" value="{{ numTasks }}" />
+                        <input  id="id_task_set-INITIAL_FORMS" 
+                                name="task_set-INITIAL_FORMS" 
+                                type="hidden" value="{{ initTasks }}" />
+                        <input  id="id_task_set-MIN_NUM_FORMS" 
+                                name="task_set-MIN_NUM_FORMS" 
+                                type="hidden" value="0" />
+                        <input  id="id_task_set-MAX_NUM_FORMS" 
+                                name="task_set-MAX_NUM_FORMS" 
+                                type="hidden" value="1000" />
+                    </div>
+                        <!--
+                            Here, each task's form is rendered in a loop. If a story doesn't have any 
+                            initial Tasks, one empty form is provided, so there's always at
+                            least one.  Note: this is also important for the addForm js function,
+                            because in order to create a new form dynamically, that function copies
+                            the first in this list -- so there has to be one to start! 
+                        -->
+                    {% for tform in formset.forms %}
+                    <div class="form-group item">
+                        <label  for="id_task_set-{{ forloop.counter0 }}-description" class="col-xs-12 col-sm-3 control-label">Description</label>
+                        <div class="col-xs-12 col-sm-9">
+                            {{ tform.description }}
+<!--                             <input  id="id_task_set-{{ forloop.counter0 }}-description" 
+                                    maxlength="1024" 
+                                    name="task_set-{{ forloop.counter0 }}-description" 
+                                    type="text" 
+                                    value="{{ tform.description.value }}" class="form-control" /> -->
+<!--                             <input  id="id_task_set-{{ forloop.counter0 }}-description" 
+                                    maxlength="1024" 
+                                    name="task_set-{{ forloop.counter0 }}-description" 
+                                    type="text" 
+                                    value="{{ form.description.value }}" class="form-control" readonly /> -->
+                            <input  id="id_task_set-{{ forloop.counter0 }}-DELETE" 
+                                    name="task_set-{{ forloop.counter0 }}-DELETE" 
+                                    style="display:none"
+                                    type="checkbox" />
+                                    
+                            <!--
+                                New tasks will not have a "value" attribute in the "input" 
+                                element for task_id. That's how Django knows they're new, and it 
+                                will create a new id once it's submitted.   
+                            -->
+                            {% if tform.id.value == None %}
+                            <input  id="id_task_set-{{ forloop.counter0 }}-id"
+                                    name="task_set-{{ forloop.counter0 }}-id" 
+                                    type="hidden" />
+                            {% else %}
+                            <input  id="id_task_set-{{ forloop.counter0 }}-id" 
+                                    name="task_set-{{ forloop.counter0 }}-id" 
+                                    type="hidden" 
+                                    value="{{ tform.id.value }}" />
+                            {% endif %}
+                            
+                            <!--
+                                The same practice goes for stories.  If it's new, don't
+                                include the "value" attribute on story_id.
+                            -->
+                            {% if tform.story.id.value == '' %}
+                            <input  id="id_task_set-{{ forloop.counter0 }}-story" 
+                                    name="task_set-{{ forloop.counter0 }}-story" 
+                                    type="hidden" />
+                            {% else %}
+                            <input  id="id_task_set-{{ forloop.counter0 }}-story" 
+                                    name="task_set-{{ forloop.counter0 }}-story" 
+                                    type="hidden" 
+                                    value="{{ tform.story.id }}" />
+                            {% endif %}
+                            <!-- 
+                                Added data-del-task attribute for ui test automation
+                            -->
+                            <a  class="delete btn btn-link" 
+                                href="#"
+                                data-del-task="{{ forloop.counter0}}">
+                                <i class="fa fa-trash-o fa-fw"></i>
+                                 Delete
+                            </a>
+                            <a id="add" href="#" class="add btn btn-link" style="visibility: visible;">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                New Task
+                            </a>
+                        </div>
+                        <!-- <div class="col-xs-12 col-sm-2">  -->
+                        <!-- </div> -->
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div style="visibility: hidden; height: 0px;">{{ formset }}</div>
+                    {% endif %}
+                        <!-- </div> -->
+                        <!--End tasks section-->
+                        
+                        <!-- <hr> -->
+                    {% check_permission association project "EditOwner" as can_edit_owner %}    
+                    {% if can_edit_owner %}
+                    {% if form.owner.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.owner.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Story Owner</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.owner.id_for_label }}_popover">
+                            {{ form.owner }}
+                            {% if form.owner.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div style="visibility: hidden; height: 0px;">{{ form.owner }}</div>
+                    {% endif %}
+                    
+                    {% check_permission association project "EditHours" as can_edit_hours %}
+                    {% if can_edit_hours %}
+                    {% if form.hours.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.hours.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Hours</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.hours.id_for_label }}_popover">
+                            <div class="input-group">
+                                {{ form.hours }}
+                                {% if form.hours.errors %}
+                                <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="padding-right: 60px;"></span>
+                                <span id="inputError2Status" class="sr-only">(error)</span>
+                                {% endif %}
+                                <span class="input-group-addon">Hrs</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div style="visibility: hidden; height: 0px;">{{ form.hours }}</div>
+                    {% endif %}
+                    
+                    {% check_permission association project "SelectStoryStatus" as can_select_status %}
+                    {% if can_select_status %}
+                    {% if form.status.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.status.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Status</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.status.id_for_label }}_popover">
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div style="visibility: hidden; height: 0px;">{{ form.status }}</div>
+                    {% endif %}
+                    
+                    {% check_permission association project "EditPoints" as can_edit_points %}
+                    {% if can_edit_points %}
+                    {% if form.points.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.points.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Scale Points</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.points.id_for_label }}_popover">
+                            {{ form.points }}
+                            {% if form.points.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div style="visibility: hidden; height: 0px;">{{ form.points }}</div>
+                    {% endif %}
+
+                    {% check_permission association project "PauseStory" as can_pause %}
+                    {% if can_pause %}
+                    {% if form.pause.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.pause.id_for_label }}" class="col-xs-12 col-sm-3 control-label">Pause</label>
+                        <div class="col-xs-12 col-sm-9" id="{{ form.pause.id_for_label }}_popover">
+                            {{ form.pause }}
+                            {% if form.pause.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div style="visibility: hidden; height: 0px;">{{ form.pause }}</div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    
+                    <!--<a class="btn btn-default" onclick="change_state();">Status</a>-->
+                    {% if confirm_message %}
+                    <a class="btn btn-default" href="javascript:void(0);" onclick="closeDialog();">Close</a>
+                    <a class="btn btn-danger" href="javascript:void(0);" onclick="saveStoryChanges();">{{ button_desc }}</a>
+                    <!-- <button type="submit" class="btn btn-danger">{{ button_desc }}</button> -->
+                    {% else %}
+                    <a class = "btn btn-default" id ="btn-state" onclick="change_state();"> Next State</a>
+                    <a class="btn btn-default" href="javascript:void(0);" onclick="closeDialog();">Close</a>
+                    <!-- <button type="submit" class="btn btn-primary">{{ button_desc }}</button> -->
+                    <a class="btn btn-primary" href="javascript:void(0);" onclick="saveStoryChanges();">{{ button_desc }}</a>
+                    {% endif %}
+                </div>
+            </form>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+    <script type="text/javascript">
+        {% for field in form %}
+        {% if field.errors %}
+        var {{ field.id_for_label}}_errors = '';
+        {% for error in field.errors %}
+        {{ field.id_for_label }}_errors += '{{ error|escape }}';
+        {% endfor %}
+        $("#{{ field.id_for_label }}_popover").popover({
+            animation: true,
+            html: true,
+            content: {{ field.id_for_label }}_errors,
+            placement: 'right',
+            trigger: 'hover'
+        });
+        {% endif %}
+        {% endfor %}
+
+
+        // detect submit button event to use ajax method to post the form
+        // and retrive the return data back if there is error object in form object.
+        function saveStoryChanges() {
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: $("#storyForm").attr('action'),
+                data: $("#storyForm").serialize(),
+                success: function(data) {
+                    if (data != "") {
+                        $("#dialogModal").html(data);    
+                    } else {
+                        location.reload(true);
+                    }
+                },
+                async: true
+            });
+        }
+
+        // $('#storyForm').on('submit',function(e){
+        //     $(this).ajaxForm({
+        //         type : "POST",
+        //         cache : false,
+        //         url : $(this).attr('action'),
+        //         data : $(this).serialize(),
+        //         success : function(data) {
+        //             $("#dialogModal").html(data);
+        //         },
+        //         async:false
+        //     }).submit();
+        //     e.stopPropagation();
+        // });
+
+        $(function() {
+            // $("#story_point").html(getStoryPointHtml({{ form.points.value }}));
+
+            //hide the delete label & checkbox that the management_form uses
+            $( "label[for*='DELETE']" ).each(function () {
+                $(this).attr('style', 'display:none');
+            });
+            
+            $( "input[id*='DELETE']" ).each(function () {
+                $(this).attr('style', 'display:none');
+            });
+
+            //only show the last one of tasks add button
+            $(".item").find(".add").css("visibility","hidden");
+            $(".item:last").find(".add").css("visibility","visible");
+
+            change_state_button(get_current_state());
+
+        });
+
+        function get_current_state() {
+            return $("#{{ form.status.id_for_label }}").find("option:selected").val();
+        }
+
+        function get_state_button_desc(state_code) {
+            switch (state_code) {
+                case "1":
+                    return "Start";
+                case "2":
+                    return "Finish";
+                case "3":
+                    return "Accept";
+                case "4":
+                    return "Accepted";
+                default:
+                    return "";
+            }
+        }
+
+        function change_state(){
+            var state = $("#{{ form.status.id_for_label }}").get(0);
+            if (state.selectedIndex < 3) {
+                state.selectedIndex += 1;
+            }
+            change_state_button(get_current_state());
+        }
+
+        {% check_permission association project "ChangeStoryStatus" as can_change_status %}
+        {% check_permission association project "AcceptStory" as can_accept_story %}
+
+        function change_state_button(state_code) {
+            {% if can_change_status %}
+            var canChangeStatus = true;
+            {% else %}
+            var canChangeStatus = false;
+            {% endif %}
+
+            {% if can_accept_story %}
+            var canAcceptStory = true;
+            {% else %}
+            var canAcceptStory = false;
+            {% endif %}
+
+            $("#btn-state").html(get_state_button_desc(state_code));
+            $("#btn-state").css("visibility","hidden");
+            
+            if (state_code == "1" && canChangeStatus == true) {
+                $("#btn-state").css("visibility","visible");
+            }
+
+            if (state_code == "2" && canChangeStatus == true) {
+                $("#btn-state").css("visibility","visible");
+            }
+
+            if (state_code == "3" && canAcceptStory == true) {
+                $("#btn-state").css("visibility","visible");
+            }
+        }
+       // /*
+       // When edit form is loaded, the following function checks the status of the story, if it is accepted, the 
+       // next state button is disabled because there are no more states. After that, it checks the paused feature, if the checkbox is checked, you cannot go to the next state, so the next state button is disabled, if it is unchecked, the next state button is enabled. 
+       // */
+
+        
+        // Register the click event handlers
+        $(".add").click(function () {
+            // $(this).css("visibility","hidden");
+            return addForm(this, "task_set");
+        });
+    
+        $(".delete").click(function () {
+            return deleteForm(this, "task_set");
+        });
+  
+        //add a new task form to the formset
+        function addForm(btn, prefix) {
+            //get the mgmt section data
+            var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            
+            //copy the row & append it to the end
+            var row = $(".item:first").clone().get(0);
+            $(row).removeAttr('id').hide().insertAfter(".item:last").slideDown(300);
+            var newRef = prefix + "-" + formCount;
+            
+            //remove errors from the new row, if any
+            $(".errorlist", row).remove();
+            $(row).find().removeClass("error");
+            
+            //update the names & reset the vals
+            var html = $(".item:last").html();
+            html = html.replace(/task_set-0/g, newRef);
+            $(".item:last").html(html);
+            $(".item:last").find( "input" ).each(function () {
+                if ($(this).attr('id').indexOf("-story") == -1) {
+                    $(this).removeAttr("value");
+                }
+                if ($(this).attr('id').indexOf("-DELETE") > -1) {
+                    $(this).removeAttr("checked");
+                }
+            });
+            
+            //only show the last one of tasks add button
+            $(".item").find(".add").css("visibility","hidden");
+            $(".item:last").find(".add").css("visibility","visible");
+
+            // Add an event handler for the delete item/form link 
+            $(row).find(".add").click(function () {
+                return addForm(this, prefix);
+            });
+
+            $(row).find(".delete").click(function () {
+                return deleteForm(this, prefix);
+            });
+        
+            // Update the total form count
+            $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+        }
+
+        function deleteForm(btn, prefix) {
+            var sibs = $(btn).siblings( "input" );
+            $(sibs).each(function () {
+                if ($(this).attr('id').indexOf("-DELETE") > 0) {
+                    $(this).attr('checked', 'true');
+                    $(btn).parents('.item').each(function () {
+                        $(this).attr('style', 'display:none');
+                    });
+                }
+            });
+        }
+    </script>

@@ -1,0 +1,122 @@
+/*#############################################################
+Name: Blackbox
+Date: 2006-06-01
+Author: Viktor Persson
+URL: http://arcsin.se
+
+Feel free to use and modify but please provide credits.
+#############################################################*/
+
+/* Standard elements */
+* {
+	margin: 0;
+	padding: 0;
+}
+a {
+	color: #999;
+	text-decoration: none;
+}
+body {
+	background: #000 url(img/bg.png) repeat-x fixed left bottom;
+	color: #555;
+	margin: 20px 0;
+	text-align: center;
+	font: normal 0.7em sans-serif,Arial;
+}
+ul {
+	margin: 12px 0;
+}
+li {
+	list-style: url(img/li.gif);
+	margin-left: 18px;
+}
+code {
+	font: normal 1em "Lucida Sans Unicode",serif;
+	background: url(img/bgcode.gif);
+	color: #888;
+	display: block;
+	padding: 3px 6px;
+	white-space: pre;
+	margin-bottom: 12px;
+}
+
+
+/* Misc */
+div.quote {
+	margin-bottom: 12px;
+	font: normal 1.1em "Lucida Sans Unicode",serif;
+	background: url(img/quote.gif) no-repeat;
+	padding-left: 28px;
+	color: #666;
+}
+
+
+/* Main structure */
+.main {
+	background: #000; 
+	border: 3px double #EEE; 
+	border-color: #141414 #202020 #222 #202020; 
+	margin: 20px auto 4px auto; 
+	text-align: left;
+	width: 600px; 
+}
+
+
+/* Header */
+.gfx {
+	background: #222 url(images/dark_pixel.jpg) no-repeat;
+	height: 240px;
+}
+.gfx h1 {
+	color: #333;
+	font: normal 2.6em Tahoma,sans-serif;
+	padding: 16px 20px;
+}
+
+
+/* Menu */
+.menu a {
+	background: #000 url(img/bgmenu.png) repeat-x;
+	border-top: 1px solid #1A1A1A;
+	color: #444;
+	font: bold 1.5em sans-serif,Arial;
+	float: left;
+	padding-top: 4px;
+	width: 199px; height: 36px;
+}
+.menu a span {
+	padding-left: 6px;
+}
+
+.menu a#last {
+	width: 0px;
+	border-right: none;
+}
+
+
+/* Content */
+.content {
+	
+	background: #1A1A1A;
+	clear: both;
+}
+.content h1 {
+	margin: 0 0 4px;
+	font: bold 1.1em sans-serif,Arial;
+	color: #666;
+}
+.content p {
+	margin: 0 0 12px;
+}
+.item {
+	background: #030303 url(img/bgitem.gif) repeat-x;
+	padding: 8px 10px;
+}
+
+
+/* Footer */
+.footer {
+	padding: 5px;
+	background: #0A0A0A;
+	color: #666;
+} 

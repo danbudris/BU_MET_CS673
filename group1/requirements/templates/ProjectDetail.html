@@ -1,0 +1,271 @@
+{% extends "SideBarBase.html" %}
+{% load require_tags %}
+{% block content2 %}
+
+<div id="wrapper">
+	<div id="page-wrapper">
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">
+					{{ project.title }}
+				</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-8 col-md-12">
+            	<div class="col-md-12">
+            		<div class="panel-group" id="proj_icebox">
+            	    	<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h2 class="panel-title">
+									<i class="fa fa-list fa-fw"></i>
+									<a data-toggle="collapse" data-parent="" href="#iter_body_icebox" aria-expanded="true">
+									Icebox
+									</a>
+									<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/newstory/{{ project.id }}');">
+										<i class="glyphicon glyphicon-plus"></i>
+									</a>
+								</h2>
+							</div>
+            	    	    <!-- Icebox -->
+            	    	    <div id="iter_body_icebox" class="panel-collapse collapse in" aria-expanded="true">
+								<div class="panel-body">
+								    <div class="panel-group" id="iter_icebox">
+            	    	    	        {% for story in stories %}
+            	    	    	        {% if story.iteration == None %}
+								        <div class="panel panel-default">
+								            <div class="panel-heading">
+								                <h4 class="panel-title">
+								                    <!--data-story attribute used for ui test automation -->
+								                    <a  data-toggle="collapse" 
+								                        data-parent=""
+								                        data-story="{{ story.title }}" 
+								                        href="#story_{{ story.id }}" 
+								                        aria-expanded="true" 
+								                        class="">
+								                    	{{ story.title }}
+								                    </a>
+
+								                    {% check_permission association project "MoveStoryToIteration" as can_move_story %}
+								                    {% if can_move_story %}
+            	    	    	                    <div class="btn-group pull-right">
+            	    	    	                    <!--data-move-story attribute used for ui test automation -->
+    	    	                    	                <button class="btn btn-default dropdown-toggle pull-right" 
+        	    	    	                    	            type="button" id="dropdownMenu1"
+        	    	    	                    	            data-move-story="{{ story.title }}" 
+        	    	    	                    	            data-toggle="dropdown" aria-expanded="true">
+            	    	    	                        	    Move
+            	    	    	                        	    <span class="caret"></span>
+            	    	    	                      	</button>
+            	    	    	                      	<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+            	    	    	                       		{% for iter_local in iterations %}
+            	    	    	                        	<li role="presentation">
+            	    	    	                        		<a role="menuitem" tabindex="-1" href="/req/movestorytoiter/{{project.id}}/{{story.id}}/{{iter_local.id}}">{{iter_local.title}}</a>
+            	    	    	                        	</li>
+            	    	    	                        	{% endfor %}
+            	    	    	                      	</ul>
+            	    	    	                    </div>
+            	    	    	                    {% endif %}
+
+                                                    {% check_permission association project "DeleteStory" as can_delete %} 
+                                                    {% if can_delete %}
+                                                    <!--data-del-story attribute used for ui test automation -->
+						    	                    <a   class="btn btn-link pull-right" 
+						    	                         href="javascript:void(0);" 
+						    	                         data-del-story="{{ story.title }}"
+						    	                         onclick="showDialog('/req/deletestory/{{ project.id }}/{{ story.id }}');">
+            	    	    	                    	<i class="fa fa-trash-o fa-fw"></i>Delete
+            	    	    	                    </a>
+            	    	    	                    {% endif %}
+
+													{% check_permission association project "EditStory" as can_edit %} 
+													{% if can_edit %}
+													<!--data-edit-story attribute used for ui test automation -->
+            	    	    	                    <a   class="btn btn-link pull-right" 
+            	    	    	                         href="javascript:void(0);"
+            	    	    	                         data-edit-story="{{ story.title }}"
+            	    	    	                         onclick="showDialog('/req/editstory/{{ project.id }}/{{ story.id }}');">
+            	    	    	                    	<i class="fa fa-edit fa-fw"></i>Edit
+            	    	    	                    </a> 
+            	    	    	                    {% endif %}
+								                </h4>
+								            </div>
+								            <div id="story_{{ story.id }}" class="panel-collapse collapse in" aria-expanded="true">
+								                <div class="panel-body">
+                                                    {% if story.last_updated != None %}
+                                                    Last Updated: {{story.last_updated }}
+                                                    </br></br>
+                                                    {% endif %}
+								                    {{ story.description|linebreaks }}
+								                </div>
+								            </div>
+								        </div>
+            	    	    	        {% endif %}					        
+								        {% endfor %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+            	</div>
+
+		    <!-- Iterations -->
+		    {% for iteration in iterations %}
+		    	<div class="col-md-12">
+            	    <!-- iterations panel -->
+            	    <div class="panel-group" id="proj_{{ project.id }}">
+            	    	<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h2 class="panel-title">
+									<i class="fa fa-list fa-fw"></i>
+									<a data-toggle="collapse" data-parent="" href="#iter_body_{{ iteration.id }}" aria-expanded="true">
+										{{ iteration.title }} {{iteration.start_date}} - {{iteration.end_date}}
+									</a>
+                                    {% check_permission association project "DeleteIteration" as can_delete_iter %} 
+                                    {% if can_delete_iter %}
+                                    <!-- data-del-iterations added for ui testing-->
+									<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/deleteiteration/{{ project.id }}/{{ iteration.id }}');"
+									data-del-iteration = "{{ iteration.title}}">
+										<i class="glyphicon glyphicon-remove"></i>
+									</a>
+									{% endif %}
+
+                                    {% check_permission association project "EditIteration" as can_edit_iter %} 
+                                    {% if can_edit_iter %}
+                                    <!-- data-edit-iterations added for ui testing-->
+									<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/edititeration/{{ project.id }}/{{ iteration.id }}');"
+									data-edit-iteration = "{{ iteration.title}}">
+										<i class="glyphicon glyphicon-edit"></i>
+									</a>
+									{% endif %}
+								</h2>
+							</div>
+							<div id="iter_body_{{ iteration.id }}" class="panel-collapse collapse in" aria-expanded="true">
+								<div class="panel-body">
+								    <div class="panel-group" id="iter_{{ iteration.id }}">
+            	    	    	        <!-- todo i dont think this is resolving the iteration.id variable -->
+            	    	    	        <!-- probably need to use a method call to get the list -->
+            	    	    	        {% for story in stories%}
+            	    	    	        {% if story.iteration == iteration %}
+								        <div class="panel panel-default">
+								            <div class="panel-heading">
+								                <h4 class="panel-title">
+								                	<span id="storypoint_{{ story.id }}"></span>
+								                    <a  data-toggle="collapse" 
+								                        data-story="{{ story.title }}"
+								                        data-parent="" 
+								                        href="#story_{{ story.id }}" 
+								                        aria-expanded="true" 
+								                        class="">{{ story.title }}
+								                    </a>
+
+								                    {% check_permission association project "MoveStoryToIteration" as can_move_story %}
+								                    {% if can_move_story %}
+            	    	    	                    <div class="btn-group pull-right">
+            	    	    	                    	<button class="btn btn-default dropdown-toggle pull-right" 
+            	    	    	                    	        type="button" 
+            	    	    	                    	        id="dropdownMenu1" 
+            	    	    	                    	        data-toggle="dropdown" 
+            	    	    	                    	        data-move-story="{{ story.title }}"
+            	    	    	                    	        aria-expanded="true">
+            	    	    	                    		Move
+            	    	    	                        	<span class="caret"></span>
+            	    	    	                      	</button>
+            	    	    	                      	<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
+            	    	    	                       		{% for iter_local in iterations %}
+            	    	    	                        	{% if not iter_local == iteration %}
+            	    	    	                        	<li role="presentation">
+            	    	    	                        		<a role="menuitem" tabindex="-1" href="/req/movestorytoiter/{{project.id}}/{{story.id}}/{{iter_local.id}}">{{iter_local.title}}</a>
+            	    	    	                        	</li>
+    														{% endif %}
+            	    	    	                        	{% endfor %}
+            	    	    	                        	<li role="presentation"><a role="menuitem" tabindex="-1" href="/req/movestorytoicebox/{{project.id}}/{{story.id}}">Icebox</a></li>
+            	    	    	                      	</ul>
+            	    	    	                    </div>
+            	    	    	                    {% endif %}
+                                                    
+                                                    {% check_permission association project "DeleteStory" as can_delete %} 
+                                                    {% if can_delete %}
+													<a class="btn btn-link pull-right" 
+													   href="javascript:void(0);" 
+													   data-del-story="{{ story.title }}"
+													   onclick="showDialog('/req/deletestory/{{ project.id }}/{{ story.id }}');">
+            	    	    	                         <i class="fa fa-trash-o fa-fw"></i>
+            	    	    	                         Delete
+            	    	    	                	</a>
+            	    	    	                	{% endif %}
+            	    	    	                	
+            	    	    	                	{% check_permission association project "EditStory" as can_edit %} 
+													{% if can_edit %}
+            	    	    	                    <a class="btn btn-link pull-right" 
+            	    	    	                       href="javascript:void(0);" 
+            	    	    	                       data-edit-story="{{ story.title }}"
+            	    	    	                       onclick="showDialog('/req/editstory/{{ project.id }}/{{ story.id }}');">
+            	    	    	                    	<i class="fa fa-edit fa-fw"></i>Edit
+            	    	    	                	</a> 
+            	    	    	                	{% endif %}
+								                </h4>
+								            </div>
+								            <div id="story_{{ story.id }}" class="panel-collapse collapse in" aria-expanded="true">
+								                <div class="panel-body">
+                                                    {% if story.last_updated != None %}
+                                                    Last Updated: {{story.last_updated }}
+                                                    </br></br>
+                                                    {% endif %}
+								                    {{ story.description|linebreaks }}
+								                </div>
+								            </div>
+								        </div>
+            	    	    	        {% endif %}
+								        {% endfor %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            {% endfor %}
+            </div>
+
+            <!-- User List -->
+			<div class="col-lg-4 col-md-12">
+				<div class="col-md-12">
+					<div class="panel panel-primary" style="min-height: 200px">
+						<div class="panel-heading">
+							<h2 class="panel-title">
+								<i class="fa fa-list fa-fw"></i>
+								User List
+
+								{% check_permission association project "DeleteUser" as can_del_user %}
+								{% if can_del_user %}
+								<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/removeuserfromproject/{{ project.id }}/0');"> 
+									<i class="glyphicon glyphicon-minus"></i>
+								</a>
+								{% endif %}
+
+								{% check_permission association project "AddUser" as can_add_user %}
+								{% if can_add_user %}
+								<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/addusertoproject/{{ project.id }}/0');">
+									<i class="glyphicon glyphicon-plus"></i>
+								</a>
+								{% endif %}
+							</h2>
+						</div>
+						<div id="userlist_{{ project.id }}" class="panel-body">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var winHeight = $(window).outerHeight();
+	$("#page-wrapper").css('min-height',winHeight);
+
+	$(function() {
+		loadUsersInProject({{ project.id }});
+	});
+</script>
+{% endblock content2 %}

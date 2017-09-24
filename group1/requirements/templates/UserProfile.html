@@ -1,0 +1,135 @@
+
+    <div class="modal-dialog">
+      	<div class="modal-content">
+	        <div class="modal-header">
+	        	<a class="btn close" aria-label="Close" href="javascript:void(0);" onclick="closeDialog();">
+	        		<span aria-hidden="true">×</span>
+	        	</a>
+	        	<h4 class="modal-title" id="dialogModalLabel">{{ title }}</h4>
+	        </div>
+	        <form id="userProfileForm" class="form-horizontal" action="{{ action }}" method="post">
+	        	{% csrf_token %}
+	        	<div class="modal-body">
+                    {% if form.first_name.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.first_name.id_for_label }}" class="col-xs-12 col-sm-4 control-label">First Name</label>
+                        <div class="col-xs-12 col-sm-8" id="{{ form.first_name.id_for_label }}_popover">
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+	        		</div>
+                    {% if form.last_name.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.last_name.id_for_label }}" class="col-xs-12 col-sm-4 control-label">Last Name</label>
+                        <div class="col-xs-12 col-sm-8" id="{{ form.last_name.id_for_label }}_popover">
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if form.email.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.email.id_for_label }}" class="col-xs-12 col-sm-4 control-label">E-Mail</label>
+                        <div class="col-xs-12 col-sm-8" id="{{ form.email.id_for_label }}_popover">
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if form.username.errors %}
+                    <div class="form-group has-error has-feedback">
+                    {% else %}
+                    <div class="form-group">
+                    {% endif %}
+                        <label for="{{ form.username.id_for_label }}" class="col-xs-12 col-sm-4 control-label">Username</label>
+                        <div class="col-xs-12 col-sm-8" id="{{ form.username.id_for_label }}_popover">
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <span id="inputError2Status" class="sr-only">(error)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="visibility: hidden; height: 0px;">{{ form.password }}</div>
+	        	</div>
+        		<div class="modal-footer">
+        		  	<a class="btn btn-default" href="javascript:void(0);" onclick="closeDialog();">Close</a>
+        		  	<a class="btn btn-primary" href="javascript:void(0);" onclick="saveProfileChanges();">{{ button_desc }}</a>
+        		  	<!-- <button type="submit" class="btn btn-primary">{{ button_desc }}</button> -->
+        		</div>
+	        </form>
+
+      	</div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+	<script type="text/javascript">
+        {% for field in form %}
+        {% if field.errors %}
+        var {{ field.id_for_label}}_errors = '';
+        {% for error in field.errors %}
+        {{ field.id_for_label }}_errors += '{{ error|escape }}';
+        {% endfor %}
+        $("#{{ field.id_for_label }}_popover").popover({
+            animation: true,
+            html: true,
+            content: {{ field.id_for_label }}_errors,
+            placement: 'right',
+            trigger: 'hover'
+        });
+        {% endif %}
+        {% endfor %}
+
+
+        // detect submit button event to use ajax method to post the form
+        // and retrive the return data back if there is error object in form object.
+        function saveProfileChanges() {
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: $("#userProfileForm").attr('action'),
+                data: $("#userProfileForm").serialize(),
+                success: function(data) {
+                    if (data != "") {
+                        $("#dialogModal").html(data);    
+                    } else {
+                        location.reload(true);
+                    };
+                    
+                },
+                async: true
+            });
+        }
+
+		// detect submit button event to use ajax method to post the form
+		// and retrive the return data back if there is error object in form object.
+		// $('#projectForm').on('submit',function(e){
+		//     $(this).ajaxForm({
+		//         type : "POST",
+		//         cache : false,
+		//         url : $(this).attr('action'),
+		//         data : $(this).serialize(),
+		//         success : function(data) {
+		//             $("#dialogModal").html(data);
+		//         },
+		//         async:false
+		//     }).submit();
+		//     e.stopPropagation();
+		// });
+
+	</script>

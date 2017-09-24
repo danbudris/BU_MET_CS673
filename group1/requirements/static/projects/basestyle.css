@@ -1,0 +1,15 @@
+#topbar {
+
+	border: 3px solid;
+
+}
+
+#topbar ul {
+	list-style-type: none;
+	text-align: right;
+}
+
+#topbar li {
+
+	display: inline
+}

@@ -1,0 +1,102 @@
+div#wrapper {
+padding-top: 10px;
+}
+div#message_bar {
+position: fixed;
+bottom: 0;
+padding-bottom: 10px;
+padding-right: 35px;
+padding-top: 10px;
+z-index: 1000;
+background-color: white;
+}
+div#message_search {
+	padding-top: 10px;
+	padding-bottom: 15px;
+}
+.padded-icon {
+padding-right: 10px;
+}
+div#color_bar{
+position: fixed;
+top: 0px;
+height: 10px;
+width: 100%;
+background-color:
+#337ab7;
+z-index: 1000000;
+}
+div#sidebar {
+height: 98%;
+border-right: 1px solid lightgray;
+position: fixed;
+background-color: aliceblue;
+z-index: 1001;
+}
+.user {
+height: 20px;
+list-style-type: none;
+}
+.link {
+height: 20px;
+list-style-type: none;
+}
+.user_list {
+padding-left: 15px;
+}
+.link_list {
+padding-left: 15px;
+}
+div#message_list {
+margin: 10px;
+}
+div.message {
+padding-top: 5px;
+}
+.disabled a {
+color: gray;
+text-decoration: none;
+}
+.sidebar_description {
+text-align: center;
+padding-bottom: 5px;
+padding-top:5px;
+background-color: #5bc0de;
+}
+.scroll-area {
+height: 90%;
+position: relative;
+overflow: auto;
+}
+div#top_bar {
+position: fixed;
+background-color: white;
+z-index: 1000;
+padding-right: 35px;
+}
+div.messagecontent {
+padding-top: 70px;
+padding-bottom: 60px;    
+}
+div#mymodal{
+z-index: 1000000;
+}
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  background: red;
+  cursor: inherit;
+  display: block;
+}
+

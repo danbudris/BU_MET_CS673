@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Issue #{{ issue.pk }}{% endblock %}
+{% block header_title %}<div class="bug_name">Edit Issue</div> {% endblock %}
+
+{% block content %}
+
+<div id="page-inner">
+    <div>
+       
+        <form action="" method="post">{% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <h1 style="color: #A70303"># {{ issue.pk }}: {{ issue.title }}</h1>
+
+        <div class="row">
+            <div class="col-md-12">  
+                <input type="submit" value="Update" class="btn btn-primary" style="float: right; background-color: #A70303;"/>
+            </div>
+        </div>
+
+        <div class="container" style="width: 100%">
+            <!-- <div style="padding: 10px; border: solid black; width: 70%; height: 300px; float: left; font-size: 18px; "> -->
+            <div class="col-md-7 col-sm-12  col-xs-12">  
+                <div class="col-md-6">
+
+
+                    <div class="fieldWrapper">
+                        {{ form.title.errors }}
+                        <label for="{{ form.title.id_for_label }}">Title:</label>
+                        {{ form.title }}
+                    </div>
+                    <br>
+
+                    <div class="fieldWrapper">
+                        {{ form.issue_type.errors }}
+                        <label for="{{ form.issue_type.id_for_label }}">Type:</label>
+                        {{ form.issue_type }}
+                    </div>
+                    <br>
+
+                    <div class="fieldWrapper">
+                        {{ form.status.errors }}
+                        <label for="{{ form.status.id_for_label }}">Status:</label>
+                        {{ form.status }}
+                    </div>
+                    <br>
+
+                    <div class="fieldWrapper">
+                        {{ form.priority.errors }}
+                        <label for="{{ form.priority.id_for_label }}">Priority:</label>
+                        {{ form.priority }}
+                    </div>
+
+                </div>
+
+                <div class="col-md-6" style="float: left;">
+
+                    <div class="fieldWrapper">
+                        {{ form.project.errors }}
+                        <label for="{{ form.project.id_for_label }}">Project:</label>
+                        {{ form.project }}
+                    </div>
+                    <br>
+
+                    <div class="fieldWrapper">
+                        {{ form.assignee.errors }}
+                        <label for="{{ form.assignee.id_for_label }}">Assignee:</label>
+                        {{ form.assignee }}
+                    </div>
+                    <br>
+
+                    <div class="fieldWrapper">
+                        {{ form.verifier.errors }}
+                        <label for="{{ form.verifier.id_for_label }}">Verifier:</label>
+                        {{ form.verifier }}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-5" id="history" style="height: 300px;">
+                <br><br>
+                <Strong>History:</Strong><br><br>
+                <ul>
+                    <li>Created By: <a href="mailto:{{ issue.reporter.email }}" style="color: #B22222;">{{ issue.reporter.first_name }} {{ issue.reporter.last_name }} ({{ issue.reporter }})</a></li><br><br>
+                    {% if issue.assignee %}
+                      <li>Assigned To: <a href="mailto:{{ issue.assignee.email }}" style="color: #B22222;">{{ issue.assignee.first_name }} {{ issue.assignee.last_name }} ({{ issue.assignee }})</a></li><br><br>
+                    {% else %}
+                      <li>Assigned To: {{ issue.assignee }})</li><br><br>
+                    {% endif %}
+                    <li>Date Created: {{ issue.submitted_date}} </li><br><br>
+                    <li>Last Updated: {{ issue.modified_date }} </li><br><br>
+                </ul>
+    <!--
+                These will be added to the database with each change to the issue
+    -->
+                <br><br>
+            </div>
+        </div>
+
+        <div id="description" style="width: 100%; font-size: 18px;">
+            <textarea style="display:none;" cols="40" id="id_description" maxlength="2000" name="description" rows="10">{{ issue.description }}</textarea>
+            <p class="text-warning" style="color: #A70303;"><b>Description: </b></p><pre>{{ issue.description }}</pre>
+        </div>
+
+        </form>
+
+
+    </div>
+
+</div>
+<!--
+<footer id="footer">Any information we would like to add to the footer will go here.</footer>
+-->
+{% endblock %}

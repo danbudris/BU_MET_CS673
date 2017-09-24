@@ -1,0 +1,82 @@
+{% load staticfiles %}
+    <!-- attachements modal -->
+    <div class="modal-dialog modal-md">
+      	<div class="modal-content">
+	        <div class="modal-header">
+	        	<a class="btn close" aria-label="Close" href="javascript:void(0)" onclick="closeDialog();">
+	        		<span aria-hidden="true">x</span>
+	        	</a>
+	        	<h4 class="modal-title" id="iterModalLabel">Attachments</h4>
+	        </div>
+            <div class="modal-body">
+                {% for file in files %}
+
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <a class="btn btn-link pull-right" href="javascript:void(0);" onclick="downloadProjectFile('{{file.name}}')">
+                            <i class="glyphicon glyphicon-download-alt"></i>
+                        </a>
+                        {{file.name}}
+                    </li>
+                </ul>
+
+                {% endfor %}
+                <form id="attachmentForm" class="form-horizontal" action="/req/uploadprojectattachment/{{ projectID }}" method="post"
+                enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h4>Upload File (max size 10m)</h4>
+                    <p>{{ form.file }}</p>
+                    <!-- <hr> -->
+                    <input type="hidden" name="referer" value="{{ referer }}">
+                    <div class="modal-footer">
+                        <a class="btn btn-default" href="javascript:void(0)" onclick="closeDialog();">Close</a>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+      	</div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+    <script type="text/javascript">
+    
+        fileTooLarge = false;
+        // detect submit button event to use ajax method to post the form
+        // and retrive the return data back if there is error object in form object.
+        $('#{{modalID}}').on('submit',function(e){
+        if($('#id_file').val()==""){
+            e.preventDefault();
+            alert("Please provide a file");
+        }else if(fileTooLarge == true){
+            alert("Please provide a file smaller than 10 megabytes");
+            e.preventDefault();
+        }else{
+            $(this).ajaxForm({
+                type : "POST",
+                cache : false,
+                url : $(this).attr('action'),
+                data : $(this).serialize(),
+                success : function(data) {
+                    $("#{{modalID}}").html(data);
+                },
+                async:false
+            }).submit();
+            e.stopPropagation();
+            }
+        });
+        
+        //binds to onchange event of your input field
+        $('#id_file').bind('change', function() {
+    
+            if(this.files[0].size > 1100000){
+                fileTooLarge = true;
+                alert("Please provide a file smaller than 10 megabytes");
+            }else{
+                fileTooLarge = false;
+            }
+        });
+        
+        function downloadProjectFile(fileName){
+            window.location.assign('/req/downprojectattach/{{projectID}}/?file=' + fileName);
+        }
+        
+    </script>
