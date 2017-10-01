@@ -4,8 +4,8 @@
 {% block content %}
 <div class="container">
 		<div class="jumbotron">
-			<h1>Welcome !</h1>
-			<p class="lead">Please fill out the following fields and click 'Register' to become one of our big family.</p>
+			<h1>Welcome!</h1>
+			<p class="lead">Please fill out the following fields and click 'Register' to get started.</p>
 			<div class="col-sm-12">
 				<form class="form-horizontal" style="padding-top: 30px;" action="/signup" method="post">
 					{% csrf_token %}
@@ -31,7 +31,7 @@
 
 					<div class="col-sm-6 col-sm-offset-3" style="padding-top: 40px;">
 						<div class="col-sm-6">
-							<button type="submit" class="btn btn-block btn-primary btn-lg"> Register</button>
+							<button id="activate" disabled="disabled" type="submit" class="btn btn-block btn-primary btn-lg"> Register</button>
 						</div>
 						<div class="col-sm-6">
 							<a class="btn btn-block btn-default btn-lg" href="/"> Cancel</a>

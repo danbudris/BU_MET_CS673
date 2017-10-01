@@ -1,6 +1,6 @@
 {
-  "name": "node",
-  "version": "1.0.0",
+  "name": "chat",
+  "version": "1.1.0",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -11,8 +11,10 @@
   "dependencies": {
     "express": "^4.12.3",
     "express-cors": "0.0.3",
+    "fs-extra": "^2.1.2",
     "lodash": "^3.6.0",
     "mocha": "^2.2.1",
+    "morgan": "^1.8.1",
     "multer": "^0.1.8",
     "node-rest-client": "^1.4.4",
     "request": "^2.54.0",

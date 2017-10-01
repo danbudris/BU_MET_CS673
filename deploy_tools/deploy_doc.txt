@@ -1,0 +1,153 @@
+# Deployment Steps, Winter 2017
+1. SSH into server as 'student' user. (See professor for details.)
+
+```
+cd /home/pgmvt/sites/www.3blueprints.com/
+cd source
+git pull
+vim requirements.txt (delete selenium requirement)
+pip install -r requirements.txt
+sudo apt install nodejs-legacy
+sudo apt-get install npm
+cd source/group1/communication/node
+npm install morgan
+npm uninstall fs-extra
+npm install fs-extra@2.0.0
+npm install
+
+# stop services
+sudo service nginx stop
+sudo stop gunicorn-www.3blueprints.com
+sudo stop nodejs-www.3blueprints.com
+
+mkdir database
+touch database/db.sqlite3
+
+# create and run migrations
+~/sites/$SITENAME/virtualenv/bin/python2.7 ~/sites/$SITENAME/source/group1/manage.py makemigrations
+~/sites/$SITENAME/virtualenv/bin/python2.7 ~/sites/$SITENAME/source/group1/manage.py migrate
+
+~/sites/$SITENAME/virtualenv/bin/python2.7 ~/sites/$SITENAME/source/group1/manage.py createsuperuser
+un: demo
+pw: 123456
+un: test
+pw: 123456
+
+
+# send all django project static files to main static folder
+~/sites/$SITENAME/virtualenv/bin/python2.7 ~/sites/$SITENAME/source/group1/manage.py collectstatic
+
+#reload nginx
+sudo service nginx reload
+
+# login in new terminal session and create a screen as student
+screen -S djangoproc
+
+# start the django process
+~/sites/$SITENAME/virtualenv/bin/python2.7 ~/sites/$SITENAME/source/group1/manage.py runserver
+
+# detach screen
+CTRL-A D
+```
+
+# For Production Updates
+This section gives instructions for how to update the Production server with the latest code.
+
+Create two terminal sessions ("alpha" & "beta").
+
+## In the "alpha" terminal session, follow these steps:
+1. SSH into the server as 'student' user.
+2. List the active screen processes. (The django server is running in a screen process.):
+    ```
+    screen -ls
+    ```
+3. Find the process labeled 'djangoproc'.
+4. Re-attach to the screen process:
+    ```
+    screen -r djangoproc
+    ```
+5. You should now see log output in std-out.
+6. Kill the django server process:
+    ```
+    Ctrl-C
+    ```
+7. You should now be in a shell for the 'student' user.
+
+## In the "beta" terminal session, follow these steps:
+1. SSH into the server as 'pgmvt' user.
+2. Stop all of the services:
+    ```
+    sudo service nginx stop
+    sudo stop gunicorn-www.3blueprints.com
+    sudo stop nodejs-www.3blueprints.com
+    ```
+
+## In the "alpha" terminal session:
+Update the git source tree:
+```
+git pull
+```
+
+You should now be pulling the latest from the 'master' branch.
+
+Update the static assets pipeline:
+python ~/sites/www.3blueprints.com/source/group1/manage.py collectstatic
+
+Rerun the migrations if needed:
+python ~/sites/www.3blueprints.com/source/group1/manage.py migrate
+
+Start the django server up again:
+python ~/sites/www.3blueprints.com/source/group1/manage.py runserver
+
+You should now see log output in std-out.
+
+Detach from the screen session:
+```
+Ctrl-A D
+```
+
+You should now see console output like so:
+```
+student@MET-CS673:~$ screen -r djangoproc
+[detached from 21673.djangoproc]
+```
+
+## In the "beta" terminal session:
+
+# Restart nginx
+```
+sudo service nginx start
+```
+
+# Start gunicorn
+```
+sudo start gunicorn-www.3blueprints.com
+```
+
+# Start nodejs
+```
+sudo start nodejs-www.3blueprints.com
+```
+
+Done. Exit & close both terminal sessions.
+
+
+## Command Reference
+
+# nginX
+sudo service nginx start
+sudo service nginx stop
+sudo service nginx restart
+
+# Gunicorn
+sudo stop gunicorn-www.3blueprints.com
+sudo start gunicorn-www.3blueprints.com
+
+# Nodejs
+sudo stop nodejs-www.3blueprints.com
+sudo start nodejs-www.3blueprints.com
+
+
+
+
+
