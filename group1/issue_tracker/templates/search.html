@@ -34,7 +34,7 @@
             </tr>
           </thead>
             <tbody>
-                {% if object_list %}	
+                {% if object_list %}
                   {% for issue in object_list %}
                    <tr>
                    <td>{{ issue.pk }}</td>
@@ -63,7 +63,7 @@
 
   <!--
   <h1 class="bug_name" clear="both" style="color: #A70303;"><b>Issue Search</b></h1>
-  -->  
+  -->
            <!-- {% if NoDataError %}
             <div class="alert alert-danger" role="alert">{{ NoDataError }}TEST</div>
            {% endif %} -->
@@ -71,27 +71,27 @@
   <!-- Left frame_Start -->
   <!-- <div style="padding: 10px; border: solid black; width: 50%; height: 430px; float: left; font-size: 18px; "> -->
   <div class="container" style="width: 100%">
-  <div class="row"> 
+  <div class="row">
     <div class="col-md-4 col-xs-12">
          <form action="" method="POST">{% csrf_token %}
          <!-- {{ form.non_field_errors }} -->
          <!-- {{ form.non_field_errors }} -->
-     
-               <p class="text-warning" style="color: black;"><b>Title:</b></p> 
+
+               <p class="text-warning" style="color: black;"><b>Title:</b></p>
                     <div class="fieldWrapper" style="color: #A70303">
                     <!-- {{ form.title.errors }}  -->
                     <label for="{{ form.title.id_for_label }}"></label>
                     <table>{{ form.title }}</table> Substring matching in issue title.
-                    </div> 
-                     
+                    </div>
 
-              <p class="text-warning" style="color: black;"><b>Description:</b></p> 
+
+              <p class="text-warning" style="color: black;"><b>Description:</b></p>
                     <div class="fieldWrapper" style="color: #A70303">
                     <!-- {{ form.title.errors }}  -->
                     <label for="{{ form.description.id_for_label }}"></label>
                      <table>{{ form.description }}</table>Substring matching in the long description.
                     </div>
-                    
+
 
               <p class="text-warning" style="color: black;"><b>Status:</b></p>
                     <!--  -->
@@ -103,30 +103,30 @@
                     <!--  -->
                     <!-- {{ form.title.errors }}  -->
                     <label for="{{ form.status.id_for_label }}"></label>
-                    {{ form.status }} 
+                    {{ form.status }}
                     </div>
-                     
+
 
                <p class="text-warning" style="color: black;"><b>Issue type:</b></p>
                     <div class="fieldWrapper">
                     <!-- {{ form.title.errors }}  -->
                     <label for="{{ form.issue_type.id_for_label }}"></label>
-                    {{ form.issue_type }} 
+                    {{ form.issue_type }}
                     </div>
 
-         
+
     </div>
   <!-- </div>Left frame_End -->
 
-         
+
 
   <!-- Right frame -->
   <!-- <div style="padding: 10px; border: solid black; width: 43%; height: 400px; float: right; font-size: 12px; "> -->
   <div class="col-md-8 col-xs-12">
   <!-- <div class="container" style="width: 100%">   -->
     <!-- <div class="row"> -->
-    <div class="col-md-6 col-xs-12"> 
-            
+    <div class="col-md-6 col-xs-12">
+
                <p class="text-warning" style="color: black;"><b>Submitted date:</b></p>
                       <div class="fieldWrapper">
                       <!-- {{ form.project.errors }} -->
@@ -153,10 +153,10 @@
                       <!-- {{ form.project.errors }} -->
                       <label for="{{ form.project.id_for_label }}"></label>
                       {{ form.project }}
-                      </div> 
-    </div>  
+                      </div>
+    </div>
 
-    <div class="col-md-6 col-xs-12"> 
+    <div class="col-md-6 col-xs-12">
 
               <p class="text-warning" style="color: black;"><b>Reporter:</b></p>
                       <div class="fieldWrapper">
@@ -164,7 +164,7 @@
                       <label for="{{ form.reporter.id_for_label }}"></label>
                       {{ form.reporter }}
                       </div>
-                      
+
               <p class="text-warning" style="color: black;"><b>Assignee:</b></p>
                       <div class="fieldWrapper">
                       <!-- {{ form.project.errors }} -->
@@ -184,13 +184,13 @@
                       <!-- {{ form.priority.errors }} -->
                       <label for="{{ form.priority.id_for_label }}"></label>
                       {{ form.priority }}
-                      </div> 
-           
+                      </div>
+
 
            <p><b>
          <div class="row">
            <div class="col-sm-12">
-               <input type="submit" value="Submit" class="btn btn-primary" style="float: left; background-color: #A70303;" />
+               <input id="id_submit_search" type="submit" value="Submit" class="btn btn-primary" style="float: left; background-color: #A70303;" />
            </div>
          </div>
          </b></p>
@@ -199,7 +199,7 @@
 
       <!--JQurey DatePicker -->
       <script type="text/javascript">
-        $(function() {   
+        $(function() {
         $("#{{ form.submitted_date.id_for_label }}").datepicker({dateFormat : "mm/dd/yy"});
         $("#{{ form.modified_date.id_for_label }}").datepicker({dateFormat : "mm/dd/yy"});
         $("#{{ form.closed_date.id_for_label }}").datepicker({dateFormat : "mm/dd/yy"});
@@ -212,13 +212,13 @@
   </div>
   </div>
 </div>
-  <!-- search page display_END -->    
+  <!-- search page display_END -->
 {% endif %}
 
         {% if object_list %}
 
         {% elif form == false %}
-  
+
            <div>
              <h2> No data found !!</h2>
            </div>

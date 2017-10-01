@@ -10,7 +10,7 @@ from requirements.models.task import Task
 from requirements.models.iteration import Iteration
 from requirements.models.story_comment import StoryComment
 from django.forms.models import inlineformset_factory
-
+import re
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -22,6 +22,23 @@ class SignUpForm(UserCreationForm):
                 field.widget.attrs['class'] += 'form-control'
             else:
                 field.widget.attrs.update({'class': 'form-control'})
+
+    def clean_password1(self):
+        password1 = self.cleaned_data.get("password1")
+        # ensure that the password meets our new security standards
+        password_test = re.match(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$', password1);
+        if not password_test:
+            raise forms.ValidationError('Your password must be at least 8 characters long and must '
+            'contain at least one uppercase letter, one lowercase letter, and one number.')
+        return self.cleaned_data.get("password1")
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        # ensure that the user is signing up with a BU email account
+        email_test = re.match(r'^[A-Za-z0-9\.\+_-]+@bu\.edu$', email)
+        if not email_test:
+            raise forms.ValidationError('You must register with a BU email acocunt to use this site.')
+        return self.cleaned_data.get("email")     
 
     class Meta:
         model = User
@@ -35,7 +52,7 @@ class SignUpForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super(SignUpForm, self).save(commit=False)
-        user.is_active = False
+        user.is_active = True # should be false once email validation is finished 
         if commit:
             user.save()
         return user

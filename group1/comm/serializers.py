@@ -12,12 +12,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class RoomSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Room
-		fields = ('id', 'name', 'description', 'public')
+		fields = ('id', 'name', 'creator', 'description', 'public')
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Message
-		fields = ('text', 'time', 'at_message', 'room', 'user')
+		fields = ('id', 'text', 'time', 'at_message', 'room', 'user')
 
 class UserRoomSerializer(serializers.HyperlinkedModelSerializer):
        class Meta:

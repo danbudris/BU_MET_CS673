@@ -97,7 +97,7 @@ def changepasswd(request):
     context = {
         'form': form,
         'title': 'Change Password',
-        'confirm_message': 'After confirming changes. System will automatically logout !',
+        'confirm_message': 'After confirming changes you will automatically be logged out.',
         'action': '/req/changepasswd',
         'button_desc': 'Confirm Change & Logout',
     }
