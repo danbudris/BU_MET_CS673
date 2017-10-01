@@ -4,6 +4,22 @@ Last modified Spring 2017.
 
 These instructions may be followed on any Unix-like system, including OS X.
 
+## Getting started with Docker
+install docker
+pull the image to your local machine: 
+`docker pull danbudris/bu_met_cs673`
+
+run the container:
+`docker run -d --name=cs673.test -p 8000:8000 -p 80:80 -p 3000:3000 danbudris/cs673:latest`
+
+Start the JS server for chat application:
+  Connect to the container: `docker exec -it cs673.test bash`
+  Start the server: `cd /root/g1/source/group1/communication/node && node main.js`
+
+Connect to the server on `http://127.0.0.1:8000` or to the admin console on `http://127.0.0.1:8000/admin` 
+Username: admin
+Password: pass
+
 ## Getting started
 
 First, clone this repo and checkout your Team's respective `master` branch. You may use sudo if permission denied:
