@@ -20,6 +20,41 @@ Connect to the server on `http://127.0.0.1:8000` or to the admin console on `htt
 Username: admin
 Password: pass
 
+## Getting started with Virtual Machine
+Install Oracle Virtual Box (https://www.virtualbox.org/)
+Download the virtual machine file from google drive Team 4 directory named 'CS673_linux_mint_18.2.ova'
+Double click the file which will open it up on oracle virtual box. Keep on clicking next to import it into the oracle software.
+Once its imported successfully, start it. 
+Username: metcs673 Password: metcs673
+
+Open terminal and type the following commands:
+```
+cd ~/BU_MET_CS673/
+source venv/bin/activate
+```
+
+You will know when your virtualenv is 'active' when your terminal looks something like this:
+
+```
+(venv) $ <----terminal prompt contains the name of your virtualenv in paranthesis
+e.g.: (venv) cs673@ubuntu:/home/BU_MET_CS673$ 
+```
+
+Now start the server
+`
+python group1/manage.py runserver
+`
+
+Now start another terminal and run these commands:
+```
+cd ~/BU_MET_CS673/group1/communication/node
+node main.js
+```
+
+Now just hit this URL on a browser (http://127.0.0.1:8000)
+
+There is a superuser already created with Username:admin Password:admin who can handle the user rights stuff.
+
 ## Getting started
 
 First, clone this repo and checkout your Team's respective `master` branch. You may use sudo if permission denied:
