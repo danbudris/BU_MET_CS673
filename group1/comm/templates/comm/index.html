@@ -87,11 +87,14 @@
         <div class="input-group input-group-lg">
           <input id="text" type="text" class="form-control" maxlength="1000" placeholder="Enter a message..." onkeypress="checklength()" spellcheck = "true">
           <span class="input-group-btn dropup">
-            <button id="sendcleartext" class="btn btn-default" type="button" onclick="display();">
+            <button id="sendcleartext" class="btn btn-default" data-toggle="tooltip" title="Send messages!" type="button" onclick="display();">
               <span class="glyphicon glyphicon-expand" aria-hidden="true"></span>
             </button>
-            <button id="upload file" class="btn btn-default" type="button" onclick="filechoose()">
+            <button id="upload file" class="btn btn-default" type="button" data-toggle="tooltip" title="Send files!" onclick="filechoose()">
               <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+            </button>
+            <button id="sendcleartext" class="btn btn-default" type="button" data-toggle="tooltip" title="Start Video Share!" onclick="display();">
+                <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
             </button>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               <span class="glyphicon glyphicon-plus-sign"></span>
