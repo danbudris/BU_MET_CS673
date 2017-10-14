@@ -82,8 +82,9 @@ div#sidebar {
 
 .scroll-area {
   height: 90%;
+  width: 80%;
   position: relative;
-  overflow: auto;
+  overflow: wrap;
 }
 
 div#top_bar {
@@ -495,4 +496,13 @@ button#deleteButton {
   background-color: #990000;
   float: left;
   color: white;
+}
+
+/* Begin Video Area Styles */
+
+.videoArea{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;  
 }
