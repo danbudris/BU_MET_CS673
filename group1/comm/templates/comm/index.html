@@ -52,28 +52,31 @@
       <div class="sidebar_container">
         <div id="room-list" class="list-group margin-bottom--25">
           <a id="create-room" href="#" class="btn icon create_team list-group-item" data-toggle="botton" onclick="createteam()">
-<!--<span class="glyphicon glyphicon-plus padded-icon" aria-hidden="true"></span>-->Create New Teams
-</a>
+          Create New Teams
+          </a>
         </div>
       </div>
 
       <h4 class="sidebar_description">Users</h4>
       <div class="sidebar_container">
         <ul class="user_list margin-bottom--25">
-
         </ul>
       </div>
       <h4 class="sidebar_description">Quick links</h4>
+      <!-- Start of Sidebar Links; Styled using FA font icons and linked to external pages -->
       <div class="sidebar_container">
         <ul class="link_list margin-bottom--25">
           <li class="link icon home"><a href="/">
-          <!--<span class="glyphicon glyphicon-home padded-icon"></span>-->Home</a>
+          Home</a>
           </li>
           <li class="link icon requirement_tool"><a href="/req/projects">
-            <!--<span class="glyphicon glyphicon-book padded-icon"></span>-->Requirement Management Tool</a>
+          Requirement Management Tool</a>
           </li>
           <li class="link icon issue_tool"><a href="/issue_tracker/">
-          <!--<span class="glyphicon glyphicon-check padded-icon"></span>-->Issue Management Tool</a>
+          Issue Management Tool</a>
+          </li>
+          <li class="link icon help_tool">
+          Help
           </li>
         </ul>
       </div>
@@ -100,20 +103,6 @@
               <span class="glyphicon glyphicon-plus-sign"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-<!--
-              <li><a href="#">upload file</a></li>
-              <li><a href="#"><img src="/static/favicon.ico" style="width:20px;height:20px;"></a></li>
-              <li><a href="#">emoticons</a></li>
-            </ul>
-<!--try to put emoji here
-<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="glyphicon glyphicon-plus-sign"></span>
-            </button>
-<ul class="dropdown-menu" role="menu">
-
-              <li><a href="#"><img src="/static/favicon.ico" style="width:20px;height:20px;">
-</a></li>
--->
               <li><a href="#">Emoticons</a></li>
 <table>
   <tr>
@@ -170,8 +159,6 @@
       </div>
 
     <div id="top_bar" class="col-lg-10 col-xs-12 message">
-      <!--<i class="fa fa-comment-o fa-3x padded-icon" aria-hidden="true"></i>-->
-      <!--<span class="glyphicon glyphicon-comment padded-icon" style="font-size: 40px; color: gray;" aria-hidden="true"></span>-->
       <span id="room_title"></span>
       <div class="dropdown">
         <button type="button" id="menu_button" class="btn button-comm hidden-md hidden-lg hidden-xl" onclick="mobile_nav.sidebar()" >Menu</button>

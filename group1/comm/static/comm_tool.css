@@ -166,11 +166,20 @@ a:hover {
   display: inline-block;
 }
 
+/* Sidebar Icons */
+
 .requirement_tool:before {
   content: "\f046";
   margin-left: -1.3em; /* same as padding-left set on li */
   width: 1em; /* same as padding-left set on li */
   color: #337ab7;
+}
+
+.help_tool:before{
+  content: "\f059";
+  margin-left: -1.3em; 
+  width: 1em;
+  color: #337ab7
 }
 
 .issue_tool:before {
