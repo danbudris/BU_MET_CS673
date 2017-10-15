@@ -16,7 +16,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function showDialog(actionUrl){
+function showCommDialog(actionUrl){
   $.ajax({
     type: "GET",
         url: actionUrl,
@@ -32,7 +32,7 @@ function showDialog(actionUrl){
 }
 
 // close Story Dialog and erase the content
-function closeDialog(){
+function closeCommDialog(){
   $("#dialogModal").modal('hide');
     $("#dialogModal").html('');
 }
