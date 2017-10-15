@@ -16,6 +16,27 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function showDialog(actionUrl){
+  $.ajax({
+    type: "GET",
+        url: actionUrl,
+        success: function(result) {
+          $("#dialogModal").html(result);
+            $("#dialogModal").modal({
+                backdrop: false,
+                show: true
+            });
+        },
+        async:true
+    }); 
+}
+
+// close Story Dialog and erase the content
+function closeDialog(){
+  $("#dialogModal").modal('hide');
+    $("#dialogModal").html('');
+}
+
 function scroll_messages_into_view() {
     if ($('span.msg p').length > 0) {
         var last_message_idx = $('span.msg p').length - 1;
