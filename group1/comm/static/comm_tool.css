@@ -1,6 +1,14 @@
 html { 
   font-size: 62.5%; 
 }
+div.absolute {
+    position: absolute;
+    top: 80px;
+    right: 0;
+    width: 200px;
+    height: 100px;
+    border: 3px solid #73AD21;
+}
 
 body, p {
   font-family: "Open Sans";
