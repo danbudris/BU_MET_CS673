@@ -24,7 +24,15 @@ function scroll_messages_into_view() {
     }
 }
 
-
+function startVideoChat() {
+  var teamName = window.document.documentElement.querySelector('#room_title').textContent;
+  if (teamName != "" || teamName != null) {
+    var URL = 'https://appr.tc/r/' + teamName.replace(' ','');
+    window.open(URL, '', 'width=1000');
+  } else {
+    alert("Please create a team to be able to video chat")
+  }
+}
 
 function createteam(){
   //Show modal to create team
