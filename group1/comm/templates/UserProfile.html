@@ -2,7 +2,7 @@
     <div class="modal-dialog">
       	<div class="modal-content">
 	        <div class="modal-header">
-	        	<a class="btn close" aria-label="Close" href="javascript:void(0);" onclick="closeDialog();">
+	        	<a class="btn close" aria-label="Close" href="javascript:void(0);" onclick="closeCommDialog();">
 	        		<span aria-hidden="true">×</span>
 	        	</a>
 	        	<h4 class="modal-title" id="dialogModalLabel">{{ title }}</h4>
@@ -69,7 +69,7 @@
                     <div style="visibility: hidden; height: 0px;">{{ form.password }}</div>
 	        	</div>
         		<div class="modal-footer">
-        		  	<a class="btn btn-default" href="javascript:void(0);" onclick="closeDialog();">Close</a>
+        		  	<a class="btn btn-default" href="javascript:void(0);" onclick="closeCommDialog();">Close</a>
         		  	<a class="btn btn-primary" href="javascript:void(0);" onclick="saveProfileChanges();">{{ button_desc }}</a>
         		  	<!-- <button type="submit" class="btn btn-primary">{{ button_desc }}</button> -->
         		</div>
@@ -78,7 +78,6 @@
       	</div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 
-    <script type="text/javascript" src="/static/comm_tool.js"></script>
 	<script type="text/javascript">
         {% for field in form %}
         {% if field.errors %}
@@ -107,7 +106,7 @@
                 data: $("#userProfileForm").serialize(),
                 success: function(data) {
                     if (data != "") {
-                        $("#dialogCommModal").html(data);    
+                        $("#dialogModal").html(data);    
                     } else {
                         location.reload(true);
                     };

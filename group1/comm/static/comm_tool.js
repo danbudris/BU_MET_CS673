@@ -21,8 +21,8 @@ function showCommDialog(actionUrl){
     type: "GET",
         url: actionUrl,
         success: function(result) {
-          $("#dialogModal").html(result);
-            $("#dialogModal").modal({
+          $("#dialogCommModal").html(result);
+            $("#dialogCommModal").modal({
                 backdrop: false,
                 show: true
             });
@@ -32,9 +32,9 @@ function showCommDialog(actionUrl){
 }
 
 // close Story Dialog and erase the content
-function closeCommDialog(){
-  $("#dialogModal").modal('hide');
-    $("#dialogModal").html('');
+function closeDialog(){
+  $("#dialogCommModal").modal('hide');
+    $("#dialogCommModal").html('');
 }
 
 function scroll_messages_into_view() {
