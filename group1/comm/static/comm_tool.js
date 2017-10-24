@@ -243,6 +243,9 @@ function increment_badge(room_id){
 }
 
 function add_message(msg, msgid, msguser, target) {
+
+  //Convert the msg paramater into a primative string in order to prevent script and html injection
+  msg = msg.toString();
   //Check if user is the person who sent message. Show different options depending on result.
   //The p element contains the actual message, and each of them have the id "message-" followed by the message id
   if (msguser == user_id) {
