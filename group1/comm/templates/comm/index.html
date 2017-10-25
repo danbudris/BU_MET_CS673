@@ -25,6 +25,7 @@
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap-theme.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css">
 
+
   <!-- class files -->
   <script type="text/javascript" src="/static/comm_tool.js"></script>
   <link rel="stylesheet" type="text/css" href="/static/comm_tool.css">
@@ -53,7 +54,7 @@
             </div>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-                <li class="dropdown pull-right">
+                <li class="dropdown pull-right commDropDown">
                     <a id="id_username_link" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ user.username }} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="javascript:void(0);" onclick="showCommDialog('/communication/userprofile/')"><span class="glyphicon glyphicon-user" aria-hidden="false"></span>Profile</a></li>
