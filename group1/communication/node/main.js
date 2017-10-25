@@ -21,9 +21,9 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded 
 app.use(expressSanitizer());
 
-app.post('/api/messages*', function(req, res) {
+app.all('/api/messages*', function(req, res) {
   // replace an HTTP posted body property with the sanitized string
-  req.body.sanitized = req.sanitize(req.body.text);
+  req.body.text = req.sanitize(req.body.text);
 });
 
 
