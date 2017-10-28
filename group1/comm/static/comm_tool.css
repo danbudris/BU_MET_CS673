@@ -335,6 +335,12 @@ a.list-group-item:hover {
 
 /* START MESSAGE */
 
+.message_area{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
 div#message_list {
   margin: 10px;
 }
@@ -503,10 +509,11 @@ button#deleteButton {
 .videoArea{
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;  
+  width: 45%;
 }
 
 .videoItems{
-  width: 10%;
+  width: 85%;
 }
