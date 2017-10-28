@@ -517,3 +517,8 @@ button#deleteButton {
 .videoItems{
   width: 85%;
 }
+
+/* this is used to toole the hide for the video area */
+.hide{
+  display: none !important;
+}
