@@ -506,3 +506,7 @@ button#deleteButton {
   justify-content: flex-end;
   align-items: center;  
 }
+
+.videoItems{
+  width: 10%;
+}
