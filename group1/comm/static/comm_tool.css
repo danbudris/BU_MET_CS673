@@ -82,7 +82,7 @@ div#sidebar {
 
 .scroll-area {
   height: 90%;
-  min-width: 45%;
+  min-width: 25%;
   position: relative;
   overflow: wrap;
 }
@@ -511,11 +511,12 @@ button#deleteButton {
   flex-direction: row;
   justify-content: center;
   align-items: center;  
-  width: 50%;
+  width: 100%;
 }
 
 .videoItems{
-  width: 85%;
+  flex-grow: 1;
+  width: 50%;
 }
 
 /* this is used to toole the hide for the video area */
