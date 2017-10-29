@@ -50,6 +50,12 @@ function startVideoChat() {
   if (teamName != "" || teamName != null) {
     var URL = 'https://appr.tc/r/' + teamName.replace(' ','');
     window.open(URL, '', 'width=1000');
+
+    //show the video area by removing the 'hide' class
+    $('#videoArea').removeClass('hide');
+
+    //set the iframe in the video area to the url of the video chat
+    $('#videoFrame').attr('src', URL);
   } else {
     alert("Please create a team to be able to video chat")
   }
