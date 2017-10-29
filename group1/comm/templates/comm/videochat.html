@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!-- This adapter.js file de-prefixes the webkit* and moz* prefixed RTC
+         methods. When RTC becomes a more solid standard, this adapter should no
+         longer be necessary. -->
+    <!-- <script src="https://webrtc.googlecode.com/svn/trunk/samples/js/base/adapter.js"></script> -->
+    <style>
+        html, body {
+            background-color: #333;
+        }
+        video {
+            //width:  1080px;
+            //height:  720px;
+            border:  1px solid black;
+
+        }
+        #video_box{
+            position:relative;
+        }
+        #video_overlays {
+            position:absolute;
+            width: 200px;
+            min-height:200px;
+            background-color:#dadada;
+            z-index:300000;
+            bottom:10px;
+            left:10px;
+            text-align:center;
+        }
+
+    </style>
+</head>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+    var server_host = window.location.hostname;
+    var server_port = window.location.port;
+    var base_url = 'http://' + server_host + ':3000/';
+    var socket = io('http://' + server_host + ':3000');	
+    var DEFAULT_CHANNEL="some-global-channel-name";
+    var USE_AUDIO = true;
+    var USE_VIDEO = true;
+    var MUTE_AUDIO_BY_DEFAULT = false;
+    var local_media_stream = null; /* our own microphone / webcam */
+    var peers = {};                /* keep track of our peer connections, indexed by peer_id (aka socket.io id) */
+    var peer_media_elements = {};
+    var ICE_SERVERS = [
+        {url:"stun:stun.l.google.com:19302"}
+    ];
+
+    function init() {
+
+
+
+        socket.on('connect', function() {
+            console.log("Connected to signaling server");
+            setup_local_media(function() {
+                /* once the user has given us access to their
+                 * microphone/camcorder, join the channel and start peering up */
+                join_chat_channel(DEFAULT_CHANNEL, {'whatever-you-want-here': 'stuff'});
+            });
+        });
+        socket.on('disconnect', function() {
+            console.log("Disconnected from signaling server");
+            /* Tear down all of our peer connections and remove all the
+             * media divs when we disconnect */
+            for (peer_id in peer_media_elements) {
+                peer_media_elements[peer_id].remove();
+            }
+            for (peer_id in peers) {
+                peers[peer_id].close();
+            }
+
+            peers = {};
+            peer_media_elements = {};
+        });
+        function join_chat_channel(channel, userdata) {
+            socket.emit('join', {"channel": channel, "userdata": userdata});
+            //alert("join channel");
+        }
+        function part_chat_channel(channel) {
+            socket.emit('part', channel);
+        }
+
+       // socket.emit("join", {"channel": default_channel, "userdata":userdata});
+
+        socket.on("addPeer", function (config) {
+           // alert("recieving add PEER");
+            console.log('Signaling server said to add peer:', config);
+            //alert(config);
+           var peer_id=config.peer_id;
+
+            var peer_connection = new RTCPeerConnection(
+                {"iceServers": ICE_SERVERS},
+                {"optional": [{"DtlsSrtpKeyAgreement": true}]} /* this will no longer be needed by chrome
+                                                                            * eventually (supposedly), but is necessary
+                                                                            * for now to get firefox to talk to chrome */
+            );
+
+            peers[peer_id]=peer_connection;
+
+            peer_connection.onicecandidate = function(event) {
+                if (event.candidate) {
+                    socket.emit('relayICECandidate', {
+                        'peer_id': peer_id,
+                        'ice_candidate': {
+                            'sdpMLineIndex': event.candidate.sdpMLineIndex,
+                            'candidate': event.candidate.candidate
+                        }
+                    });
+                }
+            }
+            peer_connection.onaddstream = function(event) {
+                console.log("onAddStream", event);
+                var remote_media = USE_VIDEO ? $("<video>") : $("<audio>");
+                remote_media.attr("autoplay", "autoplay");
+                if (MUTE_AUDIO_BY_DEFAULT) {
+                    remote_media.attr("muted", "true");
+                }
+                //remote_media.attr("controls", "");
+                //peer_media_elements[peer_id] = remote_media;
+                //$('body').append(remote_media);
+                //attachMediaStream(remote_media[0], event.stream);
+                var localVideo=document.getElementById("localVideo");
+                localVideo.src=window.URL.createObjectURL(event.stream);
+
+            }
+            peer_connection.addStream(local_media_stream);
+            if (config.should_create_offer) {
+                console.log("Creating RTC offer to ", peer_id);
+                peer_connection.createOffer(
+                    function (local_description) {
+                        console.log("Local offer description is: ", local_description);
+                        peer_connection.setLocalDescription(local_description,
+                            function() {
+                                socket.emit('relaySessionDescription',
+                                    {'peer_id': peer_id, 'session_description': local_description});
+                                console.log("Offer setLocalDescription succeeded");
+                            },
+                            function() { Alert("Offer setLocalDescription failed!"); }
+                        );
+                    },
+                    function (error) {
+                        console.log("Error sending offer: ", error);
+                    });
+            }
+
+        });
+        socket.on('sessionDescription', function(config) {
+            console.log('Remote description received: ', config);
+            var peer_id = config.peer_id;
+            var peer = peers[peer_id];
+            var remote_description = config.session_description;
+            console.log(config.session_description);
+
+            var desc = new RTCSessionDescription(remote_description);
+            var stuff = peer.setRemoteDescription(desc,
+                function() {
+                    console.log("setRemoteDescription succeeded");
+                    if (remote_description.type == "offer") {
+                        console.log("Creating answer");
+                        peer.createAnswer(
+                            function(local_description) {
+                                console.log("Answer description is: ", local_description);
+                                peer.setLocalDescription(local_description,
+                                    function() {
+                                        socket.emit('relaySessionDescription',
+                                            {'peer_id': peer_id, 'session_description': local_description});
+                                        console.log("Answer setLocalDescription succeeded");
+                                    },
+                                    function() { Alert("Answer setLocalDescription failed!"); }
+                                );
+                            },
+                            function(error) {
+                                console.log("Error creating answer: ", error);
+                                console.log(peer);
+                            });
+                    }
+                },
+                function(error) {
+                    console.log("setRemoteDescription error: ", error);
+                }
+            );
+            console.log("Description Object: ", desc);
+
+        });
+        socket.on('iceCandidate', function(config) {
+            var peer = peers[config.peer_id];
+            var ice_candidate = config.ice_candidate;
+            peer.addIceCandidate(new RTCIceCandidate(ice_candidate));
+        });
+
+
+        /**
+         * When a user leaves a channel (or is disconnected from the
+         * signaling server) everyone will recieve a 'removePeer' message
+         * telling them to trash the media channels they have open for those
+         * that peer. If it was this client that left a channel, they'll also
+         * receive the removePeers. If this client was disconnected, they
+         * wont receive removePeers, but rather the
+         * signaling_socket.on('disconnect') code will kick in and tear down
+         * all the peer sessions.
+         */
+        socket.on('removePeer', function(config) {
+            console.log('Signaling server said to remove peer:', config);
+            var peer_id = config.peer_id;
+            if (peer_id in peer_media_elements) {
+                peer_media_elements[peer_id].remove();
+            }
+            if (peer_id in peers) {
+                peers[peer_id].close();
+            }
+
+            delete peers[peer_id];
+            delete peer_media_elements[config.peer_id];
+        });
+
+    }
+
+    function setup_local_media(callback, errorback) {
+        if (local_media_stream != null) {  /* ie, if we've already been initialized */
+            if (callback) callback();
+            return;
+        }
+        /* Ask user for permission to use the computers microphone and/or camera,
+         * attach it to an <audio> or <video> tag if they give us access. */
+        console.log("Requesting access to local audio / video inputs");
+
+
+        navigator.getUserMedia = ( navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia);
+
+        attachMediaStream = function(element, stream) {
+            console.log('DEPRECATED, attachMediaStream will soon be removed.');
+            element.srcObject = stream;
+        };
+
+        navigator.getUserMedia({"audio":USE_AUDIO, "video":USE_VIDEO},
+            function(stream) { /* user accepted access to a/v */
+                console.log("Access granted to audio/video");
+                local_media_stream = stream;
+                var local_media = USE_VIDEO ? $("<video>") : $("<audio>");
+                local_media.attr("autoplay", "autoplay");
+                local_media.attr("muted", "true"); /* always mute ourselves by default */
+                //local_media.attr("controls", "");
+                //$("body").append(local_media);
+                //attachMediaStream(local_media[0], stream);
+
+                var video_overlays=document.getElementById("video_overlays");
+                video_overlays.src=window.URL.createObjectURL(stream);
+
+                if (callback) callback();
+            },
+            function() { /* user denied access to a/v */
+                console.log("Access denied for audio/video");
+                alert("You chose not to provide access to the camera/microphone, demo will not work.");
+                if (errorback) errorback();
+            });
+    }
+
+
+</script>
+
+<body onload='init()'>
+
+    <!--<h1 id="error-container"></h1>
+    <input type="text" id='name' name="name" value=" " placeholder="Enter your name!"/>
+    <button type="button" name="button" onclick="setUsername()">Let me chat</button>-->
+    <div id="wrap_video">
+
+        <div id="video_box">
+            <video id="video_overlays"></video>
+            <div>
+                <video id="localVideo" autoplay muted style="width:75%;" ></video>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
