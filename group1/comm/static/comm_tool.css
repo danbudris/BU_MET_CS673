@@ -516,7 +516,9 @@ button#deleteButton {
 
 .videoItems{
   flex-grow: 1;
-  width: 50%;
+  width: 100%;
+  height: 50%;
+
 }
 
 /* this is used to toole the hide for the video area */
