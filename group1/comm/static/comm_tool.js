@@ -640,7 +640,7 @@ function deleteMessage(msgid) {
 
 
 //Functions to resize Iframes dynamically
-    $(function(){
+  /*  $(function(){
     
         var iFrames = $('iframe');
       
@@ -669,3 +669,4 @@ function deleteMessage(msgid) {
         	}
         
         });
+        */
