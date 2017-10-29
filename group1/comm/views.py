@@ -16,9 +16,15 @@ def index(request):
 
 
 @login_required(login_url='/signin')
+def videochat(request):
+        context = {'user': request.user}
+        return render(request, 'comm/videochat.html', context)
+
+
+@login_required(login_url='/signin')
 def room(request, roomID):
     context = {'roomID': roomID}
-    return render(request,'comm/test.html', context)
+    return render(request, 'comm/test.html', context)
 
 
 # Django REST framework classes...
