@@ -90,8 +90,9 @@ div#sidebar {
 
 .scroll-area {
   height: 90%;
+  min-width: 25%;
   position: relative;
-  overflow: auto;
+  overflow: wrap;
 }
 
 div#top_bar {
@@ -174,11 +175,20 @@ a:hover {
   display: inline-block;
 }
 
+/* Sidebar Icons */
+
 .requirement_tool:before {
   content: "\f046";
   margin-left: -1.3em; /* same as padding-left set on li */
   width: 1em; /* same as padding-left set on li */
   color: #337ab7;
+}
+
+.help_tool:before{
+  content: "\f059";
+  margin-left: -1.3em; 
+  width: 1em;
+  color: #337ab7
 }
 
 .issue_tool:before {
@@ -494,4 +504,41 @@ button#deleteButton {
   background-color: #990000;
   float: left;
   color: white;
+}
+
+/* Begin Video Area Styles */
+
+.message_area{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.videoArea{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;  
+  width: 100%;
+}
+
+.videoItems{
+  flex-grow: 1;
+  width: 100%;
+  height: 50%;
+
+}
+
+/* This class hides the video area when it is not in use.
+   jquery is used to toogle this class on/off to show and hide 
+   the video area. 
+*/
+.hide{
+  display: none !important;
+}
+
+.minorFlex{
+  display: flex;
+  flex-direction: row;
+  align-content: left;
 }
