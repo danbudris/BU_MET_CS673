@@ -525,3 +525,9 @@ button#deleteButton {
 .hide{
   display: none !important;
 }
+
+.minorFlex{
+  display: flex;
+  flex-direction: row;
+  align-content: left;
+}
