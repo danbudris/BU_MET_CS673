@@ -42,7 +42,8 @@ INSTALLED_APPS = (
     'requirements',
     'comm',
     'issue_tracker',
-    'corsheaders'
+    'corsheaders',
+    'comm.oauth2_authentication'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -101,3 +102,5 @@ CORS_ALLOW_HEADER = (
     'x-csrftoken',
     'accept-encoding',
 )
+
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'comm/oauth2_authentication/client_secrets.json')
