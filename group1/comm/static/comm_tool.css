@@ -521,7 +521,10 @@ button#deleteButton {
 
 }
 
-/* this is used to toole the hide for the video area */
+/* This class hides the video area when it is not in use.
+   jquery is used to toogle this class on/off to show and hide 
+   the video area. 
+*/
 .hide{
   display: none !important;
 }
