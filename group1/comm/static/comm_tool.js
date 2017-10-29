@@ -24,6 +24,7 @@ function scroll_messages_into_view() {
     }
 }
 
+/*
 function startVideoChat() {
   var teamName = window.document.documentElement.querySelector('#room_title').textContent;
   if (teamName != "" || teamName != null) {
@@ -38,6 +39,13 @@ function startVideoChat() {
   } else {
     alert("Please create a team to be able to video chat")
   }
+}
+*/
+
+function startVideoChat(){
+  let URL = '/communication/videochat'
+  $('#videoArea').removeClass('hide');
+  $('#videoFrame').attr('src', URL);
 }
 
 function createteam(){
