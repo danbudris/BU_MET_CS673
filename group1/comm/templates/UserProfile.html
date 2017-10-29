@@ -71,6 +71,7 @@
         		<div class="modal-footer">
         		  	<a class="btn btn-default" href="javascript:void(0);" onclick="closeCommDialog();">Close</a>
         		  	<a class="btn btn-primary" href="javascript:void(0);" onclick="saveProfileChanges();">{{ button_desc }}</a>
+        		  	<!-- <button type="submit" class="btn btn-primary">{{ button_desc }}</button> -->
         		</div>
 	        </form>
 
@@ -114,4 +115,21 @@
                 async: true
             });
         }
+
+		// detect submit button event to use ajax method to post the form
+		// and retrive the return data back if there is error object in form object.
+		// $('#projectForm').on('submit',function(e){
+		//     $(this).ajaxForm({
+		//         type : "POST",
+		//         cache : false,
+		//         url : $(this).attr('action'),
+		//         data : $(this).serialize(),
+		//         success : function(data) {
+		//             $("#dialogModal").html(data);
+		//         },
+		//         async:false
+		//     }).submit();
+		//     e.stopPropagation();
+		// });
+
 	</script>
