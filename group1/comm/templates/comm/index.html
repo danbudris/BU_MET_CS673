@@ -97,12 +97,27 @@
               <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
             </button>
             <button id="sendcleartext" class="btn btn-default" type="button" data-toggle="tooltip" title="Start Video Share!" onclick="window.location.href='/communication/videochat'">
+            <!-- 
+            temporarily removed in order to fix a merge conflict; 10/29 DB
+            <button id="sendcleartext" class="btn btn-default" type="button" data-toggle="tooltip" title="Start Video Share!" onclick="startVideoChat()"> 
+            -->
                 <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
             </button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="glyphicon glyphicon-plus-sign"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
+            <div class="btn-group btn-group-inline">
+              <button id="google drive" type="button" class="btn btn-default" data-toggle="dropdown" aria-expanded="false" style="width:52px;height:46px;">
+                <img src="/static/google-drive-black-on-white.png" style="width:20px;height:20px;">
+              </button>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                  <li><a href="#">Upload File</a></li>
+                  <li><a href="#">Download File</a></li>
+                  <li><a href="#">Share File</a></li>
+                </ul>
+            </div>
+            <div class="btn-group btn-group-inline">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="width:52px;height:46px;">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu">
 <!--
               <li><a href="#">upload file</a></li>
               <li><a href="#"><img src="/static/favicon.ico" style="width:20px;height:20px;"></a></li>
@@ -117,7 +132,7 @@
               <li><a href="#"><img src="/static/favicon.ico" style="width:20px;height:20px;">
 </a></li>
 -->
-              <li><a href="#">Emoticons</a></li>
+                <li><a href="#">Emoticons</a></li>
 <table>
   <tr>
    <td><a href="#" data-toggle="button" onclick="emoji_input('::happy::')"><img src="/static/emoji/happy.jpg" style="width:20px;height:20px;"></a></td>
@@ -160,7 +175,8 @@
     <td><a href="#" data-toggle="button" onclick="emoji_input('::monkey::')"><img src="/static/emoji/monkey.jpg" style="width:20px;height:20px;"></a></td>
   </tr>
 </table>
-            </ul>
+              </ul>
+            </div>
 
    <!--......-->
 
