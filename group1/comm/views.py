@@ -1,7 +1,7 @@
 import django_filters
 from django.shortcuts import render
 from django.http import HttpResponse
-from comm.models import User, Room, Message, UserRoom
+from comm.models import User, Room, Message, UserRoom, IndvRoom
 from rest_framework import viewsets, generics, filters
 from comm.serializers import UserSerializer, RoomSerializer, MessageSerializer, MessageDataSerializer, UserRoomSerializer, UserRoomDataSerializer
 from django.contrib.auth.decorators import login_required
@@ -27,6 +27,7 @@ def room(request,roomID):
 class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
+
 
 class RoomViewSet(viewsets.ModelViewSet):
 	queryset = Room.objects.all()

@@ -15,6 +15,10 @@ class Room(models.Model):
 	description = models.CharField(max_length=500)
 	public = models.BooleanField(default=True)
 	#users = models.ManyToManyField(User)
+class IndvRoom(models.Model):
+    users=models.CharField(max_length=100)
+    create_user=models.ForeignKey(User)
+    second_user=models.PositiveIntegerField()
 
 class Message(models.Model):
 	"""
