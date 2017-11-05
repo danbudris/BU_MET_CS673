@@ -1,10 +1,12 @@
 import django_filters
 from django.shortcuts import render
 from django.http import HttpResponse
-from comm.models import User, Room, Message, UserRoom, IndvRoom
+from comm.models import User, Room, Message, UserRoom, IndvRoom, IndvMessage
 from rest_framework import viewsets, generics, filters
-from comm.serializers import UserSerializer, RoomSerializer, MessageSerializer, MessageDataSerializer, UserRoomSerializer, UserRoomDataSerializer
+from comm.serializers import UserSerializer, RoomSerializer, MessageSerializer, MessageDataSerializer, UserRoomSerializer, UserRoomDataSerializer, IndvRommSerializer, IndvMessageSerializer
 from django.contrib.auth.decorators import login_required
+from rest_framework.response import Response
+from rest_framework import status
 import random
 
 # Return the main chat room
@@ -28,6 +30,64 @@ class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
+class IndvRoomViewSet(viewsets.ModelViewSet):
+	queryset = IndvRoom.objects.all()
+	serializer_class = IndvRommSerializer
+	#filter_class = IndvRoomFilter
+	def get(self, request, format=None):
+		users = IndvRoom.objects.all()
+		serializer = IndvRommSerializer(users, many=True)
+		return Response(serializer.data)
+
+	def post(self, request, format=None):
+		serializer = IndvRommSerializer(data=request.data)
+		creator_id=int(request.data.get("create_user", ""))
+		users=request.data.get("users", "")
+		second_user=request.data.get("second_user", "")
+		creator_user=User.objects.get(id=creator_id)
+		indvroom=IndvRoom()
+		indvroom.users=users
+		indvroom.create_user=creator_user
+		indvroom.second_user=second_user
+		indvroom.save()
+		#if serializer.is_valid():
+			#serializer.save()
+			#return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+	def delete(self, request, pk, format=None):
+		user = self.get_object(pk)
+		user.delete()
+        #return Response(status=status.HTTP_204_NO_CONTENT)
+
+class IndvMessageViewSet(viewsets.ModelViewSet):
+	queryset = IndvMessage.objects.all()
+	serializer_class = IndvMessageSerializer
+	#filter_class = IndvRoomFilter
+	def get(self, request, format=None):
+		users = IndvMessage.objects.all()
+		serializer = IndvMessageSerializer(users, many=True)
+		return Response(serializer.data)
+
+	def post(self, request, format=None):
+		serializer = IndvMessageSerializer(data=request.data)
+		send_user_id=int(request.data.get("send_user", ""))
+		indv_room=int(request.data.get("indv_room", ""))
+		text=request.data.get("text", "")
+		send_user=User.objects.get(id=send_user_id)
+		indv_message=IndvMessage()
+		indv_message.text=text
+		indv_message.send_user=send_user
+		indv_message.indv_room=indv_room
+		indv_message.save()
+
+		#if serializer.is_valid():
+			#serializer.save()
+			#return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+	def delete(self, request, pk, format=None):
+		user = self.get_object(pk)
+		user.delete()
+        #return Response(status=status.HTTP_204_NO_CONTENT)
 
 class RoomViewSet(viewsets.ModelViewSet):
 	queryset = Room.objects.all()

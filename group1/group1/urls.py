@@ -9,7 +9,8 @@ from comm import views
 
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
-#router.register(r'indvRooms', views.IndvRoomViewSet)
+router.register(r'indvrooms', views.IndvRoomViewSet, 'indvrooms')
+router.register(r'indvmessages', views.IndvMessageViewSet)
 router.register(r'rooms', views.RoomViewSet)
 router.register(r'messagedata', views.MessageDataViewSet, 'messagedata')
 router.register(r'messagesearch', views.MessageSearchSet, 'messagesearch')

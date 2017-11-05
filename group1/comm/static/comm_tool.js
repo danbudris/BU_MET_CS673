@@ -236,6 +236,7 @@ function add_socket(room) {
     sockets[room.id] = socket;
 }
 
+
 function increment_badge(room_id){
   var badge = $('div#room-list a').filter( function(){ return $(this).attr('id') === 'room-' + room_id } ).children().filter('.badge');
   var count = Number(badge.text());
@@ -243,6 +244,10 @@ function increment_badge(room_id){
 }
 
 function add_message(msg, msgid, msguser, target) {
+    //console.log(msg);
+    //console.log(msgid);
+    //console.log(msguser);
+    //console.log(target);
   //Check if user is the person who sent message. Show different options depending on result.
   //The p element contains the actual message, and each of them have the id "message-" followed by the message id
   if (msguser == user_id) {
@@ -280,9 +285,16 @@ function display() {
     'user_id': user_id,
     'already_sent': false
   };
-  sockets[visible_namespace()].emit('msg', message);
-  $('input#text').val('');
-  $("#charLimitMessage").css("display", "none");
+
+  if(visible_namespace()<10){
+       sockets[visible_namespace()].emit('msg', message);
+       $('input#text').val('');
+       $("#charLimitMessage").css("display", "none");
+  }
+  else {
+      global.emit('indv_msg', message);
+  }
+
 
 }
 
@@ -410,6 +422,7 @@ function populate_user_list() {
       all_users.forEach(function(user) {
         var user_link = $('<li />', {
           'class': _.contains(online_users, user.username) ? 'user' : 'user disabled',
+          'id':user.id,
           'html':
           $('<a />', {
             'href': '#'
@@ -422,6 +435,7 @@ function populate_user_list() {
     });
   });
 }
+
 
 //upload file
 function filechoose(){
@@ -464,6 +478,56 @@ $(document).ready(function(){
       switch_room( $(this).attr('id') );
       get_message_data(id[1]); // load messages for the room
     }
+  });
+
+  $('ul.user_list').on('click', 'li', function(){
+      var id = $(this).attr('id');
+      console.log("id: " + id);
+      clearMessage();
+        var room_num='room-' + visible_namespace();
+       $('div.messagecontent').filter('#' + room_num).hide();
+       $('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link');
+      //global.emit('indvroom', {'creator_id':user_id, 'second_user':id});
+       $.getJSON('http://localhost:8000/api/indvrooms/?format=json', function(data) {
+
+           var indvroom_id=0;
+            // global_room_list = data;
+            data.forEach(function(room) {
+
+                var room_users=room.users.split("-");
+                if ((room_users[0]==user_id && room_users[1]==id) || (room_users[0]==id && room_users[1]==user_id)) indvroom_id=room.id;
+            });
+
+            if(indvroom_id==0) global.emit('indvroom', {'creator_id':user_id, 'second_user':id});
+            global.emit('indvroom_id', {"id":indvroom_id});
+            //alert(indvroom_id);
+           var check_messagelist=$('div#room-'+indvroom_id)[0];
+           if(!check_messagelist){
+                $('div#message_list').append( $('<div />', {
+                'class': 'messagecontent',
+                'id': 'room-' + indvroom_id,
+                'text': '',
+            }));
+           }
+
+
+            var room_num = 'room-' + indvroom_id;
+            $('div.messagecontent').filter('#' + room_num).show();
+            //$('div.messagecontent').filter('#' + room_num).addClass('active');
+             //$('div#room-' + indvroom_id).hide();
+       });
+
+       global.on('indv_msg', function (data) {
+            //alert('bar');
+           //alert(JSON.stringify(data));
+           add_message(data.text, data.id, user, data.indv_room);
+           console.log(data);
+       });
+
+
+
+
+
   });
 
   // clear all messages

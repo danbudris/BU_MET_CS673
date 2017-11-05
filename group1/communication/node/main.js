@@ -59,6 +59,7 @@ var client = new Client();
 var users = [];
 
 var global_namespace = io.of('/');
+var indvroom_id;
 
 global_namespace.on('connection', function(socket){
         var user;
@@ -74,6 +75,18 @@ global_namespace.on('connection', function(socket){
                 console.log( util.format('%s disconnected', user) );
                 global_namespace.emit('user', {'username': user, 'action': 'disconnected' });
         });
+        socket.on('indvroom', function (data) {
+                console.log(data);
+                indvroom.save(data.creator_id, data.second_user);
+        });
+        socket.on('indvroom_id', function (data) {
+                indvroom_id=data.id;
+        });
+        socket.on('indv_msg', function(data){
+                console.log('indv_msg '+data)
+                indv_messages.save(data.value, data.user_id, indvroom_id);
+        });
+
         socket.on('room', function(room){
                 console.log('new room: '  + room.name);
                 rooms.save(room.name, room.creator_id, room.description, room.public);
@@ -131,6 +144,28 @@ client.get(room_url,function(data,response){
   });
 });
 
+var indv_messages={
+    'save':function(text, send_user, indvroom_id){
+        console.log("text - "+text);
+        console.log("send_user - "+send_user);
+        console.log("indvroom_id - "+indvroom_id);
+        indvtext_template={
+               data:{
+                   'text':text,
+                   'send_user':util.format('http://localhost:8000/api/users/%s/', send_user),
+                   'indv_room':indvroom_id,
+               },
+               headers: { 'Content-Type': 'application/json' }
+           };
+           client.post("http://localhost:8000/api/indvmessages/", indvtext_template, function (data, response) {
+
+                    global_namespace.emit('indv_msg', data);
+
+           });
+
+    }
+};
+
 var messages = {
         'save': function(room_id, message, user_id) {
                 message_template = {
@@ -172,6 +207,25 @@ var messages = {
                         console.log( util.format('(%s) Message %s deleted', response.statusCode, msgid) );
                 });
         }
+};
+var indvroom={
+    'save':function (creator_id, second_user) {
+           indvroom_template={
+               data:{
+                   'users':creator_id+'-'+second_user,
+                   'create_user':util.format('http://localhost:8000/api/users/%s/', creator_id),
+                   'second_user':second_user,
+               },
+               headers: { 'Content-Type': 'application/json' }
+           };
+           client.post("http://localhost:8000/api/indvrooms/", indvroom_template, function (data, response) {
+                    // parsed response body as js object
+                    console.log('indvroom created ' + data.id);
+                    // raw response
+                    //console.log(response);
+           });
+
+    }
 };
 
 var rooms = {

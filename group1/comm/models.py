@@ -19,6 +19,15 @@ class IndvRoom(models.Model):
     users=models.CharField(max_length=100)
     create_user=models.ForeignKey(User)
     second_user=models.PositiveIntegerField()
+    time=models.DateTimeField(auto_now=True, blank=True)
+
+class IndvMessage(models.Model):
+    text=models.CharField(max_length=100)
+    send_user=models.ForeignKey(User)
+    indv_room = models.PositiveIntegerField()
+    time=models.DateTimeField(auto_now=True)
+
+
 
 class Message(models.Model):
 	"""
