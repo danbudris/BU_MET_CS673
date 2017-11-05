@@ -4,7 +4,7 @@ from requirements.views import users
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^changepasswd', users.changepasswd),
-    url(r'^userprofile', users.userprofile),
+    url(r'^toolbar/changepasswd', users.changepasswd),
+    url(r'^toolbar/userprofile', users.userprofile),
     url(r'^videochat/', views.videochat, name='videochat'),
 )

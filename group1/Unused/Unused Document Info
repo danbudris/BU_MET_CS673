@@ -1,0 +1,7 @@
+This file contains information of all the foles/folders which are in the unused folder and are not having any impact on removing it. I am mentioning the location where the file/folder was previously located
+
+1.  django:
+    Type: Folder    
+    Previous location: BU_MET_CS673/group1/communication
+    Reason removed -> This folder contains two sub folders. One is "comm" which is duplicate of the group1/comm folder and then there is "group2" folder which has duplicate files which are againi present in group1/comm.
+2.  
