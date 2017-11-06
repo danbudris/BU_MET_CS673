@@ -293,6 +293,8 @@ function display() {
   }
   else {
       global.emit('indv_msg', message);
+      $('input#text').val('');
+      $("#charLimitMessage").css("display", "none");
   }
 
 
@@ -468,7 +470,7 @@ $(document).ready(function(){
 
   populate_room_list();
   populate_user_list();
-    
+
 
 // switch and load messages on click on the room name
   $('div#room-list').on('click', 'a', function(){
@@ -483,43 +485,74 @@ $(document).ready(function(){
 
   $('ul.user_list').on('click', 'li', function(){
       var id = $(this).attr('id');
-      console.log("id: " + id);
-      clearMessage();
-        var room_num='room-' + visible_namespace();
-       $('div.messagecontent').filter('#' + room_num).hide();
-       $('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link');
-       $.getJSON('http://localhost:8000/api/indvrooms/?format=json', function(data) {
+      if(user_id!=id) {
+          var label_name = $(this).find('a').text();
+          $('span#room_title').text(label_name);
+          console.log("id: " + id);
+          clearMessage();
+          var room_num = 'room-' + visible_namespace();
+          $('div.messagecontent').filter('#' + room_num).hide();
+          $('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link');
+          $.getJSON('http://localhost:8000/api/indvrooms/?format=json', function (data) {
+              var indvroom_id = 0;
+              data.forEach(function (room) {
+                  var room_users = room.users.split("-");
+                  if ((room_users[0] == user_id && room_users[1] == id) || (room_users[0] == id && room_users[1] == user_id)) indvroom_id = room.id;
+              });
 
-           var indvroom_id=0;
-            data.forEach(function(room) {
+              if (indvroom_id == 0) global.emit('indvroom', {'creator_id': user_id, 'second_user': id});
+              global.emit('indvroom_id', {"id": indvroom_id});
+              //alert(indvroom_id);
+              var check_messagelist = $('div#room-' + indvroom_id)[0];
+              if (!check_messagelist) {
+                  $('div#message_list').append($('<div />', {
+                      'class': 'messagecontent',
+                      'id': 'room-' + indvroom_id,
+                      'text': '',
+                  }));
+              }
+              get_indvroom_messages(indvroom_id);
+               document.getElementById("bottom").scrollIntoView();
+                $('html, body').animate({ scrollTop: $(document).height() }, 1200);
+              var room_num = 'room-' + indvroom_id;
+              $('div.messagecontent').filter('#' + room_num).show();
+              //$('div#room-' + indvroom_id).hide();
+              global.emit('indvjoin', {"indvroom": indvroom_id});
+          });
 
-                var room_users=room.users.split("-");
-                if ((room_users[0]==user_id && room_users[1]==id) || (room_users[0]==id && room_users[1]==user_id)) indvroom_id=room.id;
-            });
 
-            if(indvroom_id==0) global.emit('indvroom', {'creator_id':user_id, 'second_user':id});
-            global.emit('indvroom_id', {"id":indvroom_id});
-            //alert(indvroom_id);
-           var check_messagelist=$('div#room-'+indvroom_id)[0];
-           if(!check_messagelist){
-                $('div#message_list').append( $('<div />', {
-                'class': 'messagecontent',
-                'id': 'room-' + indvroom_id,
-                'text': '',
-            }));
-           }
-            var room_num = 'room-' + indvroom_id;
-            $('div.messagecontent').filter('#' + room_num).show();
-             //$('div#room-' + indvroom_id).hide();
-           global.emit('join', {"indvroom":indvroom_id});
-       });
+      }
+  });
 
-       global.on('indv_msg', function (data) {
-           add_message(data.text, data.id, user, data.indv_room);
+
+  function get_indvroom_messages(indvroom){
+      $.getJSON('http://localhost:8000/api/indvmessages/?format=json', function(data) {
+            data.forEach(function (messages) {
+                if(messages.indv_room==indvroom){
+                    console.log(messages.text);
+                    var text=messages.text.split(':');
+                    var message='<b>'+text[0]+'</b>:'+text[1];
+                    add_message(message, messages.id, user, messages.indv_room);
+
+                }
+            })
+      });
+
+  }
+   global.on('indv_msg', function (data) {
+           //alert(data.text);
+           console.log('check for repeat text '+data.text);
+           var text=data.text.split(':');
+           var message='<b>'+text[0]+'</b>:'+text[1];
+           add_message(message, data.id, user, data.indv_room);
+          if ($('span.msg p').length > 0) {
+            var last_message_idx = $('span.msg p').length - 1;
+             var last_msg_id = $('span.msg p')[last_message_idx].id;
+            document.getElementById(last_msg_id).scrollIntoView();
+          }
            console.log(data);
        });
 
-  });
 
   // clear all messages
   function clearMessage(){

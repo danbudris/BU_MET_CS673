@@ -60,6 +60,7 @@ var users = [];
 
 var global_namespace = io.of('/');
 var indvroom_id;
+var indv_sockets={};
 
 global_namespace.on('connection', function(socket){
         var user;
@@ -75,8 +76,9 @@ global_namespace.on('connection', function(socket){
                 console.log( util.format('%s disconnected', user) );
                 global_namespace.emit('user', {'username': user, 'action': 'disconnected' });
         });
-        socket.on('join', function(data){
+        socket.on('indvjoin', function(data){
             console.log('join data '+data.indvroom);
+            indv_sockets[data.indvroom]=socket;
             socket.join(data.indvroom);
             socket.room=data.indvroom;
             //socket.broadcast.to(data.indvroom).emit('new_room', {'new_room':'new_room'});
@@ -90,8 +92,8 @@ global_namespace.on('connection', function(socket){
                 indvroom_id=data.id;
         });
         socket.on('indv_msg', function(data){
-                console.log('indv_msg '+data)
-                indv_messages.save(data.value, data.user_id, indvroom_id);
+                console.log('indv_msg '+data);
+                indv_messages.save(util.format('%s: %s', data.username, data.value), data.user_id, indvroom_id);
         });
 
         socket.on('room', function(room){
@@ -166,7 +168,7 @@ var indv_messages={
            };
            client.post("http://localhost:8000/api/indvmessages/", indvtext_template, function (data, response) {
 
-                    //global_namespace.emit('indv_msg', data);
+                    console.log('check for repeat text '+data.text);
                     io.sockets.in(indvroom_id).emit('indv_msg', data);
 
            });
@@ -314,6 +316,7 @@ var channels = {};
 var sockets = {};
 
 // webrtc stuff begins
+
 io.on('connection', function(socket) {
         socket.on('msg', function(msg) {
                 io.emit('msg', msg);
