@@ -468,6 +468,7 @@ $(document).ready(function(){
 
   populate_room_list();
   populate_user_list();
+    
 
 // switch and load messages on click on the room name
   $('div#room-list').on('click', 'a', function(){
@@ -487,11 +488,9 @@ $(document).ready(function(){
         var room_num='room-' + visible_namespace();
        $('div.messagecontent').filter('#' + room_num).hide();
        $('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link');
-      //global.emit('indvroom', {'creator_id':user_id, 'second_user':id});
        $.getJSON('http://localhost:8000/api/indvrooms/?format=json', function(data) {
 
            var indvroom_id=0;
-            // global_room_list = data;
             data.forEach(function(room) {
 
                 var room_users=room.users.split("-");
@@ -509,24 +508,16 @@ $(document).ready(function(){
                 'text': '',
             }));
            }
-
-
             var room_num = 'room-' + indvroom_id;
             $('div.messagecontent').filter('#' + room_num).show();
-            //$('div.messagecontent').filter('#' + room_num).addClass('active');
              //$('div#room-' + indvroom_id).hide();
+           global.emit('join', {"indvroom":indvroom_id});
        });
 
        global.on('indv_msg', function (data) {
-            //alert('bar');
-           //alert(JSON.stringify(data));
            add_message(data.text, data.id, user, data.indv_room);
            console.log(data);
        });
-
-
-
-
 
   });
 

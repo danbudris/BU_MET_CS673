@@ -75,6 +75,13 @@ global_namespace.on('connection', function(socket){
                 console.log( util.format('%s disconnected', user) );
                 global_namespace.emit('user', {'username': user, 'action': 'disconnected' });
         });
+        socket.on('join', function(data){
+            console.log('join data '+data.indvroom);
+            socket.join(data.indvroom);
+            socket.room=data.indvroom;
+            //socket.broadcast.to(data.indvroom).emit('new_room', {'new_room':'new_room'});
+            io.sockets.in(data.indvroom).emit('new_room', {'new_room':'new_room'});
+        });
         socket.on('indvroom', function (data) {
                 console.log(data);
                 indvroom.save(data.creator_id, data.second_user);
@@ -159,7 +166,8 @@ var indv_messages={
            };
            client.post("http://localhost:8000/api/indvmessages/", indvtext_template, function (data, response) {
 
-                    global_namespace.emit('indv_msg', data);
+                    //global_namespace.emit('indv_msg', data);
+                    io.sockets.in(indvroom_id).emit('indv_msg', data);
 
            });
 
@@ -305,7 +313,7 @@ var message_template = {
 var channels = {};
 var sockets = {};
 
-// WebSocket stuff
+// webrtc stuff begins
 io.on('connection', function(socket) {
         socket.on('msg', function(msg) {
                 io.emit('msg', msg);
