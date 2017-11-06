@@ -4,5 +4,7 @@ from . import views
 urlpatterns = patterns(
     '',
     url(r'^$', views.index, name='index'),
-    url(r'oauth2callback', views.auth_return, name='return'),
+    url(r'oauth2callback$', views.auth_return, name='return'),
+    url(r'filedownload/(?P<file_id>[\w-]+)', views.file_download, name='download'),
+    url(r'oauth2callback/filedownload', views.callback_download, name='callback_download'),
 )
