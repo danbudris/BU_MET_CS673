@@ -206,13 +206,11 @@ global.on('deletemsg', function(msgid){
 function createTeamFunc() {
 
     var new_team_name = $('input#teamname').val();
-    if(!testNameValidation(new_team_name)) {
+    if (!testNameValidation(new_team_name)) {
       alert("Please enter a valid team name");
-
-    } else if(!isTeamNameExist(new_team_name)) {
+    } else if (!isTeamNameExist(new_team_name)) {
       alert("A team with that name already exist.");
-
-    } else{
+    } else {
       var room_data = {
         name: new_team_name,
         creator_id: user_id,
@@ -606,12 +604,10 @@ function getCurrentRoom() {
 
 function editTeamFunc() {
   var edited_team_name = $('input#teamname').val();
-  if(!testNameValidation(edited_team_name)) {
+  if (!testNameValidation(edited_team_name)) {
     alert("Please enter a valid team name");
-
-  } else if(!isTeamNameExist(edited_team_name)){
+  } else if (!isTeamNameExist(edited_team_name)) {
     alert("A team with that name already exist. ");
-
   } else {
     var room_data = {
       id: curroom.id,
