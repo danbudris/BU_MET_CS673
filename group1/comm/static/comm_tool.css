@@ -205,18 +205,18 @@ a:hover {
   list-style-type: none;
 }
 
-.user_list li:before {
+/*.user_list li:before {
   content: "\f111"; /* FontAwesome Unicode */
-  font-family: FontAwesome;
+ /* font-family: FontAwesome;
   font-size:.98rem;
-  margin-right: .7em;
+  margin-right: .007em;
   margin-left: -1.3em; /* same as padding-left set on li */
-  width: 1.3em; /* same as padding-left set on li */
-  color: #9400D3;
-}
+ /* width: 1.3em; /* same as padding-left set on li */
+  /*color: #42a8cf;
+}*/
 
 .user_list {
-  padding-left: 15px;
+  padding-left: 0px;
 }
 
 /* END USERS */
@@ -310,6 +310,49 @@ a.list-group-item:hover {
 }
 
 /* END LIST GROUP */
+
+
+/* START LIST USER */
+a.list-user-item {
+  color: none;
+  text-decoration:none;
+
+}
+.list-user-item.active, .list-user-item.active:focus, .list-user-item.active:hover {
+  background-color: #E8E8E8;
+  text-shadow: 0;
+  color: initial;
+  font-weight:700;
+  background-image: none;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff337ab7', endColorstr='#ff2b669a', GradientType=0);
+  border-color: none;
+  text-shadow:none;
+  scrollbar-shadow-color: red;
+}
+a.list-user-item:hover {
+  color:none;
+  text-decoration:none;
+  background-color: #f0eeee;
+
+}
+.list-user-item {
+    position: relative;
+    display: block;
+    padding: 8px 8px;
+    margin-bottom: -1px;
+    background-color: transparent;
+    border: 0px;
+}
+
+.user_list {
+  border-radius: 0;
+  -webkit-box-shadow: 0 0px 0px rgba(0,0,0,.0);
+  box-shadow: 0 0px 0px rgba(0,0,0,.0);
+}
+
+
+/* END LIST USER */
+
 
 
 
