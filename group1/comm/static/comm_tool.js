@@ -42,20 +42,25 @@ function startVideoChat() {
 }
 */
 
+
+//Set the sentinel for turning on/off the chat window
 let chatcounter = 0; 
 
+//Function for starting and stopping the video chat
 function startVideoChat(){
   if(chatcounter == 0){
-    let chatcounter = 1;
+    chatcounter = 1;
     let URL = '/communication/videochat'
     $('#videoArea').removeClass('hide');
     $('#videoFrame').attr('src', URL);
+    console.log("on");
   }
   else if(chatcounter == 1){
-    let chatcounter = 0;
+    chatcounter = 0;
     let URL = ''
     $('#videoArea').addClass('hide');
     $('#videoFrame').attr('src', URL);
+    console.log("off");
   }
 }
 
