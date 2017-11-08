@@ -56,7 +56,7 @@ function startVideoChat(){
     $('#videoArea').removeClass('hide');
     $('#videoFrame').attr('src', URL);
     //shrink the scroll area that houses the messages to allow the shown div to fit
-    $('#scrollarea').css("max-width","50%");
+    $('#scroll-area').css("max-width","50%");
     console.log("on");
   }
   else if(chatcounter == 1){
@@ -64,7 +64,7 @@ function startVideoChat(){
     let URL = ''
     $('#videoArea').addClass('hide');
     $('#videoFrame').attr('src', URL);
-    $('#scrollarea').css("max-width","100%");
+    $('#scroll-area').css("max-width","100%");
     console.log("off");
   }
 }

@@ -99,7 +99,7 @@ div#sidebar {
 .scroll-area {
   height: 90%;
   min-width: 25%;
-  max-width: 50%;
+  max-width: 100%;
   position: relative;
   overflow-y: wrap;
   overflow-x: auto;
