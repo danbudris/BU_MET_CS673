@@ -68,8 +68,8 @@ function startVideoChat() {
 let chatcounter = 0; 
 
 //Function for starting and stopping the video chat
-function startVideoChat(){
-  if(chatcounter == 0){
+function startVideoChat() {
+  if (chatcounter == 0) {
     //increment the counter to 'on'
     chatcounter = 1;
     //set the URL to the video chat HTML api, and show the div containing it
@@ -77,15 +77,15 @@ function startVideoChat(){
     $('#videoArea').removeClass('hide');
     $('#videoFrame').attr('src', URL);
     //shrink the scroll area that houses the messages to allow the shown div to fit
-    $('.scroll-area').css("max-width","50%");
+    $('.scroll-area').css("max-width", "50%");
     console.log("on");
   }
-  else if(chatcounter == 1){
+  else if (chatcounter == 1) {
     chatcounter = 0;
     let URL = ''
     $('#videoArea').addClass('hide');
     $('#videoFrame').attr('src', URL);
-    $('.scroll-area').css("max-width","100%");
+    $('.scroll-area').css("max-width", "100%");
     console.log("off");
   }
 }
@@ -721,7 +721,7 @@ function deleteMessage(msgid) {
 
 // EVENT LISTENERS
 
-$("#startVideo").click(()=>{
+$("#startVideo").click( ()=> {
   console.log('Attempting to start video');
   startVideoChat();
 })
