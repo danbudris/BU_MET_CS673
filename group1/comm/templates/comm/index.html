@@ -27,7 +27,7 @@
 
   <!-- class files -->
   <script type="text/javascript" src="/static/comm_tool.js"></script>
-  <script type="text/javascript" src="/static/videochat.js"></script> 
+  <script type="text/javascript" src="/static/videochat.js"></script>
  <link rel="stylesheet" type="text/css" href="/static/comm_tool.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -92,6 +92,9 @@
           <span class="input-group-btn dropup">
           <button id="sendcleartext" class="btn btn-default" data-toggle="tooltip" title="Send messages!" type="button" onclick="display();">
               <span class="glyphicon glyphicon-expand" aria-hidden="true"></span>
+            </button>
+              <button id="record" class="btn btn-default" data-toggle="tooltip"  title='audio recording' type='button' onclick="startRecording();">
+              <i style="font-size:24px" class="fa">&#xf130;</i>
             </button>
             <button id="upload file" class="btn btn-default" type="button" data-toggle="tooltip" title="Send files!" onclick="filechoose()">
               <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
@@ -281,6 +284,7 @@
     </div>
   </div>
 </div>
+
 
 <div id="inputmodal" class="modal fade">
   <div class="modal-dialog">

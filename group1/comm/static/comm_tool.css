@@ -470,13 +470,21 @@ ul.msgmenu li:hover {
 div#mymodal{
   z-index: 10000001;
 }
+div#id01{
+  z-index: 10000001;
+}
 
 .modal {
   z-index:1000000;
 }
 
+
 /* END MODAL */
 
+canvas {
+  display: block;
+  margin-bottom: 0.5rem;
+}
 
 
 /* START BUTTONS */

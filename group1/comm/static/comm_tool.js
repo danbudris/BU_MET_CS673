@@ -1,6 +1,8 @@
 String.prototype.splice = function( idx, rem, s ) {
     return (this.slice(0,idx) + s + this.slice(idx + Math.abs(rem)));
 };
+
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -245,13 +247,25 @@ function increment_badge(room_id){
 }
 
 function add_message(msg, msgid, msguser, target) {
+
   //Check if user is the person who sent message. Show different options depending on result.
   //The p element contains the actual message, and each of them have the id "message-" followed by the message id
-  if (msguser == user_id) {
-    $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">' + msg + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span><ul class="msgmenu"><li onclick="showEditMessage(' + msgid + ')">edit</li><li onclick="deleteMessage(' + msgid + ')" class="red">delete</li></ul></span>');
-  } else {
-    $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">' + msg + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span></span>');
-  }
+
+    var check=msg.substring(msguser.length+8, msg.length);
+
+
+    if (check.slice(0, 10)=='blob:http:'){
+        console.log(check);
+         $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">' + '<audio controls><source src="'+check+'" type="audio/ogg"></audio>' + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span></span>');
+
+    }
+    else {
+        if (msguser == user_id) {
+            $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">' + msg + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span><ul class="msgmenu"><li onclick="showEditMessage(' + msgid + ')">edit</li><li onclick="deleteMessage(' + msgid + ')" class="red">delete</li></ul></span>');
+        } else {
+            $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">' + msg + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span></span>');
+        }
+    }
   //add emoji to message content
   var emoji_string=Object.getOwnPropertyNames(emoji_image);
   if (msg.indexOf('::') != -1) {
@@ -296,6 +310,8 @@ function display() {
 
 
 }
+
+
 
 // Add a new message whenever the user presses the enter key
 $(document).ready(function(){
@@ -364,6 +380,81 @@ function get_message_data(room_id) {
         add_message(message_text, msg.id, message_user, room_id) ;
       });
     });
+}
+
+// audio recording starts
+function startRecording() {
+
+navigator.getUserMedia = navigator.getUserMedia ||
+                         navigator.webkitGetUserMedia ||
+                         navigator.mozGetUserMedia;
+//var record = document.querySelector('#record');
+var record = document.getElementById("record");
+var audioURL;
+
+if (navigator.getUserMedia) {
+   console.log('getUserMedia supported.');
+   navigator.getUserMedia (
+      // constraints - only audio needed for this app
+      {
+         audio: true
+      },
+
+      // Success callback
+      function(stream) {
+        var mediaRecorder = new MediaRecorder(stream);
+        record.onclick = function() {
+          mediaRecorder.start();
+          console.log(mediaRecorder.state);
+          console.log("recorder started");
+          record.style.background = "red";
+          record.style.color = "black";
+          record.id = "stop";
+          setTimeout(function(){
+            console.log("recorder stopped");
+            mediaRecorder.stop();
+            console.log(mediaRecorder.state);
+            console.log("recorder stopped");
+            record.style.background = "";
+            record.style.color = "";
+          }, 5000);
+
+        }
+
+        var chunks = [];
+
+          mediaRecorder.ondataavailable = function(e) {
+          chunks.push(e.data);
+        };
+        mediaRecorder.onstop = function(e) {
+            console.log("recorder stopped");
+
+
+            var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+            console.log("blob = "+blob);
+            chunks = [];
+            audioURL = window.URL.createObjectURL(blob);
+            var message = {
+                'username': user,
+                'value': audioURL,
+                'user_id': user_id,
+                'already_sent': false
+              };
+            global.emit('indv_msg', message);
+
+            //add_message(audioURL, 210, 5, 20);
+            scroll_messages_into_view();
+            console.log("audioUrl = "+audioURL)
+          }
+      },
+      // Error callback
+      function(err) {
+         console.log('The following gUM error occured: ' + err);
+      }
+   );
+    } else {
+   console.log('getUserMedia not supported on your browser!');
+    }
 }
 
 
@@ -550,12 +641,24 @@ $(document).ready(function(){
 
   }
    global.on('indv_msg', function (data) {
-           var text=data.text.split(':');
-           var message='<b>'+text[0]+'</b>:'+text[1];
+           var message=checkMessageFortext(data.text);
+           alert(message);
            add_message(message, data.id, user, data.indv_room);
            scroll_messages_into_view()
        });
 
+  function checkMessageFortext(message){
+      var text=message.split(':');
+      if (text[1]!='blob' && text[2]!='http') {
+          return '<b>'+text[0]+'</b>:'+text[1];
+      }
+      else{
+        var head=message.substring(0, text[0].length);
+        var tile=message.substring(text[0].length+2, message.length);
+        return '<b>'+head+'</b>:'+tile;
+      }
+
+  }
 
   // clear all messages
   function clearMessage(){
