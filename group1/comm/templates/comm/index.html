@@ -26,6 +26,7 @@
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap-theme.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css">
 
+
   <!-- class files -->
  <link rel="stylesheet" type="text/css" href="/static/comm_tool.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -40,7 +41,40 @@
 
 <body>
   <header>
-      <h1><i class="fa fa-comments-o" aria-hidden="true"></i> Communication tool</h1>
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls= "navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Communication Tool</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                <li class="dropdown pull-right commDropDown">
+                    <a id="id_username_link" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ user.username }} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="javascript:void(0);" onclick="showCommDialog('/communication/userprofile/')"><span class="glyphicon glyphicon-user" aria-hidden="false"></span>Profile</a></li>
+                        <li><a href="javascript:void(0);" onclick="showCommDialog('/communication/changepasswd/');"><span class="glyphicon glyphicon-lock" aria-hidden="false"></span>Change Password</a></li>
+                        <li class="divider"></li>
+                        <li><a id="id_logout_link" href="/signout"><span class="glyphicon glyphicon-ounicationff" aria-hidden="false"></span>Logout</a></li>
+                    </ul>
+                </li>                {% else %}
+                    {% if not isUserSigningInUpOrOut %}
+                    <!-- <li><a href="#">Sign In</a></li> -->
+                    <li><a class="btn btn-link pull-right" href="/signin">Sign In</a></li>
+                    <li><a class="btn btn-link pull-right" href="/signup">Sign Up</a></li>
+                    {% else %}
+                    <li><a class="btn btn-link pull-right" href="/">Home</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+      <!--<h1><i class="fa fa-comments-o" aria-hidden="true"></i> Communication tool</h1> -->
   </header>
 
   <div id="wrapper">
@@ -315,6 +349,7 @@
 </div>
 
 </div>
+<div id="dialogCommModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="dialogModalLabel" aria-hidden="true" style="display: none;"></div>
 
 </body>
 
