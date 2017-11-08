@@ -42,11 +42,11 @@ function startVideoChat() {
 }
 */
 
-/* function startVideoChat(){
+function startVideoChat(){
   let URL = '/communication/videochat'
   $('#videoArea').removeClass('hide');
   $('#videoFrame').attr('src', URL);
-}*/
+}
 
 function createteam(){
   //Show modal to create team
@@ -643,5 +643,5 @@ function deleteMessage(msgid) {
 $("#starVideo").click(()=>{
   console.log('Attempting to start video');
   let URL = '/communication/videochat'  
-  window.open(URL)
+  startVideoChat();
 })
