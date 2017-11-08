@@ -640,7 +640,7 @@ function deleteMessage(msgid) {
 
 // EVENT LISTENERS
 
-$("#starVideo").click(()=>{
+$("#startVideo").click(()=>{
   console.log('Attempting to start video');
   let URL = '/communication/videochat'  
   startVideoChat();
