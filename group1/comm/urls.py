@@ -9,4 +9,5 @@ urlpatterns = patterns(
     url(r'^changepasswd', users.changepasswd),
     url(r'^userprofile', users.userprofile),
     url(r'^videochat/', views.videochat, name='videochat'),
+    url(r'^help/', views.help, name='help'),
 )

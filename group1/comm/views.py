@@ -22,9 +22,14 @@ def videochat(request):
 
 
 @login_required(login_url='/signin')
-def room(request, roomID):
-    context = {'roomID': roomID}
-    return render(request, 'comm/test.html', context)
+def help(request):
+	context = {'user': request.user}
+	return render(request, 'comm/help.html', context)
+
+@login_required(login_url='/signin')
+def room(request,roomID):
+	context = {'roomID' : roomID}
+	return render(request,'comm/test.html',context)
 
 
 # Django REST framework classes...
