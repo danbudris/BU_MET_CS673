@@ -19,6 +19,11 @@ def videochat(request):
         return render(request, 'comm/videochat.html', context)
 
 @login_required(login_url='/signin')
+def help(request):
+	context = {'user': request.user}
+	return render(request, 'comm/help.html', context)
+
+@login_required(login_url='/signin')
 def room(request,roomID):
 	context = {'roomID' : roomID}
 	return render(request,'comm/test.html',context)
