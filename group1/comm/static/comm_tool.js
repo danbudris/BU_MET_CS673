@@ -28,7 +28,7 @@ function showCommDialog(actionUrl){
             });
         },
         async:true
-    }); 
+    });
 }
 
 // close Story Dialog and erase the content
@@ -67,7 +67,7 @@ function createteam(){
   $("#myModal").modal('show');
   $("#saveTeam").attr('onclick', 'createTeamFunc()');
   $("#modalName").text("Create New Team");
-  $("#teamname").val(''); 
+  $("#teamname").val('');
 }
 
 var curroom;
@@ -86,7 +86,7 @@ function editteam(){
     $("<button type='button' class='btn btn-default' id='deleteButton' onclick='deleteTeamFunc()'>Delete Team</button>").insertBefore("#cancelButton");
   } else {
     alert("You do not have permission to edit this room!");
-  } 
+  }
 }
 
 // EMOJI STUFF
@@ -206,7 +206,11 @@ global.on('deletemsg', function(msgid){
 function createTeamFunc() {
 
     var new_team_name = $('input#teamname').val();
-    if(testNameValidation(new_team_name)) {
+    if (!testNameValidation(new_team_name)) {
+      alert("Please enter a valid team name");
+    } else if (!isTeamNameExist(new_team_name)) {
+      alert("A team with that name already exist.");
+    } else {
       var room_data = {
         name: new_team_name,
         creator_id: user_id,
@@ -215,10 +219,8 @@ function createTeamFunc() {
       };
 
       global.emit('room', room_data);
-      
+
       $("#myModal").modal('hide');
-    } else {
-      alert("Please enter a valid team name");
     }
 }
 
@@ -228,6 +230,16 @@ function testNameValidation(text) {
   } else {
     return true;
   }
+}
+
+function isTeamNameExist(new_team_name) {
+  var isNameValid = true;
+  for (i = 0; i < global_room_list.length; i++) {
+    if (global_room_list[i].name == new_team_name) {
+      isNameValid = false;
+    }
+  }
+  return isNameValid;
 }
 
 global.on('user', function(user){
@@ -263,7 +275,7 @@ function add_socket(room) {
       message_text = message_text.splice(0,0,'<b>');
       add_message(message_text, msg.id, message_user, room.id);
       msg.already_sent = true;
-        
+
       if ($('span.msg p').length > 0) {
           var last_message_idx = $('span.msg p').length - 1;
           var last_msg_id = $('span.msg p')[last_message_idx].id;
@@ -592,22 +604,24 @@ function getCurrentRoom() {
 
 function editTeamFunc() {
   var edited_team_name = $('input#teamname').val();
-  if(testNameValidation(edited_team_name)) {
+  if (!testNameValidation(edited_team_name)) {
+    alert("Please enter a valid team name");
+  } else if (!isTeamNameExist(edited_team_name)) {
+    alert("A team with that name already exist. ");
+  } else {
     var room_data = {
       id: curroom.id,
       name: edited_team_name,
       creator: 'http://' + server_host + ':' + server_port + '/api/users/' + user_id + '/',
       description: curroom.description,
-      public: curroom.public,   
+      public: curroom.public,
     };
     global.emit('updateroom', room_data);
-  } else {
-    alert("Please enter a valid team name");
   }
 }
 
 function deleteTeamFunc() {
-  if (confirm('Are you sure you would like to delete this team?')) {  
+  if (confirm('Are you sure you would like to delete this team?')) {
     global.emit('deleteroom', curroom);
   } else {
     return false;
@@ -666,5 +680,3 @@ function deleteMessage(msgid) {
     return false;
   }
 }
-
-
