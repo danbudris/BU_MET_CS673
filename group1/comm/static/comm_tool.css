@@ -92,6 +92,7 @@ div#color_bar{
   background-color: #00aaff;
   z-index: 1000000;
 }
+
 div#sidebar {
   height: 98%;
   border-right: 1px solid lightgray;
@@ -116,7 +117,7 @@ div#top_bar {
   background-color: white;
   z-index: 1000;
   padding-right: 35px;
-  margin-top:-10px;
+  margin-top: -2%;
   border-bottom: 1px solid lightgray; 
   padding-top: 30px;
   padding-bottom:10px;
@@ -549,7 +550,8 @@ button#deleteButton {
   align-items: center;  
   align-content: flex-end;
   width: 45%;
-  height: 430px;
+  height: 570px;
+  padding-top: 15%;
 }
 
 .videoItems{
