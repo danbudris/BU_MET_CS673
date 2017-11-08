@@ -12,7 +12,7 @@
         html, body {
             background-color: #333;
         }
-        
+
         #video_box{
             position:relative;
             width: 100%;
@@ -20,7 +20,7 @@
         }
 
         #video_overlays {
-            position:absolute;
+            position: absolute;
             width: 10%;
             min-height:10%;
             background-color:#dadada;
@@ -54,8 +54,6 @@
     ];
 
     function init() {
-
-
 
         socket.on('connect', function() {
             console.log("Connected to signaling server");
