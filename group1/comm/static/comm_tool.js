@@ -42,10 +42,21 @@ function startVideoChat() {
 }
 */
 
+let chatcounter = 0; 
+
 function startVideoChat(){
-  let URL = '/communication/videochat'
-  $('#videoArea').removeClass('hide');
-  $('#videoFrame').attr('src', URL);
+  if(chatcounter == 0){
+    let chatcounter = 1;
+    let URL = '/communication/videochat'
+    $('#videoArea').removeClass('hide');
+    $('#videoFrame').attr('src', URL);
+  }
+  else if(chatcounter == 1){
+    let chatcounter = 0;
+    let URL = ''
+    $('#videoArea').addClass('hide');
+    $('#videoFrame').attr('src', URL);
+  }
 }
 
 function createteam(){
@@ -642,6 +653,5 @@ function deleteMessage(msgid) {
 
 $("#startVideo").click(()=>{
   console.log('Attempting to start video');
-  let URL = '/communication/videochat'  
   startVideoChat();
 })
