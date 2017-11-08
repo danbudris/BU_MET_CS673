@@ -139,7 +139,11 @@
               </button>
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                   <li><a href="#">Upload File</a></li>
-                  <li><a href="#">Download File</a></li>
+                  <!--Currently the file id is hardcoded into the url that is used when sending the
+                      rest request.  This is only for testing and should be removed when the
+                      testing is complete. Mostly likely, the Google Drive integration functionality
+                      will be moved entirely into the javascript instead of the python-->
+                  <li><a href="#" data-toggle="button" onclick="window.location.href='/communication/oauth2/filedownload/17EUbXj8hx8B_Wk2fmjX-PfXNedG5cZsYJXpaSTTF8c8'">Download File</a></li>
                   <li><a href="#">Share File</a></li>
                 </ul>
             </div>
