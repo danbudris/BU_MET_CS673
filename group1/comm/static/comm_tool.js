@@ -343,6 +343,14 @@ var mobile_nav = {
 
 function switch_room(target_room){
 
+  /* shut off the video when a room is changed
+     This should, in the end, open a NEW room, with a new chat, rather than cancelling the existing chat
+     This could be done by having 'start video chat' create a new div which is only 'unhidden' when the given room is in use; otherwise, 
+     it's hidden; each existing room with a video chat would have one, and on switch the class 'hidden' would be toggled onto that room; on open, it would be toggled off 
+  */
+  chatcounter = 1;
+  startVideoChat();
+
   // Mobile navigation
   mobile_nav.message();
 
@@ -493,6 +501,7 @@ $(document).ready(function(){
 // switch and load messages on click on the room name
   $('div#room-list').on('click', 'a', function(){
     if ($(this).attr('id') != 'create-room' ) {
+      
       var id = $(this).attr('id').split("-");
       console.log("id: " + id[1]);
       clearMessage();
