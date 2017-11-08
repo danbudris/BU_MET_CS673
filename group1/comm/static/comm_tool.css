@@ -91,8 +91,9 @@ div#sidebar {
 .scroll-area {
   height: 90%;
   min-width: 25%;
+  max-width: 50%;
   position: relative;
-  overflow: wrap;
+  overflow-y: wrap;
 }
 
 div#top_bar {
@@ -509,10 +510,13 @@ button#deleteButton {
 /* Begin Video Area Styles */
 
 .message_area{
-  min-height: 100%;
+  height: 850px;
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .videoArea{
@@ -520,7 +524,8 @@ button#deleteButton {
   flex-direction: column;
   justify-content: center;
   align-items: center;  
-  width: 100%;
+  width: 50%;
+  height: 70%;
 }
 
 .videoItems{
