@@ -20,14 +20,13 @@
   <!-- socketIO -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.4/socket.io.min.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
   <!-- bootstrap dependencies -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap-theme.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css">
 
   <!-- class files -->
-  <script type="text/javascript" src="/static/comm_tool.js"></script>
-  <script type="text/javascript" src="/static/videochat.js"></script> 
  <link rel="stylesheet" type="text/css" href="/static/comm_tool.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -320,3 +319,7 @@
 </body>
 
 </html>
+
+<!-- load javascript after the page has had a chance to process, so that listeners can be applied -->
+<script type="text/javascript" src="/static/comm_tool.js"></script>
+<script type="text/javascript" src="/static/videochat.js"></script> 
