@@ -13,7 +13,7 @@ RUN apt-get install -y \
                        nodejs-legacy \
                        node.js \
                        npm \
-                       && pip install virtualenv jsonpickle
+                       && pip install virtualenv
 
 # make the base directories 
 RUN mkdir ~/g1 && mkdir ~/g1/source/
