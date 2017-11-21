@@ -29,7 +29,12 @@ var done = false;
 app.use(multer({
         'dest': '../../comm/static/uploads',
         onFileUploadStart: function(file) {
+            if(testNameValidation(file.originalname)){
                 console.log(file.originalname + ' is starting...');
+            } else {
+                console.log('File name is invalid');
+                return false;
+            }
         },
         onFileUploadComplete: function(file) {
                 console.log(file.fieldname + ' uploaded to ' + file.path);
@@ -37,19 +42,31 @@ app.use(multer({
         }
 }));
 
+function testNameValidation(text) {
+    var format = /[ !@#$%^&*()+\-=\[\]{};':"\\|,<>\/?]/;
+    if(text.trim() == null || text.trim() == "" || format.test(text) == true) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 app.post('/upload', function(req,res){
         if (done==true) {
                 var hash = crypto.randomBytes(20).toString('hex');
 				var directory =  path.join(homedir + '/sites/www.3blueprints.com/static/uploads/');
                 fs.mkdirs(path.join(directory,hash), function(err) {
-                        if(err){
-                            console.log(err);
-                        } else {
+                    if(err){
+                        console.log(err);
+                    } else {
                         var final_path = path.join(hash, req.files.fileUpload.originalname);
                         fs.rename(req.files.fileUpload.path, directory + final_path);
                         res.send('static/uploads/' + final_path);
-                        }
+                    }
                 });
+        } else {
+            console.log("Error");
+            res.send('Error');
         }
 });
 
