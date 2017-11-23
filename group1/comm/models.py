@@ -22,11 +22,14 @@ class IndvRoom(models.Model):
     time=models.DateTimeField(auto_now=True, blank=True)
 
 class IndvMessage(models.Model):
-    text=models.CharField(max_length=100)
+    text=models.CharField(max_length=200)
     send_user=models.ForeignKey(User)
     indv_room = models.PositiveIntegerField()
     time=models.DateTimeField(auto_now=True)
 
+class UserVisit(models.Model):
+	user=models.ForeignKey(User)
+	time = models.DateTimeField(auto_now=True)
 
 
 class Message(models.Model):

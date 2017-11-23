@@ -1,9 +1,9 @@
 import django_filters
 from django.shortcuts import render
 from django.http import HttpResponse
-from comm.models import User, Room, Message, UserRoom, IndvRoom, IndvMessage
+from comm.models import User, Room, Message, UserRoom, IndvRoom, IndvMessage, UserVisit
 from rest_framework import viewsets, generics, filters
-from comm.serializers import UserSerializer, RoomSerializer, MessageSerializer, MessageDataSerializer, UserRoomSerializer, UserRoomDataSerializer, IndvRommSerializer, IndvMessageSerializer
+from comm.serializers import UserSerializer, RoomSerializer, MessageSerializer, MessageDataSerializer, UserRoomSerializer, UserRoomDataSerializer, IndvRommSerializer, IndvMessageSerializer, UserVisitSerializer
 from django.contrib.auth.decorators import login_required
 from rest_framework.response import Response
 from rest_framework import status
@@ -79,14 +79,17 @@ class IndvMessageViewSet(viewsets.ModelViewSet):
 		indv_message.send_user=send_user
 		indv_message.indv_room=indv_room
 		indv_message.save()
+	def put(self, request):
+		id = int(request.data.get("id", "0"))
+		text = request.data.get("text", "0")
+		indv_message = IndvMessage.objects.get(pk=id)
+		indv_message.text = text
+		indv_message.save()
 
-		#if serializer.is_valid():
-			#serializer.save()
-			#return Response(serializer.data, status=status.HTTP_201_CREATED)
-        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-	def delete(self, request, pk, format=None):
-		user = self.get_object(pk)
-		user.delete()
+	def delete(self, request):
+		id = int(request.data.get("id", "0"))
+		indv_message = IndvMessage.objects.get(pk=id)
+		indv_message.delete()
         #return Response(status=status.HTTP_204_NO_CONTENT)
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -102,6 +105,29 @@ class RoomViewSet(viewsets.ModelViewSet):
 		id = int(request.data.get("id", "0"))
 		room = Room.objects.get(pk=id)
 		room.delete()
+class UserVisitViewSet(viewsets.ModelViewSet):
+	queryset = UserVisit.objects.all()
+	serializer_class = UserVisitSerializer
+
+	def get(self, request, format=None):
+		users = UserVisit.objects.all()
+		serializer = UserVisitSerializer(users, many=True)
+		return Response(serializer.data)
+	def post(self, request, format=None):
+		serializer = UserVisitSerializer(data=request.data)
+		user = int(request.data.get("user", ""))
+		userID = User.objects.get(id=user)
+		user_visit = UserVisit()
+		user_visit.user = userID
+		user_visit.save()
+
+	def put(self, request):
+		id = int(request.data.get("id", "0"))
+		#user = request.data.get("user", "0")
+		user_visit = UserVisit.objects.get(pk=id)
+		#user_visit.user = user
+		user_visit.save()
+
 
 # Filters the Message model based on user and room, 
 #url: 127.0.0.1:8000/api/messages/? (user=id | room=id | user=id & room=id)

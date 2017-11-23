@@ -461,9 +461,19 @@ ul.msgmenu li.red {
 
 ul.msgmenu li:hover {
   background-color: #e6e6e6;
-};
+}
 
 /* END MESSAGE */
+
+#player {
+    position:relative;
+    top:10px;
+    width:260px;
+    overflow: hidden;
+    direction: ltl;
+    border-top-right-radius: 0.5em 0.5em;
+    border-bottom-right-radius: 1em 0.7em;
+}
 
 /* START MODAL */
 
@@ -485,6 +495,7 @@ canvas {
   display: block;
   margin-bottom: 0.5rem;
 }
+
 
 
 /* START BUTTONS */

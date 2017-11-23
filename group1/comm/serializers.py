@@ -1,4 +1,4 @@
-from comm.models import User, Room, Message, UserRoom, IndvRoom, IndvMessage
+from comm.models import User, Room, Message, UserRoom, IndvRoom, IndvMessage, UserVisit
 from rest_framework import routers, serializers, viewsets, filters
 
 # Get list of online users
@@ -23,7 +23,12 @@ class IndvMessageSerializer(serializers.HyperlinkedModelSerializer):
 	#indv_room = serializers.HyperlinkedIdentityField(view_name="api:indv_room-detail")
 	class Meta:
 		model = IndvMessage
-		fields = ('id', 'text', 'send_user', 'indv_room')
+		fields = ('id', 'text', 'send_user', 'indv_room', 'time')
+
+class UserVisitSerializer(serializers.HyperlinkedModelSerializer):
+	class Meta:
+		model = UserVisit
+		fields = ('id', 'user', 'time')
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
