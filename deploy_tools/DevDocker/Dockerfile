@@ -34,8 +34,6 @@ RUN cd ~/g1/source/group1 && echo "from django.contrib.auth.models import User; 
 
 RUN cd ~/g1/source/group1/communication/node && npm install morgan && npm install fs-extra
 
-COPY run.sh /opt/
-
 EXPOSE 8000
 EXPOSE 80
 EXPOSE 3000
