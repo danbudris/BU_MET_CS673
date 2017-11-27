@@ -725,3 +725,93 @@ $("#startVideo").click( ()=> {
   console.log('Attempting to start video');
   startVideoChat();
 })
+
+// The Browser API key obtained from the Google API Console.
+var developerKey = 'AIzaSyBW8Ea4hPD4Xlo9Uo9pCiRK3CaTj1iT8cw';
+
+// The Client ID obtained from the Google API Console. Replace with your own Client ID.
+var clientId = "216454920265-v6i1auidua6oahnd8c92mhl2d1li5cct.apps.googleusercontent.com"
+
+// Scope to use to access user's drive files.
+var scope = ['https://www.googleapis.com/auth/drive'];
+
+var pickerApiLoaded = false;
+var isDownloadFiles = false;
+var isUploadFiles = false;
+var oauthToken;
+
+// Use the API Loader script to load google.picker and gapi.auth.
+function onApiLoad() {
+  gapi.load('auth', {'callback': onAuthApiLoad});
+  gapi.load('picker', {'callback': onPickerApiLoad});
+}
+
+function initDownloadFiles() {
+  isDownloadFiles = true;
+  onApiLoad();
+}
+
+function initUploadFiles() {
+  isUploadFiles = true;
+  onApiLoad();
+}
+
+function onAuthApiLoad() {
+  window.gapi.auth.authorize(
+      {
+        'client_id': clientId,
+        'scope': scope,
+        'immediate': false
+      },
+      handleAuthResult);
+}
+
+function onPickerApiLoad() {
+  pickerApiLoaded = true;
+  createPicker();
+}
+
+function handleAuthResult(authResult) {
+  if (authResult && !authResult.error) {
+    oauthToken = authResult.access_token;
+    createPicker();
+  }
+}
+
+// Create and render a Picker object.
+function createPicker() {
+  if (pickerApiLoaded && oauthToken) {
+    if (isDownloadFiles) {
+      var picker = new google.picker.PickerBuilder().
+          addView(google.picker.ViewId.DOCS).
+          setOAuthToken(oauthToken).
+          setDeveloperKey(developerKey).
+          setCallback(downloadFileCallback).
+          build();
+    } else if (isUploadFiles) {
+      var picker = new google.picker.PickerBuilder().
+          addView(new google.picker.DocsUploadView()).
+          setOAuthToken(oauthToken).
+          setDeveloperKey(developerKey).
+          setCallback(uploadFileCallback).
+          build();
+    }
+    picker.setVisible(true);
+  }
+}
+
+function downloadFileCallback(data) {
+  if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+    var fileId = data.docs[0].id;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', "https://www.googleapis.com/drive/v3/files/" + fileId +
+        "/export?mimeType=text%2Fplain&key=" + developerKey);
+    xhr.setRequestHeader('Authorization', 'Bearer' + gapi.auth.getToken().access_token);
+    xhr.send();
+    isDownloadFiles = false;
+  }
+}
+
+function uploadFileCallback(data) {
+  isUploadFiles = false;
+}
