@@ -806,7 +806,7 @@ function downloadFileCallback(data) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', "https://www.googleapis.com/drive/v3/files/" + fileId +
         "/export?mimeType=text%2Fplain&key=" + developerKey);
-    xhr.setRequestHeader('Authorization', 'Bearer' + gapi.auth.getToken().access_token);
+    xhr.setRequestHeader('Authorization', 'Bearer' + oauthToken);
     xhr.send();
     isDownloadFiles = false;
   }

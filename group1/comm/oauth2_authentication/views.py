@@ -8,46 +8,13 @@ from apiclient import discovery
 from apiclient.http import MediaIoBaseDownload
 
 
-REDIRECT_URI = 'http://localhost:8000/communication/oauth2/oauth2callback'
 DOWNLOAD_REDIRECT = 'http://localhost:8000/communication/oauth2/oauth2callback/filedownload'
 
-FLOW = flow_from_clientsecrets(
-    settings.GOOGLE_OAUTH2_CLIENT_SECRETS_JSON,
-    scope='https://www.googleapis.com/auth/drive',
-    redirect_uri=REDIRECT_URI
-)
 DOWNLOAD_FLOW = flow_from_clientsecrets(
     settings.GOOGLE_OAUTH2_CLIENT_SECRETS_JSON,
     scope='https://www.googleapis.com/auth/drive',
     redirect_uri=DOWNLOAD_REDIRECT
 )
-
-
-@login_required
-def index(request):
-    authorize_url = FLOW.step1_get_authorize_url()
-    return HttpResponseRedirect(authorize_url)
-
-
-@login_required
-def auth_return(request):
-    '''Currently this function is only being used for testing. To make the actual rest
-       request, the filedownload/{file_id} url should be used.'''
-    credential = FLOW.step2_exchange(request.REQUEST)
-    http = httplib2.Http()
-    http = credential.authorize(http)
-    service = discovery.build('drive', 'v3', http=http)
-    file_id = '17EUbXj8hx8B_Wk2fmjX-PfXNedG5cZsYJXpaSTTF8c8'
-    file_name = 'Project_Download_File_Test'
-    request = service.files().export_media(fileId=file_id, mimeType='text/plain')
-    fh = io.FileIO(file_name, 'wb')
-    downloader = MediaIoBaseDownload(fh, request)
-    done = False
-    while done is False:
-        status, done = downloader.next_chunk()
-        print("Download {}.".format(int(status.progress() * 100)))
-
-    return HttpResponseRedirect("/communication")
 
 
 @login_required
