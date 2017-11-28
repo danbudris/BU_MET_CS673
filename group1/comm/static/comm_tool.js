@@ -758,12 +758,12 @@ function initUploadFiles() {
 
 function onAuthApiLoad() {
   window.gapi.auth.authorize(
-      {
-        'client_id': clientId,
-        'scope': scope,
-        'immediate': false
-      },
-      handleAuthResult);
+    {
+      'client_id': clientId,
+      'scope': scope,
+      'immediate': false
+    },
+    handleAuthResult);
 }
 
 function onPickerApiLoad() {
@@ -783,18 +783,18 @@ function createPicker() {
   if (pickerApiLoaded && oauthToken) {
     if (isDownloadFiles) {
       var picker = new google.picker.PickerBuilder().
-          addView(google.picker.ViewId.DOCS).
-          setOAuthToken(oauthToken).
-          setDeveloperKey(developerKey).
-          setCallback(downloadFileCallback).
-          build();
+        addView(google.picker.ViewId.DOCS).
+        setOAuthToken(oauthToken).
+        setDeveloperKey(developerKey).
+        setCallback(downloadFileCallback).
+        build();
     } else if (isUploadFiles) {
       var picker = new google.picker.PickerBuilder().
-          addView(new google.picker.DocsUploadView()).
-          setOAuthToken(oauthToken).
-          setDeveloperKey(developerKey).
-          setCallback(uploadFileCallback).
-          build();
+        addView(new google.picker.DocsUploadView()).
+        setOAuthToken(oauthToken).
+        setDeveloperKey(developerKey).
+        setCallback(uploadFileCallback).
+        build();
     }
     picker.setVisible(true);
   }
