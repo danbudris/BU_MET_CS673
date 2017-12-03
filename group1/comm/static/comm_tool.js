@@ -268,8 +268,8 @@ function add_message(msg, msgid, msguser, target, date) {
         //alert(sent_day);
         if(sent_day_check!=sent_day){
             sent_day_check=sent_day;
-            sent_day='<p style="color: #33A8FF"><b><i>'+sent_day_check+'</i></b></p><br>';
-            //sent_day='';
+            sent_day='<br><b><i style="color: #33A8FF">'+sent_day_check+'</i></b><br><br>';
+            //sent_day='<p style="color: #33A8FF"><b><i>'+sent_day_check+'</i></b></p><br>';
         }
         else{
             sent_day='';
@@ -347,6 +347,7 @@ function messageSentDay(data){
         if (d.getMonth()==(currentTime.getMonth()+1)){
             var sent_day_range=currentTime.getDate()-d.getDate();
             if (sent_day_range<7){
+
                 if (sent_day_range==0){
                     sent_weekday='Today';
                 }
@@ -441,7 +442,15 @@ var mobile_nav = {
 function switch_room(target_room){
 
   // Mobile navigation
+    //hide indv romm
+    sent_day_check=null;
+    if(visible_namespace()){
+        var hide_indv_room = 'room-'+visible_namespace();
+        $('div.messagecontent').filter('#' + hide_indv_room).hide();
+    }
+
   mobile_nav.message();
+
 
   var room_id = Number(target_room.replace('room-',''));
   var room_name = _.filter(global_room_list, function(obj){ return (obj.id === room_id) })[0].name;
@@ -679,6 +688,7 @@ $(document).ready( function() {
 });
 
 function switch_indvroom(id) {
+    sent_day_check=null;
     var room_num = 'room-' + visible_namespace();
     //$('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link');
     global_user_list.forEach(function (data) {
@@ -703,7 +713,7 @@ global.on('indv_videoChat_accept', function (data) {
 
 // MAIN
 $(document).ready(function(){
-
+    startRecording();
   populate_room_list();
   populate_user_list();
 
