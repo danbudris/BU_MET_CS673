@@ -29,7 +29,7 @@ var done = false;
 app.use(multer({
         'dest': '../../comm/static/uploads',
         onFileUploadStart: function(file) {
-            if(testNameValidation(file.originalname)){
+            if (testNameValidation(file.originalname)) {
                 console.log(file.originalname + ' is starting...');
             } else {
                 console.log('File name is invalid');
@@ -44,7 +44,7 @@ app.use(multer({
 
 function testNameValidation(text) {
     var format = /[ !@#$%^&*()+\-=\[\]{};':"\\|,<>\/?]/;
-    if(text.trim() == null || text.trim() == "" || format.test(text) == true) {
+    if (text.trim() == null || text.trim() == "" || format.test(text) == true)  {
         return false;
     } else {
         return true;
@@ -54,11 +54,9 @@ function testNameValidation(text) {
 app.post('/upload', function(req,res){
         if (done==true) {
                 var hash = crypto.randomBytes(20).toString('hex');
-                console.log(path);
 				var directory =  path.join(homedir + '/BU_MET_CS673/group1/comm/static/uploads/');
-                console.log(directory);
                 fs.mkdirs(path.join(directory,hash), function(err) {
-                    if(err){
+                    if (err) {
                         console.log(err);
                     } else {
                         var final_path = path.join(hash, req.files.fileUpload.originalname);
@@ -67,7 +65,6 @@ app.post('/upload', function(req,res){
                     }
                 });
         } else {
-            console.log("Error");
             res.send('Error');
         }
 });

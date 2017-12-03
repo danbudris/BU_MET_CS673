@@ -563,18 +563,17 @@ $(document).ready(function(){
 
   $('form#file_upload').submit(function(event){
     var fileName = $('input#filename').val();
-    console.log(fileName);
-    if(testNameValidation(fileName)){
+    if (testNameValidation(fileName)) {
       $.ajax({
         url: 'http://' + server_host + ':3000/upload',
         type: 'POST',
-        data: new FormData( this ),
+        data: new FormData(this),
         processData: false,
         contentType: false,
-        success: function(file_path){
-          if(file_path == "Error"){
+        success: function(file_path) {
+          if(file_path == "Error") {
             alert("Please provide a valid file name");
-          }else{
+          } else {
             var download_url = 'http://' + server_host + ':' + server_port + '/' + file_path;
             var display_name = $('input#filename').val();
             $('input#text').val('<a href="' + download_url + '">' + display_name + '</a>' );
@@ -583,7 +582,7 @@ $(document).ready(function(){
           }
         }
       });
-    }else{
+    } else {
       alert("Please provide a valid file name");
     }
     

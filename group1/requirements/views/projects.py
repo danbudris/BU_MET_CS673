@@ -267,7 +267,6 @@ def get_attachments(request, projectID):
 
 @user_can_access_project()
 def upload_attachment(request, projectID):
-    print(request.FILES['file'].name);
     if 'file' not in request.FILES:
         raise IOError("Missing file")
     if not re.match("^[a-zA-Z0-9_]*$", request.FILES['file'].name):
