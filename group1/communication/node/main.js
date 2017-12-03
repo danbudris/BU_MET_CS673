@@ -56,7 +56,7 @@ app.post('/upload', function(req,res){
     var pathname = url.parse(req.headers.referer).pathname;
     if (done==true) {
         var hash = crypto.randomBytes(20).toString('hex');
-		var directory =  path.resolve(process.cwd() + '/../../comm/static/uploads/');
+	var directory =  path.resolve(process.cwd() + '/../../comm/static/uploads/');
         directory = directory + "/";
         fs.mkdirs(path.join(directory, hash), function(err) {
             if (err) {
