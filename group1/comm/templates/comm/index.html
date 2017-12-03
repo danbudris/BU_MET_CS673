@@ -21,6 +21,9 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.4/socket.io.min.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
+  <!--Google Picker -->
+  <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+
   <!-- bootstrap dependencies -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap-theme.min.css">
@@ -64,7 +67,6 @@
                     </ul>
                 </li>                {% else %}
                     {% if not isUserSigningInUpOrOut %}
-                    <!-- <li><a href="#">Sign In</a></li> -->
                     <li><a class="btn btn-link pull-right" href="/signin">Sign In</a></li>
                     <li><a class="btn btn-link pull-right" href="/signup">Sign Up</a></li>
                     {% else %}
@@ -74,7 +76,6 @@
             </ul>
         </div>
     </nav>
-      <!--<h1><i class="fa fa-comments-o" aria-hidden="true"></i> Communication tool</h1> -->
   </header>
 
   <div id="wrapper">
@@ -114,7 +115,6 @@
           </li>
         </ul>
       </div>
-      
     </div>
 
           
@@ -138,13 +138,8 @@
                 <img src="/static/google-drive-black-on-white.png" style="width:20px;height:20px;">
               </button>
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                  <li><a href="#">Upload File</a></li>
-                  <!--Currently the file id is hardcoded into the url that is used when sending the
-                      rest request.  This is only for testing and should be removed when the
-                      testing is complete. Mostly likely, the Google Drive integration functionality
-                      will be moved entirely into the javascript instead of the python-->
-                  <li><a href="#" data-toggle="button" onclick="window.location.href='/communication/oauth2/filedownload/17EUbXj8hx8B_Wk2fmjX-PfXNedG5cZsYJXpaSTTF8c8'">Download File</a></li>
-                  <li><a href="#">Share File</a></li>
+                  <li><a href="#" data-toggle="button" onclick="initUploadFiles()">Upload File</a></li>
+                  <li><a href="#" data-toggle="button" onclick="initDownloadFiles()">Download File</a></li>
                 </ul>
             </div>
             <div class="btn-group btn-group-inline">
@@ -152,20 +147,6 @@
                 <span class="glyphicon glyphicon-plus-sign"></span>
               </button>
               <ul class="dropdown-menu dropdown-menu-right" role="menu">
-<!--
-              <li><a href="#">upload file</a></li>
-              <li><a href="#"><img src="/static/favicon.ico" style="width:20px;height:20px;"></a></li>
-              <li><a href="#">emoticons</a></li>
-            </ul>
-<!--try to put emoji here
-<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="glyphicon glyphicon-plus-sign"></span>
-            </button>
-<ul class="dropdown-menu" role="menu">
-
-              <li><a href="#"><img src="/static/favicon.ico" style="width:20px;height:20px;">
-</a></li>
--->
                 <li><a href="#">Emoticons</a></li>
 <table>
   <tr>
@@ -212,8 +193,6 @@
               </ul>
             </div>
 
-   <!--......-->
-
 
 
 
@@ -258,21 +237,7 @@
 </div>
       <a id="bottom"></a>
     </div>
-<!--
-<div class="container">
-  <div class="row">
-    <div class= "main col-xs-9">
-       <div class="scroll-area">
-      <div id="message_list">
-      </div>
-      <a id="bottom"></a>
-    </div>   
-    </div> 
-    <div class="sidebar col-xs-3">
-         <div class="well">sidebar</div>
-   </div>
-  </div>
-</div>-->
+
 
 
 
