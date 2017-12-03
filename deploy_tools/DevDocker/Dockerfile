@@ -19,16 +19,14 @@ RUN apt-get install -y \
 RUN mkdir ~/g1 && mkdir ~/g1/source/
 
 # clone the git repository to local
-RUN git clone https://github.com/danbudris/BU_MET_CS673.git ~/g1/source
+RUN git clone -b feature/video_layout https://github.com/danbudris/BU_MET_CS673.git ~/g1/source
 
 # create the virtual environment and run the setup and database migration scripts
 RUN virtualenv -p /usr/bin/python2.7 ~/g1/virtualenv && cd ~/g1/source/group1 && ../../virtualenv/bin/pip install -r ../requirements.txt 
 
 RUN mkdir ~/g1/source/database
 
-RUN cd ~/g1/source/group1 && ../../virtualenv/bin/python manage.py makemigrations 
-
-RUN cd ~/g1/source/group1 && ../../virtualenv/bin/python manage.py migrate
+RUN cd ~/g1/source/group1 && ../../virtualenv/bin/python manage.py makemigrations && ../../virtualenv/bin/python manage.py migrate
 
 # create a basic superuser account for use in debugging and development
 RUN cd ~/g1/source/group1 && echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'pass')" | ../../virtualenv/bin/python manage.py shell

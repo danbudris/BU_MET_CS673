@@ -18,6 +18,27 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function showCommDialog(actionUrl){
+  $.ajax({
+    type: "GET",
+        url: actionUrl,
+        success: function(result) {
+          $("#dialogCommModal").html(result);
+            $("#dialogCommModal").modal({
+                backdrop: false,
+                show: true
+            });
+        },
+        async:true
+    });
+}
+
+// close Story Dialog and erase the content
+function closeDialog(){
+  $("#dialogCommModal").modal('hide');
+    $("#dialogCommModal").html('');
+}
+
 function scroll_messages_into_view() {
     if ($('span.msg p').length > 0) {
         var last_message_idx = $('span.msg p').length - 1;
@@ -26,13 +47,48 @@ function scroll_messages_into_view() {
     }
 }
 
+/*
 function startVideoChat() {
   var teamName = window.document.documentElement.querySelector('#room_title').textContent;
   if (teamName != "" || teamName != null) {
     var URL = 'https://appr.tc/r/' + teamName.replace(' ','');
     window.open(URL, '', 'width=1000');
+
+    //show the video area by removing the 'hide' class
+    $('#videoArea').removeClass('hide');
+
+    //set the iframe in the video area to the url of the video chat
+    $('#videoFrame').attr('src', URL);
   } else {
     alert("Please create a team to be able to video chat")
+  }
+}
+*/
+
+
+//Set the sentinel for turning on/off the chat window
+let chatcounter = 0; 
+
+//Function for starting and stopping the video chat
+function startVideoChat() {
+  if (chatcounter == 0) {
+    //increment the counter to 'on'
+    chatcounter = 1;
+    //set the URL to the video chat HTML api, and show the div containing it
+    let URL = '/communication/videochat'
+    $('#videoArea').removeClass('hide');
+    $('#videoFrame').attr('src', URL);
+    //shrink the scroll area that houses the messages to allow the shown div to fit
+    $('.scroll-area').css("max-width", "50%");
+    console.log("on");
+  }
+  else if (chatcounter == 1) {
+    chatcounter = 0;
+    let URL = ''
+    $('#videoArea').addClass('hide');
+    $('#videoFrame').attr('src', URL);
+    $('.scroll-area').css("max-width", "100%");
+    console.log("off");
   }
 }
 
@@ -42,7 +98,7 @@ function createteam(){
   $("#myModal").modal('show');
   $("#saveTeam").attr('onclick', 'createTeamFunc()');
   $("#modalName").text("Create New Team");
-  $("#teamname").val(''); 
+  $("#teamname").val('');
 }
 
 var curroom;
@@ -57,11 +113,11 @@ function editteam(){
     $("#myModal").modal('show');
     $("#saveTeam").attr('onclick', 'editTeamFunc()');
     $("#modalName").text("Edit Team");
-    $("#teamname").val('');
+    $("#teamname").val(curroom.name);
     $("<button type='button' class='btn btn-default' id='deleteButton' onclick='deleteTeamFunc()'>Delete Team</button>").insertBefore("#cancelButton");
   } else {
     alert("You do not have permission to edit this room!");
-  } 
+  }
 }
 
 // EMOJI STUFF
@@ -195,17 +251,40 @@ global.on('deletemsg', function(msgid){
 function createTeamFunc() {
 
     var new_team_name = $('input#teamname').val();
-
-    var room_data = {
+    if (!testNameValidation(new_team_name)) {
+      alert("Please enter a valid team name");
+    } else if (!isTeamNameExist(new_team_name)) {
+      alert("A team with that name already exist.");
+    } else {
+      var room_data = {
         name: new_team_name,
         creator_id: user_id,
         description: 'test',
         public: true
-    };
+      };
 
-    global.emit('room', room_data);
+      global.emit('room', room_data);
 
-    $("#myModal").modal('hide');
+      $("#myModal").modal('hide');
+    }
+}
+
+function testNameValidation(text) {
+  if(text.trim() == null || text.trim() == "" || /^[a-zA-Z0-9- ]*$/.test(text) == false) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function isTeamNameExist(new_team_name) {
+  var isNameValid = true;
+  for (i = 0; i < global_room_list.length; i++) {
+    if (global_room_list[i].name == new_team_name) {
+      isNameValid = false;
+    }
+  }
+  return isNameValid;
 }
 
 global.on('user', function(user){
@@ -241,7 +320,7 @@ function add_socket(room) {
       message_text = message_text.splice(0,0,'<b>');
       add_message(message_text, msg.id, message_user, room.id, msg.time);
       msg.already_sent = true;
-        
+
       if ($('span.msg p').length > 0) {
           var last_message_idx = $('span.msg p').length - 1;
           var last_msg_id = $('span.msg p')[last_message_idx].id;
@@ -440,6 +519,14 @@ var mobile_nav = {
 };
 
 function switch_room(target_room){
+
+  /* shut off the video when a room is changed
+     This should, in the end, open a NEW room, with a new chat, rather than cancelling the existing chat
+     This could be done by having 'start video chat' create a new div which is only 'unhidden' when the given room is in use; otherwise, 
+     it's hidden; each existing room with a video chat would have one, and on switch the class 'hidden' would be toggled onto that room; on open, it would be toggled off 
+  */
+  chatcounter = 1;
+  startVideoChat();
 
   // Mobile navigation
     //hide indv romm
@@ -721,6 +808,7 @@ $(document).ready(function(){
 // switch and load messages on click on the room name
   $('div#room-list').on('click', 'a', function(){
     if ($(this).attr('id') != 'create-room' ) {
+      
       var id = $(this).attr('id').split("-");
       console.log("id: " + id[1]);
       clearMessage();
@@ -993,18 +1081,25 @@ function getCurrentRoom() {
 }
 
 function editTeamFunc() {
-  var room_data = {
-    id: curroom.id,
-    name: $('input#teamname').val(),
-    creator: 'http://' + server_host + ':' + server_port + '/api/users/' + user_id + '/',
-    description: curroom.description,
-    public: curroom.public,   
-  };
-  global.emit('updateroom', room_data);
+  var edited_team_name = $('input#teamname').val();
+  if (!testNameValidation(edited_team_name)) {
+    alert("Please enter a valid team name");
+  } else if (!isTeamNameExist(edited_team_name)) {
+    alert("A team with that name already exist. ");
+  } else {
+    var room_data = {
+      id: curroom.id,
+      name: edited_team_name,
+      creator: 'http://' + server_host + ':' + server_port + '/api/users/' + user_id + '/',
+      description: curroom.description,
+      public: curroom.public,
+    };
+    global.emit('updateroom', room_data);
+  }
 }
 
 function deleteTeamFunc() {
-  if (confirm('Are you sure you would like to delete this team?')) {  
+  if (confirm('Are you sure you would like to delete this team?')) {
     global.emit('deleteroom', curroom);
   } else {
     return false;
@@ -1066,4 +1161,99 @@ function deleteMessage(msgid) {
   }
 }
 
+// EVENT LISTENERS
 
+$("#startVideo").click( ()=> {
+  console.log('Attempting to start video');
+  startVideoChat();
+})
+
+// The Browser API key obtained from the Google API Console.
+var developerKey = 'AIzaSyBW8Ea4hPD4Xlo9Uo9pCiRK3CaTj1iT8cw';
+
+// The Client ID obtained from the Google API Console. Replace with your own Client ID.
+var clientId = "216454920265-v6i1auidua6oahnd8c92mhl2d1li5cct.apps.googleusercontent.com"
+
+// Scope to use to access user's drive files.
+var scope = ['https://www.googleapis.com/auth/drive'];
+
+var pickerApiLoaded = false;
+var isDownloadFiles = false;
+var isUploadFiles = false;
+var oauthToken;
+
+// Use the API Loader script to load google.picker and gapi.auth.
+function onApiLoad() {
+  gapi.load('auth', {'callback': onAuthApiLoad});
+  gapi.load('picker', {'callback': onPickerApiLoad});
+}
+
+function initDownloadFiles() {
+  isDownloadFiles = true;
+  onApiLoad();
+}
+
+function initUploadFiles() {
+  isUploadFiles = true;
+  onApiLoad();
+}
+
+function onAuthApiLoad() {
+  window.gapi.auth.authorize(
+    {
+      'client_id': clientId,
+      'scope': scope,
+      'immediate': false
+    },
+    handleAuthResult);
+}
+
+function onPickerApiLoad() {
+  pickerApiLoaded = true;
+  createPicker();
+}
+
+function handleAuthResult(authResult) {
+  if (authResult && !authResult.error) {
+    oauthToken = authResult.access_token;
+    createPicker();
+  }
+}
+
+// Create and render a Picker object.
+function createPicker() {
+  if (pickerApiLoaded && oauthToken) {
+    if (isDownloadFiles) {
+      var picker = new google.picker.PickerBuilder().
+        addView(google.picker.ViewId.DOCS).
+        setOAuthToken(oauthToken).
+        setDeveloperKey(developerKey).
+        setCallback(downloadFileCallback).
+        build();
+    } else if (isUploadFiles) {
+      var picker = new google.picker.PickerBuilder().
+        addView(new google.picker.DocsUploadView()).
+        setOAuthToken(oauthToken).
+        setDeveloperKey(developerKey).
+        setCallback(uploadFileCallback).
+        build();
+    }
+    picker.setVisible(true);
+  }
+}
+
+function downloadFileCallback(data) {
+  if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+    var fileId = data.docs[0].id;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', "https://www.googleapis.com/drive/v3/files/" + fileId +
+        "/export?mimeType=text%2Fplain&key=" + developerKey);
+    xhr.setRequestHeader('Authorization', 'Bearer' + oauthToken);
+    xhr.send();
+    isDownloadFiles = false;
+  }
+}
+
+function uploadFileCallback(data) {
+  isUploadFiles = false;
+}

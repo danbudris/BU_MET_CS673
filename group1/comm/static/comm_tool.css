@@ -1,6 +1,14 @@
 html { 
   font-size: 62.5%; 
+  height: 100%;
+  margin: 0;
 }
+
+body {
+  height: 100%;
+  margin: 0;
+}
+
 div.absolute {
     position: absolute;
     top: 80px;
@@ -40,16 +48,21 @@ h4 {
 
 header {
   width:100%;
-  height:7rem;
+  /*height:7rem;*/
   position: fixed;
   background-color: #00334d;
   z-index: 10000;
-  padding: 20px 15px;
+  /*padding: 20px 15px;*/
   color:#e6f7ff;
 
 }
 
-
+.navbar-fixed-top{
+  padding: 0px;
+}
+.navbar{
+  margin-bottom: 0px;
+}
 
 /* START LAYOUT */
 
@@ -73,12 +86,13 @@ div#message_search {
 
 div#color_bar{
   position: fixed;
-  top:7rem;
+  top:5rem;
   height: 6px;
   width: 100%;
   background-color: #00aaff;
   z-index: 1000000;
 }
+
 div#sidebar {
   height: 98%;
   border-right: 1px solid lightgray;
@@ -90,8 +104,11 @@ div#sidebar {
 
 .scroll-area {
   height: 90%;
+  min-width: 25%;
+  max-width: 100%;
   position: relative;
-  overflow: auto;
+  overflow-y: wrap;
+  overflow-x: auto;
 }
 
 div#top_bar {
@@ -100,7 +117,7 @@ div#top_bar {
   background-color: white;
   z-index: 1000;
   padding-right: 35px;
-  margin-top:-10px;
+  margin-top: -2%;
   border-bottom: 1px solid lightgray; 
   padding-top: 30px;
   padding-bottom:10px;
@@ -174,11 +191,20 @@ a:hover {
   display: inline-block;
 }
 
+/* Sidebar Icons */
+
 .requirement_tool:before {
   content: "\f046";
   margin-left: -1.3em; /* same as padding-left set on li */
   width: 1em; /* same as padding-left set on li */
   color: #337ab7;
+}
+
+.help_tool:before{
+  content: "\f059";
+  margin-left: -1.3em; 
+  width: 1em;
+  color: #337ab7
 }
 
 .issue_tool:before {
@@ -556,4 +582,66 @@ button#deleteButton {
   background-color: #990000;
   float: left;
   color: white;
+}
+
+/* START TOOLBAR*/
+
+.commDropDown{
+  padding: 0px !important;
+  font-size: 14px;
+  top: 0px;
+}
+
+/* END TOOLBAR*/
+
+/* Begin Video Area Styles */
+
+.message_area{
+  height: 850px;
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  overflow-x: hidden;
+}
+
+.videoArea{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;  
+  align-content: flex-end;
+  width: 45%;
+  height: 570px;
+  padding-top: 15%;
+}
+
+.videoItems{
+  flex-grow: 1;
+  width: 100%;
+  height: 50%;
+
+}
+
+/* This class hides the video area when it is not in use.
+   jquery is used to toogle this class on/off to show and hide 
+   the video area. 
+*/
+.hide{
+  display: none !important;
+}
+
+.minorFlex{
+  display: flex;
+  flex-direction: row;
+  align-content: left;
+}
+
+/* Hide scrollbar in order to avoid overlap and visual artifacts */
+#element::-webkit-scrollbar { 
+  display: none; 
+}
+
+::-webkit-scrollbar { 
+    display: none; 
 }
