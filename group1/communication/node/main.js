@@ -54,7 +54,9 @@ function testNameValidation(text) {
 app.post('/upload', function(req,res){
         if (done==true) {
                 var hash = crypto.randomBytes(20).toString('hex');
-				var directory =  path.join(homedir + '/sites/www.3blueprints.com/static/uploads/');
+                console.log(path);
+				var directory =  path.join(homedir + '/BU_MET_CS673/group1/comm/static/uploads/');
+                console.log(directory);
                 fs.mkdirs(path.join(directory,hash), function(err) {
                     if(err){
                         console.log(err);
