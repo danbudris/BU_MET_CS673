@@ -270,7 +270,7 @@ def upload_attachment(request, projectID):
     if 'file' not in request.FILES:
         raise IOError("Missing file")
     if not re.match("^[a-zA-Z0-9_]*$", request.FILES['file'].name):
-        raise IOError("Invalid File name");
+        raise IOError("Invalid file name");
     if request.FILES['file'].size > 1100000:
         raise IOError("File too large")
 

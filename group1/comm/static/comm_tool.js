@@ -571,7 +571,7 @@ $(document).ready(function(){
         processData: false,
         contentType: false,
         success: function(file_path) {
-          if(file_path == "Error") {
+          if (file_path == "Error") {
             alert("Please provide a valid file name");
           } else {
             var download_url = 'http://' + server_host + ':' + server_port + '/' + file_path;

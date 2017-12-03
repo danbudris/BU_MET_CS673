@@ -58,7 +58,7 @@ app.post('/upload', function(req,res){
         var hash = crypto.randomBytes(20).toString('hex');
 		var directory =  path.resolve(process.cwd() + '/../../comm/static/uploads/');
         directory = directory + "/";
-        fs.mkdirs(path.join(directory,hash), function(err) {
+        fs.mkdirs(path.join(directory, hash), function(err) {
             if (err) {
                 console.log(err);
             } else {
