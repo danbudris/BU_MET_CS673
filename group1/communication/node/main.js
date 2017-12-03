@@ -10,6 +10,7 @@ var _ = require('lodash');
 var multer = require('multer');
 var fs = require('fs-extra');
 var crypto = require('crypto');
+var url = require('url');
 var path = require('path');
 
 app.use(morgan('combined'));
@@ -27,7 +28,7 @@ var homedir = (process.platform === 'win32') ? process.env.HOMEPATH : process.en
 // just for file upload
 var done = false;
 app.use(multer({
-        'dest': '../../comm/static/uploads',
+        'dest': '../../comm/static/uploads/',
         onFileUploadStart: function(file) {
             if (testNameValidation(file.originalname)) {
                 console.log(file.originalname + ' is starting...');
@@ -52,21 +53,23 @@ function testNameValidation(text) {
 }
 
 app.post('/upload', function(req,res){
-        if (done==true) {
-                var hash = crypto.randomBytes(20).toString('hex');
-				var directory =  path.join(homedir + '/BU_MET_CS673/group1/comm/static/uploads/');
-                fs.mkdirs(path.join(directory,hash), function(err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        var final_path = path.join(hash, req.files.fileUpload.originalname);
-                        fs.rename(req.files.fileUpload.path, directory + final_path);
-                        res.send('static/uploads/' + final_path);
-                    }
-                });
-        } else {
-            res.send('Error');
-        }
+    var pathname = url.parse(req.headers.referer).pathname;
+    if (done==true) {
+        var hash = crypto.randomBytes(20).toString('hex');
+		var directory =  path.resolve(process.cwd() + '/../../comm/static/uploads/');
+        directory = directory + "/";
+        fs.mkdirs(path.join(directory,hash), function(err) {
+            if (err) {
+                console.log(err);
+            } else {
+                var final_path = path.join(hash, req.files.fileUpload.originalname);
+                fs.rename(req.files.fileUpload.path, directory + final_path);
+                res.send('static/uploads/' + final_path);
+            }
+        });
+    } else {
+        res.send('Error');
+    }
 });
 
 var client = new Client();
