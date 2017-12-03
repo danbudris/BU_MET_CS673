@@ -28,7 +28,7 @@ function showCommDialog(actionUrl){
             });
         },
         async:true
-    }); 
+    });
 }
 
 // close Story Dialog and erase the content
@@ -45,6 +45,7 @@ function scroll_messages_into_view() {
     }
 }
 
+/*
 function startVideoChat() {
   var teamName = window.document.documentElement.querySelector('#room_title').textContent;
   if (teamName != "" || teamName != null) {
@@ -60,6 +61,34 @@ function startVideoChat() {
     alert("Please create a team to be able to video chat")
   }
 }
+*/
+
+
+//Set the sentinel for turning on/off the chat window
+let chatcounter = 0; 
+
+//Function for starting and stopping the video chat
+function startVideoChat() {
+  if (chatcounter == 0) {
+    //increment the counter to 'on'
+    chatcounter = 1;
+    //set the URL to the video chat HTML api, and show the div containing it
+    let URL = '/communication/videochat'
+    $('#videoArea').removeClass('hide');
+    $('#videoFrame').attr('src', URL);
+    //shrink the scroll area that houses the messages to allow the shown div to fit
+    $('.scroll-area').css("max-width", "50%");
+    console.log("on");
+  }
+  else if (chatcounter == 1) {
+    chatcounter = 0;
+    let URL = ''
+    $('#videoArea').addClass('hide');
+    $('#videoFrame').attr('src', URL);
+    $('.scroll-area').css("max-width", "100%");
+    console.log("off");
+  }
+}
 
 function createteam(){
   //Show modal to create team
@@ -67,7 +96,7 @@ function createteam(){
   $("#myModal").modal('show');
   $("#saveTeam").attr('onclick', 'createTeamFunc()');
   $("#modalName").text("Create New Team");
-  $("#teamname").val(''); 
+  $("#teamname").val('');
 }
 
 var curroom;
@@ -86,7 +115,7 @@ function editteam(){
     $("<button type='button' class='btn btn-default' id='deleteButton' onclick='deleteTeamFunc()'>Delete Team</button>").insertBefore("#cancelButton");
   } else {
     alert("You do not have permission to edit this room!");
-  } 
+  }
 }
 
 // EMOJI STUFF
@@ -206,7 +235,11 @@ global.on('deletemsg', function(msgid){
 function createTeamFunc() {
 
     var new_team_name = $('input#teamname').val();
-    if(testNameValidation(new_team_name)) {
+    if (!testNameValidation(new_team_name)) {
+      alert("Please enter a valid team name");
+    } else if (!isTeamNameExist(new_team_name)) {
+      alert("A team with that name already exist.");
+    } else {
       var room_data = {
         name: new_team_name,
         creator_id: user_id,
@@ -215,10 +248,8 @@ function createTeamFunc() {
       };
 
       global.emit('room', room_data);
-      
+
       $("#myModal").modal('hide');
-    } else {
-      alert("Please enter a valid team name");
     }
 }
 
@@ -228,6 +259,16 @@ function testNameValidation(text) {
   } else {
     return true;
   }
+}
+
+function isTeamNameExist(new_team_name) {
+  var isNameValid = true;
+  for (i = 0; i < global_room_list.length; i++) {
+    if (global_room_list[i].name == new_team_name) {
+      isNameValid = false;
+    }
+  }
+  return isNameValid;
 }
 
 global.on('user', function(user){
@@ -263,7 +304,7 @@ function add_socket(room) {
       message_text = message_text.splice(0,0,'<b>');
       add_message(message_text, msg.id, message_user, room.id);
       msg.already_sent = true;
-        
+
       if ($('span.msg p').length > 0) {
           var last_message_idx = $('span.msg p').length - 1;
           var last_msg_id = $('span.msg p')[last_message_idx].id;
@@ -345,6 +386,14 @@ var mobile_nav = {
 };
 
 function switch_room(target_room){
+
+  /* shut off the video when a room is changed
+     This should, in the end, open a NEW room, with a new chat, rather than cancelling the existing chat
+     This could be done by having 'start video chat' create a new div which is only 'unhidden' when the given room is in use; otherwise, 
+     it's hidden; each existing room with a video chat would have one, and on switch the class 'hidden' would be toggled onto that room; on open, it would be toggled off 
+  */
+  chatcounter = 1;
+  startVideoChat();
 
   // Mobile navigation
   mobile_nav.message();
@@ -496,6 +545,7 @@ $(document).ready(function(){
 // switch and load messages on click on the room name
   $('div#room-list').on('click', 'a', function(){
     if ($(this).attr('id') != 'create-room' ) {
+      
       var id = $(this).attr('id').split("-");
       console.log("id: " + id[1]);
       clearMessage();
@@ -603,22 +653,24 @@ function getCurrentRoom() {
 
 function editTeamFunc() {
   var edited_team_name = $('input#teamname').val();
-  if(testNameValidation(edited_team_name)) {
+  if (!testNameValidation(edited_team_name)) {
+    alert("Please enter a valid team name");
+  } else if (!isTeamNameExist(edited_team_name)) {
+    alert("A team with that name already exist. ");
+  } else {
     var room_data = {
       id: curroom.id,
       name: edited_team_name,
       creator: 'http://' + server_host + ':' + server_port + '/api/users/' + user_id + '/',
       description: curroom.description,
-      public: curroom.public,   
+      public: curroom.public,
     };
     global.emit('updateroom', room_data);
-  } else {
-    alert("Please enter a valid team name");
   }
 }
 
 function deleteTeamFunc() {
-  if (confirm('Are you sure you would like to delete this team?')) {  
+  if (confirm('Are you sure you would like to delete this team?')) {
     global.emit('deleteroom', curroom);
   } else {
     return false;
@@ -678,4 +730,9 @@ function deleteMessage(msgid) {
   }
 }
 
+// EVENT LISTENERS
 
+$("#startVideo").click( ()=> {
+  console.log('Attempting to start video');
+  startVideoChat();
+})

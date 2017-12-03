@@ -1,6 +1,14 @@
 html { 
   font-size: 62.5%; 
+  height: 100%;
+  margin: 0;
 }
+
+body {
+  height: 100%;
+  margin: 0;
+}
+
 div.absolute {
     position: absolute;
     top: 80px;
@@ -84,6 +92,7 @@ div#color_bar{
   background-color: #00aaff;
   z-index: 1000000;
 }
+
 div#sidebar {
   height: 98%;
   border-right: 1px solid lightgray;
@@ -96,8 +105,10 @@ div#sidebar {
 .scroll-area {
   height: 90%;
   min-width: 25%;
+  max-width: 100%;
   position: relative;
-  overflow: wrap;
+  overflow-y: wrap;
+  overflow-x: auto;
 }
 
 div#top_bar {
@@ -106,7 +117,7 @@ div#top_bar {
   background-color: white;
   z-index: 1000;
   padding-right: 35px;
-  margin-top:-10px;
+  margin-top: -2%;
   border-bottom: 1px solid lightgray; 
   padding-top: 30px;
   padding-bottom:10px;
@@ -524,17 +535,23 @@ button#deleteButton {
 /* Begin Video Area Styles */
 
 .message_area{
+  height: 850px;
+  width: 80%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  overflow-x: hidden;
 }
 
 .videoArea{
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;  
-  width: 100%;
+  align-content: flex-end;
+  width: 45%;
+  height: 570px;
+  padding-top: 15%;
 }
 
 .videoItems{
@@ -556,4 +573,13 @@ button#deleteButton {
   display: flex;
   flex-direction: row;
   align-content: left;
+}
+
+/* Hide scrollbar in order to avoid overlap and visual artifacts */
+#element::-webkit-scrollbar { 
+  display: none; 
+}
+
+::-webkit-scrollbar { 
+    display: none; 
 }
