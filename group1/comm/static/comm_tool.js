@@ -562,20 +562,30 @@ $(document).ready(function(){
   mobile_nav.sidebar();
 
   $('form#file_upload').submit(function(event){
-    $.ajax({
-      url: 'http://' + server_host + ':3000/upload',
-      type: 'POST',
-      data: new FormData( this ),
-      processData: false,
-      contentType: false,
-      success: function(file_path){
-        var download_url = 'http://' + server_host + ':' + server_port + '/' + file_path;
-        var display_name = $('input#filename').val();
-        $('input#text').val('<a href="' + download_url + '">' + display_name + '</a>' );
-        display();
-        $('#inputmodal').modal('hide');
-      }
-    });
+    var fileName = $('input#filename').val();
+    if (testNameValidation(fileName)) {
+      $.ajax({
+        url: 'http://' + server_host + ':3000/upload',
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        success: function(file_path) {
+          if (file_path == "Error") {
+            alert("Please provide a valid file name");
+          } else {
+            var download_url = 'http://' + server_host + ':' + server_port + '/' + file_path;
+            var display_name = $('input#filename').val();
+            $('input#text').val('<a href="' + download_url + '">' + display_name + '</a>' );
+            display();
+            $('#inputmodal').modal('hide');            
+          }
+        }
+      });
+    } else {
+      alert("Please provide a valid file name");
+    }
+    
     event.preventDefault();
   });
 

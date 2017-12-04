@@ -16,6 +16,7 @@ from django.contrib.auth.models import User
 from django.template import RequestContext
 from django.shortcuts import render, redirect
 import datetime
+import re
 from requirements.models.user_manager import user_owns_project
 from requirements.models.user_manager import user_can_access_project
 from requirements.models.files import ProjectFile
@@ -266,9 +267,10 @@ def get_attachments(request, projectID):
 
 @user_can_access_project()
 def upload_attachment(request, projectID):
-
     if 'file' not in request.FILES:
         raise IOError("Missing file")
+    if not re.match("^[a-zA-Z0-9_]*$", request.FILES['file'].name):
+        raise IOError("Invalid file name");
     if request.FILES['file'].size > 1100000:
         raise IOError("File too large")
 
