@@ -422,12 +422,12 @@ function messageSentDay(data){
     var minutes=time[2].split(":")[1];
     console.log(year+":"+months+":"+day+":"+hours+":"+minutes);
     var d=new Date(year, months, day, hours, minutes);
+
     var currentTime=new Date();
-    if(d.getYear()==currentTime.getYear()){
-        if (d.getMonth()==(currentTime.getMonth()+1)){
+    if((d.getYear()-1)==currentTime.getYear()){
+        if (months==(currentTime.getMonth()+1)){
             var sent_day_range=currentTime.getDate()-d.getDate();
             if (sent_day_range<7){
-
                 if (sent_day_range==0){
                     sent_weekday='Today';
                 }
@@ -789,6 +789,8 @@ function switch_indvroom(id) {
           }
     });
     var badge=$('ul.user_list li').filter(function(){ return $(this).attr('id') == id }).find('a').children().filter('.badge').text('');
+    document.getElementById("bottom").scrollIntoView();
+    $('html, body').animate({ scrollTop: $(document).height() }, 1200);
 }
 
 
@@ -867,8 +869,8 @@ $(document).ready(function(){
 
               get_indvroom_messages(indvroom_id);
               get_indvroom_show(indvroom_id);
-              document.getElementById("bottom").scrollIntoView();
-              $('html, body').animate({ scrollTop: $(document).height() }, 1200);
+             //document.getElementById("bottom").scrollIntoView();
+             // $('html, body').animate({ scrollTop: $(document).height() }, 1200);
               var room_num = 'room-' + indvroom_id;
               global.emit('indvjoin', {"indvroom": indvroom_id});
           });
@@ -901,9 +903,9 @@ function checkForOnline(id) {
             console.log(year+":"+months+":"+day+":"+hours+":"+minutes);
             var d=new Date(year, months, day, hours, minutes);
             var currentTime=new Date();
-            if(currentTime.getYear()==d.getYear()){
+            if(currentTime.getYear()==(d.getYear()-1)){
                 //alert(d.getMonth());
-                if(currentTime.getMonth()+1==d.getMonth()){
+                if(currentTime.getMonth()+1==months){
                     if(currentTime.getDate()!=d.getDate()){
                         visitedDay=currentTime.getDate()-d.getDate();
                     }
