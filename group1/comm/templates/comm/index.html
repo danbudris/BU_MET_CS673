@@ -42,7 +42,7 @@
 
 </head>
 
-<body>
+<body onload='init()'>
   <header>
       <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
@@ -238,10 +238,18 @@
       <a id="bottom"></a>
     </div>
 
+    <!-- Updated Embedded Video Area -->
+    <div id="wrap_video" class="videoArea hide">
+        <div id="video_box">
+            <video id="video_overlays"></video>
+            <div>
+                <video id="localVideo" autoplay muted ></video>
+            </div>
+        </div>
+    </div>
 
 
-
-    <!-- Embedded video area -->
+    <!-- Embedded video area
     <div id="videoArea" class="videoArea hide">  
       <div class="minorFlex">
           <button type="button" class="close" aria-label="Close">
@@ -250,6 +258,7 @@
       </div>
       <iframe class="videoItems" src="" id="videoFrame"></iframe>
     </div>
+    -->    
 
     <div id="myModal" class="modal fade">
 
