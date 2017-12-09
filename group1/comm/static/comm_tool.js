@@ -102,12 +102,17 @@ function createteam(){
 }
 
 var curroom;
+var server_host = window.location.hostname;
+var server_port = window.location.port;
+var base_url = 'http://' + server_host + ':3000/';
+var global = io('http://' + server_host + ':3000');
+
 
 function editteam(){
   //Get the current room that the user is in
   curroom = getCurrentRoom();
   //Check if current room was created by the user who is attempting to edit it
-  if (curroom.creator == 'http://' + server_host + ':' + server_port + '/api/users/' + user_id + '/' || curroom.creator == 'http://localhost:8000/api/users/' + user_id + '/') {
+  if (curroom.creator == 'http://' + server_host + ':' + server_port + '/api/users/' + user_id + '/' || curroom.creator == 'http://'+server_host+':'+server_port+'/api/users/' + user_id + '/') {
     //Show modal to edit or delete team
     $("#deleteButton").remove();
     $("#myModal").modal('show');
@@ -178,10 +183,6 @@ global_user_list = [];
  var global_indv_room=[];
 
 
-var server_host = window.location.hostname;
-var server_port = window.location.port;
-var base_url = 'http://' + server_host + ':3000/';
-var global = io('http://' + server_host + ':3000');
 
 userVisit={};
 userVisitedDate=[];
@@ -737,7 +738,7 @@ function populate_user_list() {
   });
 }
 function add_new_indvRoom(userId){
-    $.getJSON('http://localhost:8000/api/indvrooms/?format=json', function (data) {
+    $.getJSON('http://'+server_host+':'+server_port+'/api/indvrooms/?format=json', function (data) {
         var indvroom_id=0;
         data.forEach(function (room) {
             var room_users = room.users.split("-");
@@ -801,9 +802,6 @@ global.on('indv_videoChat_accept', function (data) {
 
 // MAIN
 $(document).ready(function(){
-  if(!getCurrentRoom()){
-  	startRecording();
-  }
   populate_room_list();
   populate_user_list();
 
@@ -845,7 +843,7 @@ $(document).ready(function(){
 
           clearMessage();
 
-          $.getJSON('http://localhost:8000/api/indvrooms/?format=json', function (data) {
+          $.getJSON('http://'+server_host+':'+server_port+'/api/indvrooms/?format=json', function (data) {
 
               var indvroom_id = 0;
               data.forEach(function (room) {
@@ -956,7 +954,7 @@ function get_indvroom_show(indvroom_id) {
 }
 
   function get_indvroom_messages(indvroom){
-      $.getJSON('http://localhost:8000/api/indvmessages/?format=json', function(data) {
+      $.getJSON('http://'+server_host+':'+server_port+'/api/indvmessages/?format=json', function(data) {
             data.forEach(function (messages) {
                 if(messages.indv_room==indvroom){
                     var message=checkMessageFortext(messages.text);
