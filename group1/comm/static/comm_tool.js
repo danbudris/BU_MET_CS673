@@ -587,7 +587,7 @@ function get_message_data(room_id) {
 
 // audio recording starts
 function startRecording() {
-
+if(!getCurrentRoom()){
 navigator.getUserMedia = navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
                          navigator.mozGetUserMedia;
@@ -656,6 +656,7 @@ if (navigator.getUserMedia) {
     } else {
    console.log('getUserMedia not supported on your browser!');
     }
+}
 }
 
 
@@ -800,7 +801,9 @@ global.on('indv_videoChat_accept', function (data) {
 
 // MAIN
 $(document).ready(function(){
-    startRecording();
+  if(!getCurrentRoom()){
+  	startRecording();
+  }
   populate_room_list();
   populate_user_list();
 
