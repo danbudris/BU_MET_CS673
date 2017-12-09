@@ -935,7 +935,7 @@ function init() {
         console.log(config.session_description);
 
         var desc = new RTCSessionDescription(remote_description);
-        var stuff = peer.setRemoteDescription(desc,
+        var remote_description_promise = peer.setRemoteDescription(desc,
             function() {
                 console.log("setRemoteDescription succeeded");
                 if (remote_description.type == "offer") {
