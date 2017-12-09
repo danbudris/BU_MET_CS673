@@ -552,6 +552,7 @@ button#deleteButton {
   width: 45%;
   height: 570px;
   padding-top: 15%;
+  border: 1px black;
 }
 
 .videoItems{
