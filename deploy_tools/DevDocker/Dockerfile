@@ -19,7 +19,7 @@ RUN apt-get install -y \
 RUN mkdir ~/g1 && mkdir ~/g1/source/
 
 # clone the git repository to local
-RUN git clone -b feature/help_menu https://github.com/danbudris/BU_MET_CS673.git ~/g1/source
+RUN git clone -b feature/video_javascript_integration https://github.com/danbudris/BU_MET_CS673.git ~/g1/source
 
 # create the virtual environment and run the setup and database migration scripts
 RUN virtualenv -p /usr/bin/python2.7 ~/g1/virtualenv && cd ~/g1/source/group1 && ../../virtualenv/bin/pip install -r ../requirements.txt 
