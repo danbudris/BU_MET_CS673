@@ -866,19 +866,14 @@ function init() {
     });
     function join_chat_channel(channel, userdata) {
         video_socket.emit('join', {"channel": channel, "userdata": userdata});
-        //alert("join channel");
     }
     function part_chat_channel(channel) {
         video_socket.emit('part', channel);
     }
 
-   // video_socket.emit("join", {"channel": default_channel, "userdata":userdata});
-
     video_socket.on("addPeer", function (config) {
-       // alert("recieving add PEER");
         console.log('Signaling server said to add peer:', config);
-        //alert(config);
-       var peer_id=config.peer_id;
+        var peer_id=config.peer_id;
 
         var peer_connection = new RTCPeerConnection(
             {"iceServers": ICE_SERVERS},
@@ -907,10 +902,6 @@ function init() {
             if (MUTE_AUDIO_BY_DEFAULT) {
                 remote_media.attr("muted", "true");
             }
-            //remote_media.attr("controls", "");
-            //peer_media_elements[peer_id] = remote_media;
-            //$('body').append(remote_media);
-            //attachMediaStream(remote_media[0], event.stream);
             var localVideo=document.getElementById("localVideo");
             localVideo.src=window.URL.createObjectURL(event.stream);
 
@@ -1033,17 +1024,14 @@ function setup_local_media(callback, errorback) {
             local_media_stream = stream;
             var local_media = USE_VIDEO ? $("<video>") : $("<audio>");
             local_media.attr("autoplay", "autoplay");
-            local_media.attr("muted", "true"); /* always mute ourselves by default */
-            //local_media.attr("controls", "");
-            //$("body").append(local_media);
-            //attachMediaStream(local_media[0], stream);
+            local_media.attr("muted", "true");
 
             var video_overlays=document.getElementById("video_overlays");
             video_overlays.src=window.URL.createObjectURL(stream);
 
             if (callback) callback();
         },
-        function() { /* user denied access to a/v */
+        function() {
             console.log("Access denied for audio/video");
             window.alert("You chose not to provide access to the camera/microphone, feature will not function.");
             if (errorback) errorback();
