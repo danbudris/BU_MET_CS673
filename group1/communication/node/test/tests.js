@@ -4,6 +4,10 @@ var supertest = require('supertest');
 
 var Client = require('node-rest-client').Client;
 var client = new Client();
+var sinon = require('sinon');
+var assert = require('assert');
+const expect = require('chai').expect;
+const nock = require('nock');
 
 describe('API tests:', function(){
 
@@ -19,6 +23,32 @@ describe('API tests:', function(){
 	});
 });
 
+
+
+//global = 'http://localhost:3000'
+
+//var converter = require("/home/george/BU_MET_CS673/group1/comm/static/comm_tool.js");
+describe("Video Chat ", function(err, done) {
+
+//  var express = require('express'),
+//      app = express()
+//    , http = require('http')
+//    , server = http.createServer(app);
+
+   //io  = require('socket.io').listen(server);
+
+  window =
+      {
+          location:
+          {
+              hostname: "localhost"
+          }
+      };
+      console.log(window.location.hostname);
+
+      const videochat = require('../../../comm/static/comm_tool').startVideoChat;
+
+});
 		// it('should return at least one room object', function(done) {
 		// 	api_test.get('/api/roomskkk/?format=json').expect(201, function(err){ return err });
 		// 	done();
@@ -32,7 +62,7 @@ describe('API tests:', function(){
 	// 			data: {
 	// 				'name': 'Test Room',
 	// 				'description': 'Test Description',
-	// 				'public': true 
+	// 				'public': true
 	// 			},
 	// 			headers: { 'Content-Type': 'application/json' }
 	// 		};
