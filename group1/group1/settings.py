@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     'django.contrib.admin',
+    'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -41,10 +42,12 @@ INSTALLED_APPS = (
     'requirements',
     'comm',
     'issue_tracker',
-    'corsheaders'
+    'corsheaders',
+    'comm.oauth2_authentication'
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,7 +68,7 @@ WSGI_APPLICATION = 'group1.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, '../../database/db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, '../database/db.sqlite3'),
     }
 }
 
@@ -91,6 +94,8 @@ STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../static'))
 
 LOGIN_URL = '/signin'
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 CORS_ALLOW_HEADER = (
     'x-requested-with',
     'content-type',
@@ -100,3 +105,5 @@ CORS_ALLOW_HEADER = (
     'x-csrftoken',
     'accept-encoding',
 )
+
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'comm/oauth2_authentication/client_secrets.json')

@@ -1,0 +1,84 @@
+comm: \n
+      18 text files.
+classified 12 files
+      12 unique files.                              
+       9 files ignored.
+
+github.com/AlDanial/cloc v 1.68  T=0.08 s (139.4 files/s, 12834.3 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+JavaScript                       1             66             15            330
+HTML                             2             40             37            199
+Python                           7             35             18            171
+CSS                              1              1              0            101
+-------------------------------------------------------------------------------
+SUM:                            11            142             70            801
+-------------------------------------------------------------------------------
+communication folder(ignore node modules): \n
+      15 text files.
+classified 9 files
+       9 unique files.                              
+       9 files ignored.
+
+github.com/AlDanial/cloc v 1.68  T=0.04 s (226.3 files/s, 11289.1 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+HTML                             1             43             37            186
+Python                           8             36             23            124
+-------------------------------------------------------------------------------
+SUM:                             9             79             60            310
+-------------------------------------------------------------------------------
+group 1 folder: \n
+       3 text files.
+classified 3 files
+       3 unique files.                              
+       1 file ignored.
+
+github.com/AlDanial/cloc v 1.68  T=0.01 s (213.3 files/s, 10593.7 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+Python                           3             38             26             85
+-------------------------------------------------------------------------------
+SUM:                             3             38             26             85
+-------------------------------------------------------------------------------
+selenium tests folder: \n
+       0 text files.
+       0 unique files.                              
+       0 files ignored.
+unit tests folder: \n
+       0 text files.
+       0 unique files.                              
+       0 files ignored.
+project_router folder: \n
+       7 text files.
+classified 7 files
+       7 unique files.                              
+       2 files ignored.
+
+github.com/AlDanial/cloc v 1.68  T=0.02 s (341.3 files/s, 1853.0 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+HTML                             1              0              0             15
+Python                           5              6              3             13
+CSS                              1              0              1              0
+-------------------------------------------------------------------------------
+SUM:                             7              6              4             28
+-------------------------------------------------------------------------------
+       1 text file.
+       1 unique file.                              
+       0 files ignored.
+
+manage.py file: \n
+github.com/AlDanial/cloc v 1.68  T=0.01 s (190.3 files/s, 1903.3 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+Python                           1              3              0              7
+-------------------------------------------------------------------------------
+       0 text files.
+       0 unique files.                              
+       0 files ignored.

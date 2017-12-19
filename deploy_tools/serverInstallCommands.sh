@@ -90,7 +90,7 @@ sudo apt-get remove nginx-common
 sudo apt-get install libc6 libpcre3 libssl0.9.8 zlib1g lsb-base libpcre3 libpcre3-dev
 #change directory to downloads
 cd ~/downloads
-#download nginx stable 
+#download nginx stable
 curl -LOk http://nginx.org/download/nginx-1.6.3.tar.gz
 #untar compressed nginx file
 tar -xvf nginx-1.6.3.tar.gz
@@ -131,7 +131,7 @@ sudo vim /etc/init.d/nginx
 ################################################################################################################
 ################################################################################################################
 #! /bin/sh
- 
+
 ### BEGIN INIT INFO
 # Provides:          nginx
 # Required-Start:    $all
@@ -141,23 +141,23 @@ sudo vim /etc/init.d/nginx
 # Short-Description: starts the nginx web server
 # Description:       starts nginx using start-stop-daemon
 ### END INIT INFO
- 
+
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/local/sbin/nginx
 NAME=nginx
 DESC=nginx
- 
+
 test -x $DAEMON || exit 0
- 
+
 # Include nginx defaults if available
 if [ -f /etc/default/nginx ] ; then
     . /etc/default/nginx
 fi
- 
+
 set -e
- 
+
 . /lib/lsb/init-functions
- 
+
 case "$1" in
   start)
     echo -n "Starting $DESC: "
@@ -195,7 +195,7 @@ case "$1" in
     exit 1
     ;;
 esac
- 
+
 exit 0
 ################################################################################################################
 ################################################################################################################
@@ -265,7 +265,7 @@ sudo vim /usr/local/nginx/sites-available/$SITENAME
 server {
     listen 80;
     server_name www.3blueprints.com;
-    
+
     location / {
         proxy_pass http://localhost:8000;
     }
@@ -281,7 +281,7 @@ sudo service nginx restart
 cd ~/sites/$SITENAME/source/group1
 #test that gunicorn runs; visit http://www.3blueprints.com (no css/static files)
 sudo ../../virtualenv/bin/gunicorn group1.wsgi:application
-#to make nginx serve static files edit the following file 
+#to make nginx serve static files edit the following file
 sudo vim /usr/local/nginx/sites-available/$SITENAME
 #replace with the following lines
 server {
@@ -357,7 +357,7 @@ respawn
 
 setuid root
 
-exec nodejs /home/pgmvt/sites/www.3blueprints.com/source/group1/communication/node/main.js
+exec node /home/pgmvt/sites/www.3blueprints.com/source/group1/communication/node/main.js
 
 #start gunicorn (will comeback up if machine goes down
 sudo stop nodejs-www.3blueprints.com

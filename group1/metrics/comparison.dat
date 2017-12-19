@@ -1,0 +1,26 @@
+comm folder: 
+	+1 file
+	+1108 - 801 code
+	+ 113 - 70 comment
+communication folder: 
+	-1 file
+	+1 comment
+	-1 code
+
+group1 folder: unchange
+
++ 1 new folder: selenium test
+	+10 file
+	+60 comment
+	+279 code
+
++1 new folder: unit test
+	+9 file
+	+20 comment
+	+665 code
+
+project router folder:
+	-1 file
+	+1 comment
+	+1 code
+

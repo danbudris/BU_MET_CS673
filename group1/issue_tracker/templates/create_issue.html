@@ -12,7 +12,7 @@
                     <h1 class="bug_name" clear="both">Create New Issue</h1>
 -->
                     <!-- </div> -->
-                    
+
         <div style="float: left;">
             <form action="" method="post">{% csrf_token %}
                 {{ form.non_field_errors }}
@@ -36,7 +36,7 @@
 
                     <p class="text-warning" style="color: black;"><b>Short Description/Title</b></p>
         		<!--<input type="text" name="_IssueShortDis" size="50">-->
-                
+
                     <div class="fieldWrapper">
                         {{ form.title.errors }}
                         <label for="{{ form.title.id_for_label }}"></label>
@@ -44,17 +44,17 @@
                     </div>
 
                     <p class="text-warning" style="color: black;"><b>Long Description</b></p>
-                    
+
                     {{ form.description.errors }}
                     <label for="{{ form.title.id_for_label }}"></label>
                     {{ form.description }}
-        		    
+
                 </div>
-                
+
                 <div id="resolution" style="float: left;">
 
                     <p style="color: black;" class="text-warning"><b>Priority</b></p>
-        		    
+
                     <div class="fieldWrapper">
                         {{ form.priority.errors }}
                         <label for="{{ form.title.id_for_label }}"></label>
@@ -62,7 +62,7 @@
                     </div>
 
                     <p class="text-warning" style="color: black;"><b>Assigned to.....(Option)</b></p>
-        		    
+
                     <div class="fieldWrapper">
                         {{ form.assignee.errors }}
                         <label for="{{ form.title.id_for_label }}"></label>
@@ -71,10 +71,10 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <br><br>	
-                   		    <input type="submit" value="Create" class="btn btn-primary" style="float: left; background-color: #B22222"/>
+                            <br><br>
+                   		    <input id="id_input_create_issue" type="submit" value="Create" class="btn btn-primary" style="float: left; background-color: #B22222"/>
                        	</div>
-         		  	</div> 
+         		  	</div>
 
                 </div>
 
@@ -82,5 +82,5 @@
         </div>
     </div>
 </div>
-         
+
 {% endblock %}

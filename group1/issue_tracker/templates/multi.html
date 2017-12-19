@@ -23,11 +23,11 @@ th, td:nth-child(2) { text-align: left; }
 </tr>
 </thead>
 <tbody>
-{% if object_list %}	
+{% if object_list %}
   {% for issue in object_list %}
    <tr>
    <td>{{ issue.pk }}</td>
-   <td><a href="/issue_tracker/issue/view/{{issue.pk}}" style="color: #A70303">{{ issue.title }}</a></td>
+   <td><a id="issue_title" href="/issue_tracker/issue/view/{{issue.pk}}" style="color: #A70303">{{ issue.title }}</a></td>
    <td>{{ issue.issue_type }}</td>
    <td>{{ issue.status }}</td>
    <td>{{ issue.priority }}</td>

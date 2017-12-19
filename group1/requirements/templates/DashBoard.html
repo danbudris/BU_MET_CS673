@@ -18,8 +18,8 @@
 							<i class="fa fa-list fa-fw"></i>
 							Project List
 							{% if canOwnProject %}
-							<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/newproject');">
-								<i class="glyphicon glyphicon-plus"></i>
+							<a id="id_create_project_link" class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/newproject');">
+								<i id="id_create_project_icon" class="glyphicon glyphicon-plus"></i>
 							</a>
 							{% endif %}
 						</h2>
@@ -34,26 +34,26 @@
 								             {{ aProject.title}}
 								            <!-- <div id="panelbar-{{ theProject.id }}" class="pull-right"> -->
                                             {% for anAssociation in associationsWithUser %}
-                                                {% check_permission anAssociation aProject "DeleteProject" as can_delete %} 
+                                                {% check_permission anAssociation aProject "DeleteProject" as can_delete %}
                                                 {% if can_delete  %}
-                                                    <!--data-del-proj used for ui test automation --> 
-        							        		<a class="btn btn-link pull-right" 
-        							        		   href="javascript:void(0);" 
-        							        		   data-del-proj="{{ aProject.title }}" 
+                                                    <!--data-del-proj used for ui test automation -->
+        							        		<a class="btn btn-link pull-right"
+        							        		   href="javascript:void(0);"
+        							        		   data-del-proj="{{ aProject.title }}"
         							        		   onclick="showDialog('/req/deleteproject/{{ aProject.id }}');">
                                                     <i class="fa fa-trash-o fa-fw"></i>
                                                      Delete
                                                     </a>
                                                 {% endif %}
-                                                {% check_permission anAssociation aProject "EditProject" as can_edit %} 
-                                                {% if can_edit %} 
+                                                {% check_permission anAssociation aProject "EditProject" as can_edit %}
+                                                {% if can_edit %}
          							           		<a class="btn btn-link pull-right" href="javascript:void(0);" onclick="showDialog('/req/editproject/{{ aProject.id }}');">
                                                     <i class="fa fa-edit fa-fw"></i>
                                                     Edit
                                                     </a>
                                                 {% endif %}
                                             {% endfor %}
-							           		<a  class="btn btn-link pull-right" 
+							           		<a  class="btn btn-link pull-right"
 							           		    href="/req/projectdetail/{{ aProject.id }}"
 							           		    data-open-proj="{{ aProject.title }}">
 							           			<i class="glyphicon glyphicon-folder-open fa-fw"></i>
@@ -80,6 +80,6 @@
 
 <script type="text/javascript">
 	var winHeight = $(window).outerHeight();
-	$("#page-wrapper").css('height',winHeight);	
+	$("#page-wrapper").css('height',winHeight);
 </script>
 {% endblock content2 %}
