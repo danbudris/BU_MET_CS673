@@ -1,4 +1,4 @@
-from comm.models import User, Room, Message, UserRoom
+from comm.models import User, Room, Message, UserRoom, IndvRoom, IndvMessage, UserVisit
 from rest_framework import routers, serializers, viewsets, filters
 
 
@@ -9,10 +9,26 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RoomSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Room
-        fields = ('id', 'name', 'creator', 'description', 'public')
+	class Meta:
+		model = Room
+		fields = ('id', 'name', 'creator', 'description', 'public')
+    
+class IndvRommSerializer(serializers.HyperlinkedModelSerializer):
+	class Meta:
+		model = IndvRoom
+		fields = ('id', 'users', 'create_user', 'second_user')
 
+class IndvMessageSerializer(serializers.HyperlinkedModelSerializer):
+	#indv_room=IndvRommSerializer()
+	#indv_room = serializers.HyperlinkedIdentityField(view_name="api:indv_room-detail")
+	class Meta:
+		model = IndvMessage
+		fields = ('id', 'text', 'send_user', 'indv_room', 'time')
+
+class UserVisitSerializer(serializers.HyperlinkedModelSerializer):
+	class Meta:
+		model = UserVisit
+		fields = ('id', 'user', 'time')
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
