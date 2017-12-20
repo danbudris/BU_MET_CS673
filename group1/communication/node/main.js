@@ -78,20 +78,84 @@ var client = new Client();
 var users = [];
 
 var global_namespace = io.of('/');
+var indvroom_id;
+var indv_sockets={};
+var visited_users={};
+var visit_url = 'http://localhost:8000/api/userVisit/?format=json';
+client.get(visit_url,function(data,response){
+    data.forEach(function(room){
+        visited_users[room.id]=room.user;
+    });
+});
 
 global_namespace.on('connection', function(socket){
         var user;
-        socket.on('user', function(msg) { 
+        var userID;
+        var visitStatus;
+        socket.on('user', function(msg) {
                 console.log(msg);
+                visitStatus=msg.visitStatus;
                 user = msg.username;
-                users.push(user);
+                userID=msg.userId;
+                users.push(msg.userId);
                 global_namespace.emit('user', {'username': user, 'action': 'connected' });
                 console.log( util.format('%s connected', user) );
+
         });
         socket.on('disconnect', function(){
-                users.pop(user);
+                for (var i=0; i<users.length; i++){
+                    console.log(visitStatus);
+                    if(users[i]==userID){
+                        users.pop(userID);
+                        var visitId=null;
+                        var visitedId=null;
+                        for(var id in visitStatus){
+                            visitedId = Number(visitStatus[id].split('/api/users/')[1].slice(0,-1));
+                            if (visitedId==userID)
+                                visitId=id;
+                            console.log(visitedId)
+                        }
+                        if(visitId==null){
+                            userVisit.save(userID);
+                        }
+                        else {
+                            userVisit.update(visitId);
+                        }
+
+
+                    }
+                }
+
                 console.log( util.format('%s disconnected', user) );
                 global_namespace.emit('user', {'username': user, 'action': 'disconnected' });
+        });
+        socket.on('indvjoin', function(data){
+            console.log('join data '+data.indvroom);
+            indv_sockets[data.indvroom]=socket;
+            socket.join(data.indvroom);
+            socket.room=data.indvroom;
+            //socket.broadcast.to(data.indvroom).emit('new_room', {'new_room':'new_room'});
+            io.sockets.in(data.indvroom).emit('new_room', {'new_room':'new_room'});
+        });
+        socket.on('indvroom', function (data) {
+                console.log(data);
+                indvroom.save(data.creator_id, data.second_user);
+        });
+        socket.on('indvroom_id', function (data) {
+                indvroom_id=data.id;
+        });
+        socket.on('indv_msg', function(data){
+                console.log('indv_msg '+data);
+                indv_messages.save(util.format('%s: %s', data.username, data.value), data.user_id, indvroom_id);
+        });
+        socket.on('editIndvmsg', function (data) {
+            indv_messages.update(data);
+        });
+        socket.on('deleteIndvmsg', function (data) {
+            indv_messages.delete(data);
+        });
+        socket.on('indv_videoChat', function (data) {
+            io.sockets.in(indvroom_id).emit('indv_videoChat_accept', {'some_info':'some_info'});
         });
         socket.on('room', function(room){
                 console.log('new room: '  + room.name);
@@ -126,6 +190,8 @@ app.get('/users', function(req,res){
         res.send(_.unique(users));
 });
 
+
+
 var room_url = 'http://localhost:8000/api/rooms/?format=json';
 
 namespaces = {};
@@ -149,6 +215,85 @@ client.get(room_url,function(data,response){
     add_new_namespace(room);
   });
 });
+
+var userVisit={
+    'save':function (userId) {
+        console.log("saved "+userId);
+        console.log(userId);
+        userVisit_template={
+            data:{
+                'user':util.format('http://localhost:8000/api/users/%s/', userId),
+            },
+            headers: { 'Content-Type': 'application/json' }
+        };
+        client.post("http://localhost:8000/api/userVisit/", userVisit_template, function (data, response) {
+            console.log("posted");
+            console.log(data);
+        });
+    },
+    'update':function (id) {
+        userVisit_template={
+            data:{
+                'id':id,
+                //'user':userId
+            },
+            headers: { 'Content-Type': 'application/json' }
+        };
+        client.put('http://localhost:8000/api/userVisit/', userVisit_template, function(data,response) {
+
+        });
+
+    },
+
+};
+
+var indv_messages={
+    'save':function(text, send_user, indvroom_id){
+        console.log("text - "+text);
+        console.log("send_user - "+send_user);
+        console.log("indvroom_id - "+indvroom_id);
+        indvtext_template={
+               data:{
+                   'text':text,
+                   'send_user':util.format('http://localhost:8000/api/users/%s/', send_user),
+                   'indv_room':indvroom_id,
+               },
+               headers: { 'Content-Type': 'application/json' }
+           };
+           client.post("http://localhost:8000/api/indvmessages/", indvtext_template, function (data, response) {
+
+                    console.log('check for repeat text '+data.text);
+                    io.sockets.in(indvroom_id).emit('indv_msg', data);
+
+           });
+
+    },
+    'update':function (msg) {
+            message_template = {
+                        data: {
+                                'id': msg.id,
+                                'text': msg.text
+                        },
+                        headers: { 'Content-Type': 'application/json' }
+            };
+            client.put('http://localhost:8000/api/indvmessages/', message_template, function(data,response) {
+                        global_namespace.emit('editmsg', msg);
+                        console.log( util.format('(%s) Message %s editted to: "%s"', response.statusCode, msg.id, msg.text) );
+            });
+    },
+    'delete': function(msgid) {
+            message_template = {
+                    data: {
+                            'id': msgid
+                    },
+                        headers: { 'Content-Type': 'application/json' }
+            };
+            client.delete('http://localhost:8000/api/indvmessages/', message_template, function(data,response) {
+                        global_namespace.emit('deletemsg', msgid);
+                        console.log( util.format('(%s) Message %s deleted', response.statusCode, msgid) );
+            });
+    }
+};
 
 var messages = {
         'save': function(room_id, message, user_id) {
@@ -191,6 +336,25 @@ var messages = {
                         console.log( util.format('(%s) Message %s deleted', response.statusCode, msgid) );
                 });
         }
+};
+var indvroom={
+    'save':function (creator_id, second_user) {
+           indvroom_template={
+               data:{
+                   'users':creator_id+'-'+second_user,
+                   'create_user':util.format('http://localhost:8000/api/users/%s/', creator_id),
+                   'second_user':second_user,
+               },
+               headers: { 'Content-Type': 'application/json' }
+           };
+           client.post("http://localhost:8000/api/indvrooms/", indvroom_template, function (data, response) {
+                    // parsed response body as js object
+                    console.log('indvroom created ' + data.id);
+                    // raw response
+                    //console.log(response);
+           });
+
+    }
 };
 
 var rooms = {
@@ -270,13 +434,14 @@ var message_template = {
 var channels = {};
 var sockets = {};
 
-// WebSocket stuff
+// webrtc stuff begins
+
 io.on('connection', function(socket) {
-        socket.on('msg', function(msg) {
-                io.emit('msg', msg);
+        /*socket.on('msg', function(msg) {
+                //io.emit('msg', msg);
                 message_template.data.text = msg;
                 client.post(msg_endpoint, message_template, function(data,response) { console.log(msg) });
-        });
+        });*/
 
 	    console.log("channels "+channels)
     socket.channels={};

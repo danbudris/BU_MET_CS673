@@ -1,6 +1,8 @@
 String.prototype.splice = function( idx, rem, s ) {
     return (this.slice(0,idx) + s + this.slice(idx + Math.abs(rem)));
 };
+
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -98,12 +100,17 @@ function createteam(){
 }
 
 var curroom;
+var server_host = window.location.hostname;
+var server_port = window.location.port;
+var base_url = 'http://' + server_host + ':3000/';
+var global = io('http://' + server_host + ':3000');
+
 
 function editteam(){
   //Get the current room that the user is in
   curroom = getCurrentRoom();
   //Check if current room was created by the user who is attempting to edit it
-  if (curroom.creator == 'http://' + server_host + ':' + server_port + '/api/users/' + user_id + '/' || curroom.creator == 'http://localhost:8000/api/users/' + user_id + '/') {
+  if (curroom.creator == 'http://' + server_host + ':' + server_port + '/api/users/' + user_id + '/' || curroom.creator == 'http://'+server_host+':'+server_port+'/api/users/' + user_id + '/') {
     //Show modal to edit or delete team
     $("#deleteButton").remove();
     $("#myModal").modal('show');
@@ -171,14 +178,24 @@ function search_show(){
 // global state variables
 global_room_list = [];
 global_user_list = [];
+ var global_indv_room=[];
 
-var server_host = window.location.hostname;
-var server_port = window.location.port;
-var base_url = 'http://' + server_host + ':3000/';
-var global = io('http://' + server_host + ':3000');
+
+
+userVisit={};
+userVisitedDate=[];
+$.getJSON('http://' + server_host + ':' + server_port + '/api/userVisit/',function(data){
+    userVisitedDate=data;
+    data.forEach(function(data){
+       userVisit[data.id]=data.user;
+
+    });
+});
 
 global.emit('user', {
   'username': user,
+   'userId':user_id,
+    'visitStatus':userVisit,
   'action': 'connect',
 });
 
@@ -284,7 +301,7 @@ global.on('user', function(user){
 sockets = {};
 $.getJSON('http://' + server_host + ':' + server_port + '/api/rooms/',function(data){
   data.forEach(function(room){
-    add_socket(room);
+    //add_socket(room);
   });
 });
 
@@ -300,7 +317,7 @@ function add_socket(room) {
       var message_user = Number(msg.user.split('/api/users/')[1].slice(0,-1));
       var message_text = msg.text.splice(msg.text.indexOf(':'),0,'</b>');
       message_text = message_text.splice(0,0,'<b>');
-      add_message(message_text, msg.id, message_user, room.id);
+      add_message(message_text, msg.id, message_user, room.id, msg.time);
       msg.already_sent = true;
 
       if ($('span.msg p').length > 0) {
@@ -313,20 +330,48 @@ function add_socket(room) {
     sockets[room.id] = socket;
 }
 
+
 function increment_badge(room_id){
   var badge = $('div#room-list a').filter( function(){ return $(this).attr('id') === 'room-' + room_id } ).children().filter('.badge');
   var count = Number(badge.text());
   badge.text(count += 1);
 }
+var sent_day_check=null;
+function add_message(msg, msgid, msguser, target, date) {
 
-function add_message(msg, msgid, msguser, target) {
   //Check if user is the person who sent message. Show different options depending on result.
   //The p element contains the actual message, and each of them have the id "message-" followed by the message id
-  if (msguser == user_id) {
-    $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">' + msg + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span><ul class="msgmenu"><li onclick="showEditMessage(' + msgid + ')">edit</li><li onclick="deleteMessage(' + msgid + ')" class="red">delete</li></ul></span>');
-  } else {
-    $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">' + msg + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span></span>');
-  }
+    var sent_day=messageSentDay(date);
+    if(sent_day!=null){
+        //alert(sent_day);
+        if(sent_day_check!=sent_day){
+            sent_day_check=sent_day;
+            sent_day='<br><b><i style="color: #33A8FF">'+sent_day_check+'</i></b><br><br>';
+            //sent_day='<p style="color: #33A8FF"><b><i>'+sent_day_check+'</i></b></p><br>';
+        }
+        else{
+            sent_day='';
+        }
+    }
+
+    var sent_time=date.split('-')[2].slice(3, 8);
+    var send_name=msg.split(':')[0];
+    var check_result=checkForAudioRecord(msg);
+    if (check_result.slice(0, 10)=='blob:http:'){
+        if(msguser == user_id){
+            $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">' + '<div id="player">'+sent_day+'<small>'+sent_time+'</small>&nbsp;<b>'+send_name+':</b><audio controls><source src="'+check_result+'" type="audio/ogg"></audio></div>' + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span><ul class="msgmenu"><li onclick="deleteMessage(' + msgid + ')" class="red">delete</li></ul></span>');
+        }
+        else {
+            $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">'+sent_day+'<small>'+sent_time+'</small>&nbsp;<b>'+send_name+':</b>' + '<audio controls><source src="'+check_result+'" type="audio/ogg"></audio>' + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span></span>');
+        }
+    }
+    else {
+        if (msguser == user_id) {
+            $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">'+sent_day+'<small>'+sent_time+'</small>&nbsp;' + msg + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span><ul class="msgmenu"><li onclick="showEditMessage(' + msgid + ')">edit</li><li onclick="deleteMessage(' + msgid + ')" class="red">delete</li></ul></span>');
+        } else {
+            $('div#room-' + target).append('<span class="msg"><p id="message-' + msgid + '">'+sent_day+'<small>'+sent_time+'</small>&nbsp;' + msg + '</p><span class="msgoptions"><img src="/static/emoji/happy.jpg" style="width:15px;height:15px;margin-right:5px;">...</span></span>');
+        }
+    }
   //add emoji to message content
   var emoji_string=Object.getOwnPropertyNames(emoji_image);
   if (msg.indexOf('::') != -1) {
@@ -337,6 +382,84 @@ function add_message(msg, msgid, msguser, target) {
     }
   }
 }
+function checkForAudioRecord(msg){
+    var check=msg.split(':')[0];
+    return msg.slice(check.length+1, msg.length);
+
+}
+function messageSentDay(data){
+    var sent_weekday=null;
+    var sent_day=null;
+    var sent_month=null;
+    var weekday = new Array(7);
+    weekday[0] =  "Sunday";
+    weekday[1] = "Monday";
+    weekday[2] = "Tuesday";
+    weekday[3] = "Wednesday";
+    weekday[4] = "Thursday";
+    weekday[5] = "Friday";
+    weekday[6] = "Saturday";
+    var month = new Array();
+    month[1] = "January";
+    month[2] = "February";
+    month[3] = "March";
+    month[4] = "April";
+    month[5] = "May";
+    month[6] = "June";
+    month[7] = "July";
+    month[8] = "August";
+    month[9] = "September";
+    month[10] = "October";
+    month[11] = "November";
+    month[12] = "December";
+    var time=data.split("-");
+    var year=time[0];
+    var months=time[1];
+    var day=time[2].slice(0, 2);
+    var hours=time[2].slice(3, 5);
+    var minutes=time[2].split(":")[1];
+    console.log(year+":"+months+":"+day+":"+hours+":"+minutes);
+    var d=new Date(year, months, day, hours, minutes);
+
+    var currentTime=new Date();
+    if((d.getYear()-1)==currentTime.getYear()){
+        if (months==(currentTime.getMonth()+1)){
+            var sent_day_range=currentTime.getDate()-d.getDate();
+            if (sent_day_range<7){
+                if (sent_day_range==0){
+                    sent_weekday='Today';
+                }
+                else if (sent_day_range==1){
+                    sent_weekday='Yesterday';
+                }
+                else {
+                    sent_weekday=weekday[d.getDay()];
+                }
+            }
+            else {
+                sent_day=month[d.getMonth()]+' '+d.getDate();
+            }
+        }
+        else {
+            sent_month=month[d.getMonth()]+' '+d.getDate();
+        }
+
+    }
+    if(sent_weekday!=null){
+        return sent_weekday;
+    }
+    else if (sent_day!=null){
+        return sent_day;
+    }
+    else if(sent_month!=null){
+        return sent_month;
+    }
+    else {
+        return '';
+    }
+
+}
+
 
 function visible_namespace() {
   try {
@@ -357,11 +480,22 @@ function display() {
     'user_id': user_id,
     'already_sent': false
   };
-  sockets[visible_namespace()].emit('msg', message);
-  $('input#text').val('');
-  $("#charLimitMessage").css("display", "none");
+
+  if(getCurrentRoom()){
+       sockets[visible_namespace()].emit('msg', message);
+       $('input#text').val('');
+       $("#charLimitMessage").css("display", "none");
+  }
+  else {
+      global.emit('indv_msg', message);
+      $('input#text').val('');
+      $("#charLimitMessage").css("display", "none");
+  }
+
 
 }
+
+
 
 // Add a new message whenever the user presses the enter key
 $(document).ready(function(){
@@ -394,7 +528,15 @@ function switch_room(target_room){
   startVideoChat();
 
   // Mobile navigation
+    //hide indv romm
+    sent_day_check=null;
+    if(visible_namespace()){
+        var hide_indv_room = 'room-'+visible_namespace();
+        $('div.messagecontent').filter('#' + hide_indv_room).hide();
+    }
+
   mobile_nav.message();
+
 
   var room_id = Number(target_room.replace('room-',''));
   var room_name = _.filter(global_room_list, function(obj){ return (obj.id === room_id) })[0].name;
@@ -404,9 +546,12 @@ function switch_room(target_room){
   global_room_list.forEach( function(room){
 
     var room_num = 'room-' + room.id;
+    console.log('room_num '+room_num);
+    console.log('target_room '+target_room);
     if (room_num === target_room) {
+        $('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link active');
       $('div.messagecontent').filter('#' + room_num).show();
-      $('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link active');
+
     } else {
       $('div.messagecontent').filter('#' + room_num).hide();
       $('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link');
@@ -425,19 +570,92 @@ function switch_room(target_room){
 // @param - room_id
 function get_message_data(room_id) {
 
+
     var message_endpoint = 'http://' + server_host + ':' + server_port + '/api/messages/?room=' + room_id
     + '&' + 'format=json';
     $.getJSON(message_endpoint, function(data){
       data.forEach(function(msg){
-        console.log("Message: " + msg.text);
-
         message_room = Number(msg.room.split('/api/rooms/')[1].slice(0,-1));
         var message_user = Number(msg.user.split('/api/users/')[1].slice(0,-1));
         var message_text = msg.text.splice(msg.text.indexOf(':'),0,'</b>');
         message_text = message_text.splice(0,0,'<b>');
-        add_message(message_text, msg.id, message_user, room_id) ;
+        add_message(message_text, msg.id, message_user, room_id, msg.time) ;
       });
     });
+}
+
+// audio recording starts
+function startRecording() {
+if(!getCurrentRoom()){
+navigator.getUserMedia = navigator.getUserMedia ||
+                         navigator.webkitGetUserMedia ||
+                         navigator.mozGetUserMedia;
+//var record = document.querySelector('#record');
+var record = document.getElementById("record");
+var audioURL;
+
+if (navigator.getUserMedia) {
+   console.log('getUserMedia supported.');
+   navigator.getUserMedia (
+      // constraints - only audio needed for this app
+      {
+         audio: true
+      },
+
+      // Success callback
+      function(stream) {
+        var mediaRecorder = new MediaRecorder(stream);
+        record.onclick = function() {
+          mediaRecorder.start();
+          console.log(mediaRecorder.state);
+          console.log("recorder started");
+          record.style.background = "red";
+          record.style.color = "black";
+          record.id = "stop";
+          setTimeout(function(){
+            console.log("recorder stopped");
+            mediaRecorder.stop();
+            console.log(mediaRecorder.state);
+            console.log("recorder stopped");
+            record.style.background = "";
+            record.style.color = "";
+          }, 5000);
+
+        }
+
+        var chunks = [];
+
+          mediaRecorder.ondataavailable = function(e) {
+          chunks.push(e.data);
+        };
+        mediaRecorder.onstop = function(e) {
+            console.log("recorder stopped");
+
+
+            var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+            console.log("blob = "+blob);
+            chunks = [];
+            audioURL = window.URL.createObjectURL(blob);
+            var message = {
+                'username': user,
+                'value': audioURL,
+                'user_id': user_id,
+                'already_sent': false
+              };
+            global.emit('indv_msg', message);
+            scroll_messages_into_view();
+            console.log("audioUrl = "+audioURL)
+          }
+      },
+      // Error callback
+      function(err) {
+         console.log('The following gUM error occured: ' + err);
+      }
+   );
+    } else {
+   console.log('getUserMedia not supported on your browser!');
+    }
+}
 }
 
 
@@ -479,6 +697,7 @@ function add_new_room(room) {
 
      global_room_list.push(room);
      add_socket(room);
+     switch_indvroom("remove"); // removing individual room
      $('div#room-' + room.id).hide();
 }
 
@@ -488,25 +707,46 @@ function populate_user_list() {
     $.getJSON('http://' + server_host + ':3000/users', function(connected_users){
 
       // make sure the current user is included in the list
-      connected_users.push(user);
+      //connected_users.push(user);
       online_users = _.unique(connected_users);
+
 
       global_user_list = all_users;
       all_users.forEach(function(user) {
+          add_new_indvRoom(user.id);
         var user_link = $('<li />', {
-          'class': _.contains(online_users, user.username) ? 'user' : 'user disabled',
+          'class': _.contains(online_users, user.id) ? 'user' : 'user',
+          'id':user.id,
           'html':
           $('<a />', {
-            'href': '#'
+            'href': '#',
+              'class': 'list-user-item user-link'
+
           })
-        .append(user.username)
+        .append(user.username).append($('<span />',{
+        'class': 'badge'
+        }))
         });
 
         $('ul.user_list').append(user_link);
+
       });
     });
+
   });
 }
+function add_new_indvRoom(userId){
+    $.getJSON('http://'+server_host+':'+server_port+'/api/indvrooms/?format=json', function (data) {
+        var indvroom_id=0;
+        data.forEach(function (room) {
+            var room_users = room.users.split("-");
+            if ((room_users[0] == user_id && room_users[1] == userId) || (room_users[0] == userId && room_users[1] == user_id)) indvroom_id = room.id;
+        });
+        if (indvroom_id == 0) global.emit('indvroom', {'creator_id': user_id, 'second_user': userId});
+        global.emit('indvjoin', {"indvroom": indvroom_id});
+    });
+}
+
 
 //upload file
 function filechoose(){
@@ -534,11 +774,37 @@ $(document).ready( function() {
     });
 });
 
+function switch_indvroom(id) {
+    sent_day_check=null;
+    var room_num = 'room-' + visible_namespace();
+    //$('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link');
+    global_user_list.forEach(function (data) {
+        if(data.id==id){
+             $('ul.user_list li').filter('#' + data.id).find('a').attr('class', 'list-user-item user-link active');
+          }
+          else{
+              $('ul.user_list li').filter('#' + data.id).find('a').attr('class', 'list-user-item user-link');
+          }
+    });
+    var badge=$('ul.user_list li').filter(function(){ return $(this).attr('id') == id }).find('a').children().filter('.badge').text('');
+    document.getElementById("bottom").scrollIntoView();
+    $('html, body').animate({ scrollTop: $(document).height() }, 1200);
+}
+
+
+function vidoeSend() {
+    global.emit('indv_videoChat', {'some_data':'some_info'});
+}
+global.on('indv_videoChat_accept', function (data) {
+    window.location.href='/communication/videochat';
+});
+
+
 // MAIN
 $(document).ready(function(){
-
   populate_room_list();
   populate_user_list();
+
 
 // switch and load messages on click on the room name
   $('div#room-list').on('click', 'a', function(){
@@ -549,8 +815,185 @@ $(document).ready(function(){
       clearMessage();
       switch_room( $(this).attr('id') );
       get_message_data(id[1]); // load messages for the room
+      switch_indvroom('rm');
+
     }
   });
+
+
+  $('ul.user_list').on('click', 'li', function(){
+      var id = $(this).attr('id');
+      if(user_id!=id) {
+          switch_indvroom(id);
+
+          var curRoomId=getCurrentRoom();
+          if(curRoomId){
+               var room_num = 'room-'+curRoomId.id;
+                $('div#room-list a').filter('#' + room_num).attr('class', 'list-group-item room-link');
+                $('div.messagecontent').filter('#' + room_num).hide();
+          }
+          var label_name = $(this).find('a').text();
+          var online=checkForOnline(id);
+          //alert(online);
+          $('span#room_title').text(label_name);
+          $('span#room_title').append(online);
+
+
+          //console.log(JSON.stringify(global_user_list));
+
+          clearMessage();
+
+          $.getJSON('http://'+server_host+':'+server_port+'/api/indvrooms/?format=json', function (data) {
+
+              var indvroom_id = 0;
+              data.forEach(function (room) {
+                  global_indv_room.push(room.id);
+                  var room_users = room.users.split("-");
+                  if ((room_users[0] == user_id && room_users[1] == id) || (room_users[0] == id && room_users[1] == user_id)) indvroom_id = room.id;
+
+
+              });
+
+              if (indvroom_id == 0) global.emit('indvroom', {'creator_id': user_id, 'second_user': id});
+              global.emit('indvroom_id', {"id": indvroom_id});
+              var check_messagelist = $('div#room-' + indvroom_id)[0];
+              if (!check_messagelist) {
+                  $('div#message_list').append($('<div />', {
+                      'class': 'messagecontent',
+                      'id': 'room-' + indvroom_id,
+                      'text': '',
+                  }));
+              }
+
+              get_indvroom_messages(indvroom_id);
+              get_indvroom_show(indvroom_id);
+             //document.getElementById("bottom").scrollIntoView();
+             // $('html, body').animate({ scrollTop: $(document).height() }, 1200);
+              var room_num = 'room-' + indvroom_id;
+              global.emit('indvjoin', {"indvroom": indvroom_id});
+          });
+      }
+  });
+
+
+
+function checkForOnline(id) {
+    //alert(online_users);
+     for(var i=0; i<online_users.length; i++){
+         if(online_users[i]==id && online_users[i]!=user_id){
+             return "<small><small><sub><i>online</i></sub></small></small>";
+         }
+     }
+     //console.log(JSON.stringify(userVisitedDate));
+     var visitedDay;
+     var visitedHour;
+     var visitedMonth;
+     var visitedYear;
+     userVisitedDate.forEach(function (data) {
+        var userID=Number(data.user.split('/api/users/')[1].slice(0,-1));
+        if (userID==id){
+            var time=data.time.split("-");
+            var year=time[0];
+            var months=time[1];
+            var day=time[2].slice(0, 2);
+            var hours=time[2].slice(3, 5);
+            var minutes=time[2].split(":")[1];
+            console.log(year+":"+months+":"+day+":"+hours+":"+minutes);
+            var d=new Date(year, months, day, hours, minutes);
+            var currentTime=new Date();
+            if(currentTime.getYear()==(d.getYear()-1)){
+                //alert(d.getMonth());
+                if(currentTime.getMonth()+1==months){
+                    if(currentTime.getDate()!=d.getDate()){
+                        visitedDay=currentTime.getDate()-d.getDate();
+                    }
+                    else {
+                        visitedHour=currentTime.getHours()-d.getHours();
+                    }
+                }
+                else {
+                    visitedMonth=(currentTime.getMonth()+1)-d.getMonth();
+                }
+
+            }
+            else {
+                visitedYear=currentTime.getYear()-d.getYear();
+            }
+
+
+
+        }
+     });
+     if(visitedDay){
+         return "<small><small><sub><i>was online "+ visitedDay +" day(s) ago</i></sub></small></small>";
+     }
+     else if(visitedHour){
+         return "<small><small><sub><i>was online "+ visitedHour +" hour(s) ago</i></sub></small></small>";
+     }
+     else if(visitedMonth){
+         return "<small><small><sub><i>was online "+ visitedMonth +" month(s) ago</i></sub></small></small>";
+     }
+     else if(visitedYear){
+         return "<small><small><sub><i>was online "+ visitedYear +" year(s) ago</i></sub></small></small>";
+     }
+
+}
+
+function get_indvroom_show(indvroom_id) {
+    for(var i=0; i<global_indv_room.length; i++){
+        if(indvroom_id==global_indv_room[i]){
+            var room_show = 'room-' + indvroom_id;
+            $('div.messagecontent').filter('#' + room_show).show();
+        }
+        else {
+            //alert(global_indv_room[i]);
+            var room_hide = 'room-' + global_indv_room[i];
+            $('div.messagecontent').filter('#' + room_hide).hide();
+        }
+    }
+}
+
+  function get_indvroom_messages(indvroom){
+      $.getJSON('http://'+server_host+':'+server_port+'/api/indvmessages/?format=json', function(data) {
+            data.forEach(function (messages) {
+                if(messages.indv_room==indvroom){
+                    var message=checkMessageFortext(messages.text);
+                    var message_user = Number(messages.send_user.split('/api/users/')[1].slice(0,-1));
+                    add_message(message, messages.id, message_user, messages.indv_room, messages.time);
+
+                }
+            })
+      });
+
+  }
+   global.on('indv_msg', function (data) {
+           var message=checkMessageFortext(data.text);
+           var message_user = Number(data.send_user.split('/api/users/')[1].slice(0,-1));
+           add_message(message, data.id, message_user, data.indv_room, data.time);
+           scroll_messages_into_view();
+           //alert(message);
+           increment_indvBadge(message_user);
+       });
+  function increment_indvBadge(message_user){
+      if(user_id!=message_user){
+          var badge=$('ul.user_list li').filter(function(){ return $(this).attr('id') == message_user }).find('a').children().filter('.badge');
+            var count = Number(badge.text());
+            badge.text(count += 1);
+      }
+  }
+
+  function checkMessageFortext(message){
+      var text=message.split(':');
+      if (text[1]!=' blob' && text[2]!='http') {
+          return '<b>'+text[0]+'</b>:'+text[1];
+      }
+      else{
+        var head=message.substring(0, text[0].length);
+        var tile=message.substring(text[0].length+2, message.length);
+        return '<b>'+head+'</b>:'+tile;
+      }
+
+  }
 
   // clear all messages
   function clearMessage(){
@@ -710,18 +1153,20 @@ function showEditMessage(msgid) {
 }
 
 function editMessage(msgid, msgtext) {
-  //Use message id and new message text to emit update event
   var message_data = {
     id: msgid,
     text: msgtext
   };
-  global.emit('editmsg', message_data);
+  if(getCurrentRoom()) global.emit('editmsg', message_data);
+  else global.emit('editIndvmsg', message_data);
+
 }
 
 function deleteMessage(msgid) {
   //Use message id to delete
   if (confirm('Are you sure you would like to delete this message?')) {
-    global.emit('deletemsg', msgid);
+      if(getCurrentRoom()) global.emit('deletemsg', msgid);
+      else global.emit('deleteIndvmsg', msgid);
   } else {
     return false;
   }
